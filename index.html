@@ -1,0 +1,1078 @@
+<!doctype html>
+<html lang="nl">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>Capi Café</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Bagel+Fat+One&family=Gabarito:wght@400;600;800&display=swap" rel="stylesheet">
+<style>
+:root{
+  color-scheme:light;
+  --bg:#D7EDCB;--surface:#F7FBEA;--surface2:#E9F4D8;--ink:#1F3B2E;--muted:#4A6656;
+  --yuzu:#FFBE1A;--yuzu-edge:#C98C00;--on-yuzu:#2B2410;--water:#1F8F89;--berry:#C92C55;
+  --edge:#1F3B2E;--thin:rgba(31,59,46,.2);--mark:rgba(31,59,46,.72);
+  --steam:#D5E7E2;--steam2:#FBFEFC;--hill:#9ED18B;--grass:#A8D98C;--grass2:#8FC873;--soil:#7A5236;--soil2:#5E3E27;--tile:#D6EEF0;--tile2:#BCDFE3;--pool:#5CC9C2;--frame:#8A5A34;--frame2:#5E3A20;--wall:#BFE3D2;--wall2:#A9D6C2;--floor:#D9A873;--floor2:#C88F58;--sky:#BDE9FF;--wood:#8A5A34;
+  --r0:#FFC4BC;--r1:#FFE083;--r2:#B6E39F;--r3:#A5DBF2;--r4:#D3C0F6;--r5:#F8B6DA;--r6:#FFC88D;--r7:#A3E4CE;--r8:#DFD3AE;
+  box-sizing:border-box;padding-top:env(safe-area-inset-top,0px);padding-bottom:env(safe-area-inset-bottom,0px);
+}
+@media (prefers-color-scheme:dark){:root:not([data-theme="light"]){
+  color-scheme:dark;
+  --bg:#10302A;--surface:#1B4239;--surface2:#245247;--ink:#EEF7E4;--muted:#B3CFBD;
+  --water:#58D2C7;--berry:#FF8AA5;--edge:#06201A;--thin:rgba(6,32,26,.35);--mark:rgba(255,255,255,.86);
+  --steam:#4D736B;--steam2:#7FA69D;--hill:#2E6B45;--grass:#3E7F4E;--grass2:#336B41;--soil:#4E3423;--soil2:#3A2618;--tile:#2B5A5E;--tile2:#234A4E;--pool:#2E8F8A;--frame:#6B4327;--frame2:#3E2513;--wall:#2A5E55;--wall2:#234F47;--floor:#6E4A30;--floor2:#5C3C26;--sky:#16264F;--wood:#57361F;
+  --r0:#B5615A;--r1:#A98B2B;--r2:#5B9346;--r3:#3C84A8;--r4:#7A62B3;--r5:#AE5A90;--r6:#B87236;--r7:#35967C;--r8:#887C57;
+}}
+:root[data-theme="dark"]{
+  color-scheme:dark;
+  --bg:#10302A;--surface:#1B4239;--surface2:#245247;--ink:#EEF7E4;--muted:#B3CFBD;
+  --water:#58D2C7;--berry:#FF8AA5;--edge:#06201A;--thin:rgba(6,32,26,.35);--mark:rgba(255,255,255,.86);
+  --steam:#4D736B;--steam2:#7FA69D;--hill:#2E6B45;--grass:#3E7F4E;--grass2:#336B41;--soil:#4E3423;--soil2:#3A2618;--tile:#2B5A5E;--tile2:#234A4E;--pool:#2E8F8A;--frame:#6B4327;--frame2:#3E2513;--wall:#2A5E55;--wall2:#234F47;--floor:#6E4A30;--floor2:#5C3C26;--sky:#16264F;--wood:#57361F;
+  --r0:#B5615A;--r1:#A98B2B;--r2:#5B9346;--r3:#3C84A8;--r4:#7A62B3;--r5:#AE5A90;--r6:#B87236;--r7:#35967C;--r8:#887C57;
+}
+*,*::before,*::after{box-sizing:inherit}
+html{height:100%;background:var(--bg);scroll-padding-top:env(safe-area-inset-top,0px)}
+body{height:100%;margin:0;background:var(--bg);color:var(--ink);font:400 17px/1.4 "Gabarito","Trebuchet MS","Segoe UI",sans-serif;overflow:hidden;-webkit-tap-highlight-color:transparent;user-select:none;-webkit-user-select:none}
+button{font:inherit;color:inherit;background:none;border:0;padding:0;cursor:pointer}
+button:focus-visible,[tabindex]:focus-visible{outline:3px solid var(--water);outline-offset:2px}
+h1,h2,h3,p{margin:0}
+h1,h2,.display{font-family:"Bagel Fat One","Arial Rounded MT Bold","Trebuchet MS",sans-serif;font-weight:400;line-height:1.05}
+svg{display:block}
+#app{height:100%;max-width:520px;margin:0 auto;display:flex;flex-direction:column;position:relative}
+#view{flex:1;min-height:0;overflow-y:auto;overflow-x:hidden;padding:0 16px 20px}
+
+.top{display:flex;align-items:center;gap:10px;padding:12px 0 10px}
+.top h1{font-size:30px;flex:1}
+.pill{display:inline-flex;align-items:center;gap:6px;background:var(--surface);padding:6px 12px 6px 8px;border-radius:99px;font-weight:800;font-variant-numeric:tabular-nums}
+.pill svg{width:22px;height:22px}
+.iconbtn{width:44px;height:44px;border-radius:50%;background:var(--surface);display:grid;place-items:center;flex:none}
+.iconbtn svg{width:22px;height:22px}
+
+.scene{border-radius:26px 26px 12px 12px;overflow:hidden;background:var(--wall);border:3px solid var(--edge)}
+.scene svg{width:100%;height:auto}
+.scene .capy-g{cursor:pointer}
+.scene .pop{animation:pop .55s cubic-bezier(.3,1.6,.5,1) both;transform-box:fill-box;transform-origin:center bottom}
+.bubble{background:var(--surface);border-radius:14px;padding:9px 13px;margin-top:10px;min-height:46px;color:var(--ink);font-weight:600}
+.btn{display:flex;align-items:center;justify-content:center;gap:8px;width:100%;min-height:58px;padding:10px 18px;border-radius:18px;background:var(--yuzu);color:var(--on-yuzu);font-family:"Bagel Fat One","Arial Rounded MT Bold",sans-serif;font-size:23px;box-shadow:0 6px 0 var(--yuzu-edge);margin-bottom:6px;transition:transform .08s,box-shadow .08s}
+.btn:active{transform:translateY(4px);box-shadow:0 2px 0 var(--yuzu-edge)}
+.btn.quiet{background:var(--surface);color:var(--ink);box-shadow:0 6px 0 var(--surface2);font-size:20px}
+.btn.quiet:active{box-shadow:0 2px 0 var(--surface2)}
+.progress{margin:14px 0}
+.progress .lbl{font-weight:600;margin-bottom:6px}
+.bar{height:12px;background:var(--surface);border-radius:9px;overflow:hidden}
+.bar i{display:block;height:100%;background:var(--water);border-radius:9px}
+.daily{display:flex;align-items:center;gap:12px;background:var(--surface);border-radius:18px;padding:12px;margin-top:14px;width:100%;text-align:left}
+.daily .big{font-family:"Bagel Fat One","Arial Rounded MT Bold",sans-serif;font-size:21px;line-height:1.1}
+.daily .sub{color:var(--muted);font-size:15px}
+.daily .cal{width:52px;height:52px;background:var(--water);color:#fff;border-radius:14px;display:grid;place-items:center;font-family:"Bagel Fat One","Arial Rounded MT Bold",sans-serif;font-size:24px;flex:none}
+:root[data-theme="dark"] .daily .cal{color:#10302A}
+@media (prefers-color-scheme:dark){:root:not([data-theme="light"]) .daily .cal{color:#10302A}}
+
+nav{display:flex;gap:4px;padding:6px 10px 8px;background:var(--surface);border-radius:20px 20px 0 0}
+nav button{flex:1;min-height:52px;border-radius:13px;font-weight:600;font-size:14px;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:1px;color:var(--muted)}
+nav button svg{width:24px;height:24px}
+nav button[aria-current="page"]{background:var(--surface2);color:var(--ink);font-weight:800}
+
+.section-h{font-size:24px;margin:18px 0 3px}
+.section-p{color:var(--muted);margin-bottom:12px}
+.levels{display:grid;grid-template-columns:repeat(5,1fr);gap:9px}
+.lv{aspect-ratio:1;border-radius:16px;background:var(--surface);display:flex;flex-direction:column;align-items:center;justify-content:center;font-family:"Bagel Fat One","Arial Rounded MT Bold",sans-serif;font-size:21px;line-height:1}
+.lv small{font-family:"Gabarito",sans-serif;font-size:11px;color:var(--yuzu-edge);letter-spacing:0;margin-top:3px;font-weight:800;min-height:13px}
+.lv.next{background:var(--yuzu);color:var(--on-yuzu)}
+.lv:disabled{opacity:.5;cursor:default;background:var(--surface2);color:var(--muted)}
+@media (prefers-color-scheme:dark){:root:not([data-theme="light"]) .lv small{color:var(--yuzu)}}
+:root[data-theme="dark"] .lv small{color:var(--yuzu)}
+
+.items{display:grid;grid-template-columns:1fr 1fr;gap:12px}
+.item{background:var(--surface);border-radius:18px;padding:10px;display:flex;flex-direction:column;gap:8px}
+.item .pre{background:var(--wall);border-radius:12px;overflow:hidden;height:104px;padding:6px}
+.item .pre svg{width:100%;height:100%}
+.item b{font-weight:800;line-height:1.15}
+.buy{min-height:44px;border-radius:12px;background:var(--yuzu);color:var(--on-yuzu);font-weight:800;margin-top:auto}
+.buy:disabled{background:var(--surface2);color:var(--muted);cursor:default}
+.capys{display:grid;grid-template-columns:1fr 1fr;gap:12px}
+.card{background:var(--surface);border-radius:18px;padding:12px;text-align:center}
+.card svg{width:128px;height:auto;margin:0 auto 6px}
+.card b{font-family:"Bagel Fat One","Arial Rounded MT Bold",sans-serif;font-weight:400;font-size:20px;display:block}
+.card span{color:var(--muted);font-size:15px;line-height:1.25;display:block;margin-top:3px}
+.card.locked svg{filter:brightness(0) opacity(.28)}
+:root[data-theme="dark"] .card.locked svg{filter:brightness(0) invert(1) opacity(.2)}
+@media (prefers-color-scheme:dark){:root:not([data-theme="light"]) .card.locked svg{filter:brightness(0) invert(1) opacity(.2)}}
+
+#game{height:100%;display:flex;flex-direction:column;padding:0 12px 12px}
+.g-top{display:flex;align-items:center;gap:10px;padding:10px 0}
+.g-top h2{font-size:24px;flex:1;min-width:0}
+.meter{display:flex;gap:1px}.meter svg{width:22px;height:22px;color:var(--thin)}.meter svg.on{color:var(--yuzu)}.meter svg.lost{animation:lost .55s ease}
+.timer{font-weight:800;font-variant-numeric:tabular-nums;font-size:19px}
+.board-row{flex:1;min-height:0;display:flex;gap:9px;align-items:center}
+.board-wrap{flex:1;min-width:0;height:100%;container-type:size;display:grid;place-items:center}
+.lift{flex:none;width:60px;display:flex;flex-direction:column;gap:7px;padding:5px;background:var(--frame);border-radius:14px;box-shadow:0 5px 0 var(--frame2)}
+.lift button{position:relative;display:block;width:100%;aspect-ratio:1;border-radius:7px;overflow:hidden;opacity:.72}
+.lift button svg{width:100%;height:100%}
+.lift button[aria-current]{outline:3px solid var(--yuzu);outline-offset:1px;opacity:1}
+.lift .no{position:absolute;left:3px;top:2px;min-width:16px;height:16px;border-radius:5px;background:var(--edge);color:#fff;font-size:12px;font-weight:800;line-height:16px;text-align:center}
+.lift .done .no{background:var(--water)}
+.tower{display:flex;justify-content:center;gap:6px;margin-bottom:12px}
+.tower svg{width:56px;height:56px;border-radius:7px;border:2px solid var(--edge)}
+.duo{display:grid;grid-template-columns:1fr 1fr;gap:8px;margin-top:12px}
+.duo .daily{margin-top:0;padding:8px 10px;gap:9px;min-width:0}
+.duo .daily.wide{grid-column:1/3}
+.duo .cal{width:38px;height:38px;font-size:19px;border-radius:11px}
+.duo .cal svg{width:24px;height:24px}
+.duo .big{font-size:17px}.duo .sub{font-size:13px}
+.scene{position:relative}
+.scene .bubble{position:absolute;left:8px;right:8px;top:8px;margin:0;min-height:0;opacity:0;transform:translateY(-6px);transition:opacity .2s,transform .2s;pointer-events:none;box-shadow:0 2px 0 var(--edge)}
+.scene .bubble.on{opacity:1;transform:none}
+.board.shape{background:transparent;border:0;border-radius:0;box-shadow:none;filter:drop-shadow(0 5px 0 var(--frame2))}
+.hole{display:block}
+.album{display:grid;grid-template-columns:repeat(3,1fr);gap:10px}
+.shapecard{background:var(--surface);border-radius:16px;padding:10px 8px 8px;display:flex;flex-direction:column;align-items:center;gap:4px}
+.shapecard svg{width:74px;height:74px}
+.shapecard b{font-family:"Bagel Fat One","Arial Rounded MT Bold",sans-serif;font-weight:400;font-size:17px;line-height:1.1}
+.shapecard small{font-size:11px;color:var(--yuzu-edge);font-weight:800;min-height:13px}
+.shapeart svg{width:96px;height:96px;margin:0 auto 8px}
+.steamart.shapeart{width:auto}
+.score{font-family:"Bagel Fat One","Arial Rounded MT Bold",sans-serif;font-size:21px;color:var(--water);font-variant-numeric:tabular-nums}
+.timer.low{color:var(--berry);animation:tickp 1s ease-in-out infinite}
+.timer.hit{color:var(--berry);animation:oops .34s}
+.bigscore{font-family:"Bagel Fat One","Arial Rounded MT Bold",sans-serif;font-size:58px;line-height:1;color:var(--water);margin:6px 0}
+.heart{position:absolute;width:calc(100%/var(--n)*.42);aspect-ratio:1;margin:calc(-100%/var(--n)*.21) 0 0 calc(-100%/var(--n)*.21);z-index:3;pointer-events:none;animation:heartin .42s cubic-bezier(.3,1.9,.5,1) both}
+.heart svg{width:100%;height:100%}
+.cell .c.hug{animation:hugin .3s ease-out both}
+.c.hug .eye-o{display:none}.c.hug .eye-h{display:inline}
+.won .c.hug{animation:bob .6s ease-in-out both;animation-delay:calc(var(--i)*70ms)}
+.seg{display:flex;background:var(--surface);border-radius:13px;padding:4px;margin-bottom:6px}
+.seg button{flex:1;min-height:42px;border-radius:10px;font-weight:800;color:var(--muted)}
+.seg button[aria-pressed="true"]{background:var(--yuzu);color:var(--on-yuzu)}
+.cell .shade{width:80%;height:80%;color:var(--mark);opacity:.4}
+.board.instant .cell:not(.nudge){animation:none}
+.board.up{animation:liftup .26s ease-out}.board.down{animation:liftdown .26s ease-out}
+.board{width:min(100cqw,100cqh);aspect-ratio:1;display:grid;border:6px solid var(--frame);border-radius:18px;overflow:hidden;touch-action:none;background:var(--edge);position:relative;box-shadow:0 6px 0 var(--frame2)}
+.board.oops{animation:oops .34s}
+.ghost{position:absolute;width:calc(100%/var(--n)*.55);aspect-ratio:1;margin:calc(-100%/var(--n)*.275) 0 0 calc(-100%/var(--n)*.275);border-radius:50%;background:rgba(255,255,255,.72);border:3px solid var(--ink);pointer-events:none;z-index:3}
+.ghost.tap{animation:gtap 1.2s ease-in-out infinite}.ghost.double{animation:gdbl 1.4s ease-in-out infinite}.ghost.swipe{animation:gswipe 1.5s ease-in-out infinite}
+.cell{position:relative;display:grid;place-items:center;border:.5px solid var(--thin);min-width:0;min-height:0;padding:0;border-radius:0;animation:cellin .34s cubic-bezier(.3,1.4,.5,1) both;animation-delay:var(--d,0ms);box-shadow:inset 0 1px 0 rgba(255,255,255,.3)}
+.cell.rc{filter:brightness(1.1)}
+.cell.pulse{filter:brightness(1.14) saturate(1.1);transition:filter .3s}
+.cell.nudge{animation:nudge .24s}
+.cell.cause{outline:4px solid var(--berry);outline-offset:-4px;z-index:3}
+.cell.tut{outline:4px solid var(--yuzu);outline-offset:-4px;z-index:3}
+.cell.ring::before{content:"";position:absolute;inset:8%;border-radius:50%;border:3px solid #fff;animation:ring .5s ease-out both;pointer-events:none}
+.cell.t{border-top:2px solid var(--edge)}.cell.r{border-right:2px solid var(--edge)}.cell.b{border-bottom:2px solid var(--edge)}.cell.l{border-left:2px solid var(--edge)}
+.cell:focus-visible{outline:3px solid var(--water);outline-offset:-3px;z-index:2}
+.cell svg{width:100%;height:100%;grid-area:1/1;position:relative;z-index:2}
+.cell.fogged{border:0!important;box-shadow:none}
+.fog{position:absolute;inset:-1px;z-index:1;background-color:var(--steam);background-image:radial-gradient(circle at 18% 24%,var(--steam2) 0 9%,transparent 15%),radial-gradient(circle at 62% 16%,var(--steam2) 0 12%,transparent 19%),radial-gradient(circle at 40% 52%,var(--steam2) 0 13%,transparent 21%),radial-gradient(circle at 84% 58%,var(--steam2) 0 11%,transparent 18%),radial-gradient(circle at 20% 84%,var(--steam2) 0 12%,transparent 19%),radial-gradient(circle at 66% 90%,var(--steam2) 0 10%,transparent 17%);background-size:calc(var(--n)*100%) calc(var(--n)*100%);background-position:calc(var(--c)/(var(--n) - 1)*100%) calc(var(--w)/(var(--n) - 1)*100%);transition:opacity .42s ease-out,transform .42s ease-out;pointer-events:none}
+.fog.gone{opacity:0;transform:scale(1.4) translateY(-10%)}
+.steamart{width:190px;margin:0 auto 8px}
+.intro{margin-bottom:10px;line-height:1.35}
+dialog .intro:last-of-type{margin-bottom:16px}
+.cell .c{width:92%;height:92%;animation:plop .24s cubic-bezier(.3,1.8,.5,1) both}
+.cell .c.nope{animation:nope .6s ease both}
+.cell .x.bad{color:var(--berry);width:50%;height:50%;animation:plop .2s both}
+.cell .x{width:42%;height:42%;color:var(--mark)}
+.cell.dot::after{position:relative;z-index:2;content:"";width:16%;aspect-ratio:1;border-radius:50%;background:var(--mark);opacity:.55;grid-area:1/1}
+.cell.hint{outline:4px solid var(--water);outline-offset:-4px;z-index:3;box-shadow:inset 0 0 0 4px var(--water);animation:glow .9s ease-in-out 3}
+.eye-h{display:none}
+.won .eye-o{display:none}.won .eye-h{display:inline}
+.won .c{animation:bob .6s ease-in-out both;animation-delay:calc(var(--i)*70ms)}
+.coach{min-height:46px;padding:8px 2px 4px;font-weight:600;text-align:center;line-height:1.25}
+.tools{display:flex;gap:8px}
+.tools button{flex:1;min-height:52px;border-radius:15px;background:var(--surface);font-weight:800;display:flex;align-items:center;justify-content:center;gap:6px}
+.tools svg{width:21px;height:21px}
+.tools button:disabled{opacity:.45;cursor:default}
+.drop{position:absolute;top:-10%;width:7%;aspect-ratio:1;border-radius:50%;background:var(--yuzu);animation:fall 1s ease-in both;pointer-events:none}
+
+dialog{border:0;border-radius:26px;background:var(--surface);color:var(--ink);padding:22px 18px 16px;width:min(92vw,400px);text-align:center}
+dialog::backdrop{background:rgba(9,36,30,.6)}
+dialog h2{font-size:30px;margin-bottom:6px}
+.stars{display:flex;justify-content:center;gap:4px;margin:8px 0 2px}
+.stars svg{width:44px;height:44px;color:var(--surface2)}
+.stars svg.on{color:var(--yuzu);animation:starin .42s cubic-bezier(.3,1.8,.5,1) both;animation-delay:calc(var(--k)*190ms)}
+.reward{font-weight:800;font-size:19px;margin-bottom:12px;display:flex;align-items:center;justify-content:center;gap:6px}
+.reward svg{width:24px;height:24px}
+.newcapy{background:var(--surface2);border-radius:18px;padding:12px;margin:8px 0 14px}
+.newcapy svg{width:150px;margin:0 auto 6px;animation:reveal .8s .75s both}
+.bonus{font-weight:800;color:var(--water);margin:-6px 0 10px}
+.bar i{transition:width .6s ease}
+.tips{display:flex;align-items:center;gap:10px;width:100%;background:var(--surface);border-radius:14px;padding:8px 12px;margin-top:10px;text-align:left}
+.tips:disabled{cursor:default}
+.tips .jar svg{width:30px;height:30px}
+.tips .tt{flex:1;min-width:0}.tips b{display:block;line-height:1.1;margin-bottom:4px}.tips .bar{display:block;height:7px;background:var(--surface2)}
+.tips .get{font-weight:800;background:var(--yuzu);color:var(--on-yuzu);padding:7px 12px;border-radius:10px;white-space:nowrap}
+.tips:disabled .get{background:var(--surface2);color:var(--muted)}
+.fly{position:fixed;width:16px;height:16px;border-radius:50%;background:var(--yuzu);z-index:9;pointer-events:none;animation:fly .75s cubic-bezier(.5,0,.8,.6) both}
+.scene .in{transform-box:fill-box;transform-origin:center bottom;animation:breath 3.8s ease-in-out infinite;animation-delay:var(--b)}
+.scene .in.hop{animation:hop .5s ease}
+.scene .eye-o{transform-box:fill-box;transform-origin:center;animation:blink 5.2s linear infinite;animation-delay:var(--b)}
+.newcapy b{font-family:"Bagel Fat One","Arial Rounded MT Bold",sans-serif;font-weight:400;font-size:21px;display:block}
+dialog .btn{margin-bottom:12px}
+dialog .row{display:flex;justify-content:space-between;align-items:center;min-height:52px;gap:10px;text-align:left;font-weight:600}
+dialog .switch{min-width:64px;min-height:40px;border-radius:12px;background:var(--surface2);font-weight:800}
+dialog .switch[aria-checked="true"]{background:var(--water);color:#fff}
+@media (prefers-color-scheme:dark){:root:not([data-theme="light"]) dialog .switch[aria-checked="true"]{color:#10302A}}
+:root[data-theme="dark"] dialog .switch[aria-checked="true"]{color:#10302A}
+.share{background:var(--surface2);border-radius:12px;padding:10px;font-weight:600;white-space:pre-line;margin-bottom:12px;user-select:text;-webkit-user-select:text}
+#toast{position:absolute;left:16px;right:16px;bottom:82px;background:var(--ink);color:var(--bg);padding:11px 14px;border-radius:14px;font-weight:600;text-align:center;opacity:0;pointer-events:none;transition:opacity .2s;z-index:5}
+#toast.on{opacity:1}
+.steam path{animation:steam 4s ease-in-out infinite}
+.steam path:nth-child(2){animation-delay:1.3s}.steam path:nth-child(3){animation-delay:2.6s}
+@keyframes liftup{from{transform:translateY(16%);opacity:.3}to{transform:none;opacity:1}}
+@keyframes liftdown{from{transform:translateY(-16%);opacity:.3}to{transform:none;opacity:1}}
+
+.rooms{display:flex;gap:6px;align-items:center;margin-bottom:8px}
+.roomc{min-height:40px;padding:0 13px;border-radius:12px;background:var(--surface);font-weight:800;display:flex;align-items:center;gap:5px}
+.roomc[aria-pressed="true"]{background:var(--yuzu);color:var(--on-yuzu)}
+.roomc.locked{color:var(--muted)}
+.cozy{margin-left:auto;display:flex;gap:1px}.cozy svg{width:15px;height:15px;color:var(--thin)}.cozy svg.on{color:var(--yuzu)}
+#stage{position:relative;aspect-ratio:400/270}
+#stage>svg{width:100%;height:100%}
+.fx{position:absolute;inset:0;pointer-events:none;overflow:hidden}
+.fxh,.fxg{position:absolute;width:26px;height:26px;margin:-13px 0 0 -13px;animation:rise 1.3s ease-out both}
+.fxh svg,.fxg svg{width:100%;height:100%}
+.fxh:nth-child(2n){animation-delay:.12s;margin-left:2px}
+.fxg{width:34px;height:34px;animation:riseg 1.3s cubic-bezier(.3,1.5,.5,1) both}
+.act{cursor:pointer}
+.act .bob{transform-box:fill-box;transform-origin:center bottom}
+.act.st-walk .bob{animation:walk .44s ease-in-out infinite}
+.act.st-idle .bob,.act.st-sit .bob{animation:breath 3.6s ease-in-out infinite}
+.act.st-eat .bob{animation:chew .3s ease-in-out infinite}
+.act.pet .bob{animation:hopr .55s ease}
+.act.st-sleep .eye-o,.act.st-soak .eye-o{display:none}
+.eye-c{display:none}.act.st-sleep .eye-c,.act.st-soak .eye-c{display:inline}
+.act .zz{animation:zz 2.4s ease-in-out infinite}
+.act .selm{animation:selm .9s ease-in-out infinite}
+.act .munch{animation:munchf 2.6s steps(4) both}
+.act .ripple{animation:ripple 2.2s ease-in-out infinite}
+.gift{cursor:pointer}.gift .gin{transform-box:fill-box;transform-origin:center bottom;animation:giftb 1.8s ease-in-out infinite}
+.spark{transform-box:fill-box;transform-origin:center;animation:twinkle 1.4s ease-in-out infinite}
+.plot{cursor:pointer}.ripe svg{animation:giftb 1.6s ease-in-out infinite;transform-box:fill-box;transform-origin:center bottom}
+.bobx{animation:bobx 3s ease-in-out infinite}.bobx:nth-child(2n){animation-delay:-1.2s}
+.fall{animation:fall2 .8s linear infinite}
+.night .glow{filter:drop-shadow(0 0 5px #FFE08A)}
+.dec.pop{animation:pop .55s cubic-bezier(.3,1.6,.5,1) both;transform-box:fill-box;transform-origin:center bottom}
+.panel{background:var(--surface);border-radius:0 0 18px 18px;padding:10px 10px 12px;margin-top:-3px;border:3px solid var(--edge);border-top:0}
+.strip{display:flex;gap:8px;overflow-x:auto;padding:2px 2px 6px;scrollbar-width:none}
+.av{position:relative;flex:none;width:52px;height:52px;border-radius:50%;padding:5px;background:conic-gradient(var(--water) calc(var(--f)*1%),var(--surface2) 0)}
+.av.honger{background:conic-gradient(var(--berry) calc(var(--f)*1%),var(--surface2) 0)}
+.av svg{width:100%;height:100%;background:var(--surface);border-radius:50%}
+.av.sel{outline:3px solid var(--yuzu);outline-offset:1px}
+.av .bdg{position:absolute;right:-2px;top:-2px;width:20px;height:20px;border-radius:50%;background:var(--berry);color:#fff;font-weight:800;font-size:13px;display:grid;place-items:center}
+.det{margin-top:6px}
+.det.empty{color:var(--muted);font-weight:600;text-align:center;padding:6px 0 2px}
+.dh{display:flex;align-items:center;gap:8px}.dh b{font-family:"Bagel Fat One","Arial Rounded MT Bold",sans-serif;font-weight:400;font-size:23px}
+.lvh{display:inline-flex;gap:1px}.lvh svg{width:16px;height:16px;color:var(--surface2)}.lvh svg.on{color:#EE4D7B}
+.lvh.big{justify-content:center;margin-top:4px}.lvh.big svg{width:24px;height:24px}
+.stt{color:var(--muted);font-weight:600;margin:2px 0 8px}
+.bars{display:grid;grid-template-columns:auto 1fr;gap:5px 10px;align-items:center;font-weight:700;font-size:14px}
+.bars.sm{font-size:13px;width:100%;margin:6px 0}
+.mbar{display:block;height:10px;border-radius:6px;background:var(--surface2);overflow:hidden}
+.mbar i{display:block;height:100%;border-radius:6px;transition:width .5s}
+.bf i{background:var(--yuzu)}.bj i{background:#EE4D7B}.bx i{background:var(--water)}
+.foods{display:flex;gap:7px;margin-top:10px;flex-wrap:wrap}
+.food{position:relative;width:54px;height:54px;border-radius:14px;background:var(--surface2);display:grid;place-items:center}
+.food .fi{width:32px;height:32px}
+.food span{position:absolute;right:3px;bottom:1px;font-weight:800;font-size:13px}
+.food:disabled{opacity:.4;cursor:default}
+.food.fav::after{content:"";position:absolute;left:3px;top:3px;width:12px;height:11px;background:#EE4D7B;clip-path:path("M6 11C2 8 0 6 0 3.500 0 1.500 1.500 0 3.300 0 4.500 0 5.500.700 6 1.700 6.500.700 7.500 0 8.700 0 10.500 0 12 1.500 12 3.500 12 6 10 8 6 11z")}
+.tip{color:var(--muted);font-size:14px;margin-top:8px}
+.btn.sm{min-height:46px;font-size:17px;margin-top:10px}
+.fi.inl{width:20px;height:20px;display:inline-block;vertical-align:-4px}
+.tips small{font-family:"Gabarito",sans-serif;font-weight:600;color:var(--muted);font-size:13px;margin-left:4px}
+.goals{background:var(--surface);border-radius:18px;padding:12px;margin-top:12px}
+.gh{display:flex;justify-content:space-between;align-items:center;margin-bottom:6px}.gh b{font-family:"Bagel Fat One","Arial Rounded MT Bold",sans-serif;font-weight:400;font-size:20px}.gh span{color:var(--muted);font-weight:700}
+.goal{display:flex;align-items:center;gap:8px;min-height:44px;border-top:1px solid var(--surface2)}
+.goal .gt{flex:1;font-weight:600}.goal.got .gt{color:var(--muted);text-decoration:line-through}
+.gp{font-weight:800;color:var(--muted);font-variant-numeric:tabular-nums}
+.ok{font-weight:800;color:var(--water)}
+.claim{min-height:36px;padding:0 12px;border-radius:10px;background:var(--yuzu);color:var(--on-yuzu);font-weight:800}
+.seeds{display:flex;flex-direction:column;gap:8px;margin:10px 0 14px}
+.seedb{display:grid;grid-template-columns:40px 1fr;grid-template-rows:auto auto;column-gap:10px;text-align:left;background:var(--surface2);border-radius:14px;padding:8px 10px}
+.seedb .fi{grid-row:1/3;width:40px;height:40px}.seedb span{color:var(--muted);font-size:14px}.seedb:disabled{opacity:.45}
+.chips{display:flex;gap:6px;margin:4px 0 10px}.chips button{min-height:40px;padding:0 14px;border-radius:12px;background:var(--surface);font-weight:800}.chips button[aria-pressed="true"]{background:var(--water);color:#fff}
+.shopgrid{display:grid;grid-template-columns:1fr 1fr;gap:10px}
+.fcard{background:var(--surface);border-radius:16px;padding:10px;display:flex;flex-direction:column;gap:3px;align-items:flex-start}
+.fcard .fic{width:56px;height:56px;border-radius:14px;background:var(--surface2);display:grid;place-items:center;margin-bottom:4px}
+.fcard .fic .fi{width:38px;height:38px}
+.fcard .fic.pack{background:#E9D3A8;border:2px dashed #B88A3A}
+.fcard b{font-weight:800}.eff{font-size:14px;color:var(--muted)}.have{font-size:14px;font-weight:700}
+.fcard .buy{width:100%;margin-top:6px}
+.item .pre.tuin{background:var(--grass)}.item .pre.bad{background:var(--tile)}
+.locknote{background:var(--surface);border-radius:14px;padding:14px;font-weight:600}
+.exps{display:flex;flex-direction:column;gap:10px}
+.exp{background:var(--surface);border-radius:16px;padding:12px;display:grid;grid-template-columns:1fr auto;gap:2px 10px;align-items:center}
+.exp b{font-weight:800;font-size:18px}.exp>span:nth-child(2){grid-column:1;color:var(--muted);font-size:14px}.exp>:nth-child(3){grid-row:1/3;grid-column:2}
+.exp .buy{padding:0 12px}
+.fam{display:grid;grid-template-columns:1fr 1fr;gap:12px}
+.fam .card{display:flex;flex-direction:column;align-items:center;gap:2px;text-align:center}
+.fam .card .q{font-style:italic}
+.tgrid{display:grid;grid-template-columns:repeat(4,1fr);gap:8px;margin-bottom:10px}
+.tcard{background:var(--surface);border-radius:14px;padding:8px 4px;text-align:center;display:flex;flex-direction:column;align-items:center}
+.tcard .fi{width:34px;height:34px}.tcard b{font-size:12px;line-height:1.15;margin-top:3px}.tcard span{font-size:11px;color:var(--muted);font-weight:700}
+.tcard.locked .fi{filter:brightness(0) opacity(.25)}
+:root[data-theme="dark"] .tcard.locked .fi{filter:brightness(0) invert(1) opacity(.2)}
+@media (prefers-color-scheme:dark){:root:not([data-theme="light"]) .tcard.locked .fi{filter:brightness(0) invert(1) opacity(.2)}}
+.wb{display:flex;flex-direction:column;gap:8px;margin:8px 0 16px;text-align:left}
+.wb div{display:flex;align-items:center;gap:10px;background:var(--surface2);border-radius:12px;padding:8px 10px;font-weight:700}
+.wb svg{width:26px;height:26px;flex:none}
+.act:focus,.gift:focus,.plot:focus{outline:none}
+.act:focus-visible .bw,.gift:focus-visible,.plot:focus-visible{outline:3px solid var(--water)}
+.seg button{font-size:15px;padding:0 3px}
+.fam .card .lvh{display:flex;justify-content:center;margin:2px 0}
+.fam .card .lvh svg{width:16px;height:16px;margin:0}
+.fam .card .bars{display:grid;text-align:left}
+.fam .card .mbar{display:block}
+.fam .card .fi.inl{width:18px;height:18px;margin:0;display:inline-block}
+.newcapy .lvh svg{width:24px;height:24px;margin:0;animation:none}
+.gsteps{display:flex;gap:4px;justify-content:center;margin:0 0 8px}
+.gsteps span{font-size:12px;font-weight:800;padding:3px 7px;border-radius:8px;background:var(--surface);color:var(--muted)}
+.gsteps span.done{background:var(--water);color:#fff}
+.gsteps span.now{background:var(--yuzu);color:var(--on-yuzu)}
+.cell.leave .c{animation:leave .6s ease-in forwards}
+.newmode{margin-top:0;margin-bottom:8px}
+.newmode em{font-style:normal;font-family:"Gabarito",sans-serif;font-size:12px;font-weight:800;background:var(--berry);color:#fff;padding:2px 7px;border-radius:7px;vertical-align:3px;margin-left:4px}
+.seg button{font-size:14px}
+@keyframes leave{30%{transform:translateY(-30%) scale(1.1)}100%{transform:translateY(-120%) scale(.5);opacity:0}}
+.board.zoom{animation:zoomout .9s .1s cubic-bezier(.35,.1,.25,1) both;background:var(--surface)}
+.board.zoom .cell:not(.new),.board.zoom .cell:not(.new) .c{animation:none}
+.board.zoom .cell.new{animation:newin .5s .45s ease-out both}
+.board-wrap.clip{overflow:hidden}
+@keyframes zoomout{from{transform:scale(var(--s))}to{transform:none}}
+@keyframes newin{from{opacity:0;transform:scale(.7)}to{opacity:1;transform:none}}
+@keyframes walk{50%{transform:translateY(-5px) rotate(-1.500deg)}}
+@keyframes chew{50%{transform:scaleY(.96)}}
+@keyframes hopr{40%{transform:translateY(-22px)}}
+@keyframes zz{0%{opacity:0;transform:translate(0,4px)}40%{opacity:1}100%{opacity:0;transform:translate(6px,-12px)}}
+@keyframes selm{50%{transform:translateY(-4px)}}
+@keyframes munchf{0%{opacity:1}100%{opacity:.15;transform:scale(.5)}}
+@keyframes ripple{50%{opacity:.35}}
+@keyframes giftb{0%,70%,100%{transform:none}80%{transform:translateY(-5px) rotate(-6deg)}90%{transform:translateY(-2px) rotate(5deg)}}
+@keyframes twinkle{50%{transform:scale(.4);opacity:.4}}
+@keyframes bobx{50%{transform:translateY(3px)}}
+@keyframes fall2{to{stroke-dashoffset:-16}}
+@keyframes rise{0%{transform:scale(.3);opacity:0}20%{transform:scale(1.1);opacity:1}100%{transform:translateY(-46px) scale(.9);opacity:0}}
+@keyframes riseg{0%{transform:scale(.3)}25%{transform:scale(1.25) translateY(-14px)}80%{opacity:1}100%{transform:translateY(-60px);opacity:0}}
+@keyframes tickp{50%{transform:scale(1.14)}}
+@keyframes heartin{from{transform:scale(0)}to{transform:none}}
+@keyframes hugin{to{transform:translate(var(--lx),var(--ly))}}
+@keyframes cellin{from{transform:scale(.55);opacity:0}to{transform:none;opacity:1}}
+@keyframes nudge{30%{transform:scale(.92)}70%{transform:scale(1.03)}}
+@keyframes nope{0%{transform:scale(.4)}25%{transform:scale(1.05) translateX(-8%)}45%{transform:translateX(8%)}65%{transform:translateX(-5%)}100%{transform:scale(.3);opacity:0}}
+@keyframes oops{25%{transform:translateX(-5px)}60%{transform:translateX(4px)}}
+@keyframes ring{from{transform:scale(.4);opacity:.9}to{transform:scale(1.35);opacity:0}}
+@keyframes lost{0%{transform:scale(1.5) rotate(0)}100%{transform:scale(1) rotate(-20deg)}}
+@keyframes starin{from{transform:scale(0) rotate(-60deg)}to{transform:none}}
+@keyframes reveal{from{filter:brightness(0);transform:scale(.8)}to{filter:none;transform:none}}
+@keyframes fly{to{transform:translate(var(--dx),var(--dy)) scale(.6);opacity:.3}}
+@keyframes breath{0%,100%{transform:none}50%{transform:scaleY(1.03)}}
+@keyframes hop{40%{transform:translateY(-16%)}}
+@keyframes blink{0%,95%,100%{transform:none}97.500%{transform:scaleY(.1)}}
+@keyframes gtap{0%,100%{transform:scale(1);opacity:.9}50%{transform:scale(.7);opacity:.6}}
+@keyframes gdbl{0%,30%,60%,100%{transform:scale(1)}15%,45%{transform:scale(.65)}}
+@keyframes gswipe{0%{transform:translateX(0);opacity:0}15%{opacity:1}75%{transform:translateX(calc(100%/.55));opacity:1}100%{transform:translateX(calc(100%/.55));opacity:0}}
+@keyframes pop{from{transform:scale(.2);opacity:0}to{transform:scale(1);opacity:1}}
+@keyframes plop{from{transform:scale(.3)}to{transform:scale(1)}}
+@keyframes shake{25%{transform:translateX(-7%)}75%{transform:translateX(7%)}}
+@keyframes bob{0%,100%{transform:none}45%{transform:translateY(-16%) scale(1.1)}}
+@keyframes glow{50%{box-shadow:inset 0 0 0 7px var(--water)}}
+@keyframes fall{to{transform:translateY(1100%) rotate(200deg);opacity:0}}
+@keyframes steam{0%{opacity:0;transform:translateY(8px)}40%{opacity:.7}100%{opacity:0;transform:translateY(-16px)}}
+@media (prefers-reduced-motion:reduce){*,*::before,*::after{animation:none!important;transition:none!important}}
+</style>
+</head>
+<body>
+<div id="app"><div id="view"></div><nav id="nav" aria-label="Hoofdmenu"></nav><div id="toast" role="status"></div></div>
+<dialog id="dlg"></dialog>
+<script>
+"use strict";
+const DATA={"levels":[{"n":4,"r":"3333333213301100","s":"1302"},{"n":4,"r":"2222222102222232","s":"1302"},{"n":4,"r":"2330221022102211","s":"1302"},{"n":4,"r":"3330332013201222","s":"1302"},{"n":5,"r":"2111111111441113311033333","s":"03142"},{"n":5,"r":"2222202244022440001403004","s":"24031"},{"n":5,"r":"2111111113111334400340000","s":"02413"},{"n":5,"r":"0111400324033443334444444","s":"13024"},{"n":5,"r":"3331133321400110001101111","s":"13024"},{"n":5,"r":"4444444402142221122213322","s":"13042"},{"n":5,"r":"0033311344113421144444444","s":"02413"},{"n":5,"r":"0034400444014441114211142","s":"20314"},{"n":5,"r":"4444344100441004400022220","s":"42031"},{"n":5,"r":"4444444442044320333211332","s":"24031"},{"n":6,"r":"111112111111114100555000555500555333","s":"502413"},{"n":6,"r":"111155411151111111111113221012222222","s":"402531"},{"n":6,"r":"444441444555444555255555253505255500","s":"513024"},{"n":6,"r":"444444433333433315425555445555440005","s":"024153"},{"n":6,"r":"322222322222312222222422255420555555","s":"041352"},{"n":6,"r":"002111001111001151401151401331401331","s":"251403"},{"n":6,"r":"555501555300555500244400224400444440","s":"531402"},{"n":6,"r":"022200000000005000431000431111333111","s":"352041"},{"n":6,"r":"444455404454404444413244113444333444","s":"415302"},{"n":6,"r":"111333510033511041111141121111111111","s":"520413"},{"n":6,"r":"000001400000440030440030445550422250","s":"524031"},{"n":6,"r":"533444523444522244522221222201222200","s":"130524"},{"n":6,"r":"333311333333220353240553444555444555","s":"530241"},{"n":6,"r":"544222554233550033550033555133555111","s":"135204"},{"n":7,"r":"1006000500600055000005530000333000233300000000400","s":"0351624"},{"n":7,"r":"4444444440044464444446331154331111411111112221111","s":"6305142"},{"n":7,"r":"2222255222445560000550000115000055500003550055555","s":"1305246"},{"n":7,"r":"6664455666665566666556666155006666530666623666666","s":"3524160"},{"n":7,"r":"5544444555444455546445534444200444400000440000001","s":"5142036"},{"n":7,"r":"1111555611145563144006111100622111161111111111111","s":"6415203"},{"n":7,"r":"4111000440000044000004440002443450044445004644500","s":"3506241"},{"n":7,"r":"2655500266000066600006600000660000411000001100030","s":"3024615"},{"n":7,"r":"5552333555533355533334553366444336644166664466660","s":"3140526"},{"n":7,"r":"0044111004005100000500000000003330002330000066000","s":"6250413"},{"n":7,"r":"2664411266611126111115111113511111155111005551110","s":"4206351"},{"n":7,"r":"3335555335555533554443351444333100436444443322244","s":"0263514"},{"n":7,"r":"3331000333111255111125511112111111241111124111166","s":"4261305"},{"n":7,"r":"0066666000066644466664146626116662611555661113336","s":"6315024"},{"n":8,"r":"3333333333233311332337163337771135330111333001113300011133440111","s":"02751463"},{"n":8,"r":"5555111155521111555111115650111100507111004000330000000300000000","s":"03614275"},{"n":8,"r":"6667766606666666066655660166666603334466333334463333444633324446","s":"40517263"},{"n":8,"r":"1111130011111000114440201000602210000022050000220000000000000007","s":"50246137"},{"n":8,"r":"5555522544355555445555154455555544555555655555555550555755555557","s":"52614037"},{"n":8,"r":"3355555555575555055755555555522555555555555555545555116655555566","s":"13052746"},{"n":8,"r":"7300000043333000435334004333344446114444411144444444444244444444","s":"06241375"},{"n":8,"r":"6600777766007777000007770000773710000777000200070002244400222544","s":"14260375"},{"n":8,"r":"1133777733337777333377704277777242777622222226222552222222222222","s":"13740526"},{"n":8,"r":"5555666655566600332200003304400033000000330000003000070030000111","s":"60241357"},{"n":8,"r":"5507000055000011350000013000000033300660233006003330060433300044","s":"36142057"},{"n":8,"r":"3000000230000772300007110000001106000000666000006644544044444440","s":"75063142"},{"n":9,"r":"536666644566668664566666674666666474666666444166666444111122244111102244112222224","s":"150738246"},{"n":9,"r":"444444444444441144433444155435222557855222557555522555550555555550556555555555555","s":"361804257"},{"n":9,"r":"144444566144445566111331566111111166171111166111111886111111111111111121011111111","s":"253816470"},{"n":9,"r":"777766655177766655177766665777766664777762666777736666777733666787773366777073366","s":"706852413"},{"n":9,"r":"667666666666666660666566600366666400333380000313000000333000220330000220333000000","s":"253641708"},{"n":9,"r":"222224664222244444272244444277444444188444444111004444111444453111444433111444333","s":"631524708"}],"daily":[{"n":8,"r":"3336601133336011333331123133111211111112111111447777111457711111","s":"35174620"},{"n":7,"r":"1111111322211122261112226601222220022222242222544","s":"2035164"},{"n":7,"r":"0044466444446644444664444432444522241552224222222","s":"0625314"},{"n":8,"r":"6003333366033333020333330000555400005514000055155555555555755555","s":"05173642"},{"n":7,"r":"3363333333333333313303333350444333044444004444200","s":"2035164"},{"n":8,"r":"4611177744411774441144444444444344444444444422440444222444444524","s":"16372405"},{"n":7,"r":"5466000544400044444004444300444434011444441114442","s":"3052416"},{"n":6,"r":"002223000222004222144442111442111542","s":"514203"},{"n":7,"r":"0011112001111200441110043311600555566005556660005","s":"3624150"},{"n":8,"r":"1111000021110000111116001111111144111555441155114131551711111117","s":"60531427"},{"n":7,"r":"0001222000062200066220066222556222254422222222232","s":"3146025"},{"n":7,"r":"5555330555500055550004555000445610022666662266666","s":"5260413"},{"n":6,"r":"222225203355213335111333131333433333","s":"315240"},{"n":7,"r":"3333335333345533133556333333333300333333333332333","s":"6420513"},{"n":7,"r":"2255666555566655555165555513055111111111111111411","s":"1536024"},{"n":7,"r":"5555566550555545555554355555333511133351113355112","s":"5203146"},{"n":8,"r":"4444006444440044444444442244444422433344274313112222111122222511","s":"64203175"},{"n":8,"r":"5444333354442633544426605544000055000000550000007000000011100000","s":"74631502"},{"n":7,"r":"1122222122222234244453444444300444434444463444466","s":"1364205"},{"n":6,"r":"000353000333133333433333444233444333","s":"420531"},{"n":8,"r":"0006666606666662666333346664455466444444764444447444444444444414","s":"27351406"},{"n":8,"r":"1171111121661111116611411111114110111111111113111111111111155111","s":"20361574"},{"n":7,"r":"5553333555633335333233333333433333343311004330000","s":"1352046"},{"n":7,"r":"5000000554401655455365555336555566655556665225666","s":"3524061"},{"n":7,"r":"1111122631122266222206660000665000044440004444000","s":"4150263"},{"n":7,"r":"3333333113333303333350300333000023340006664000666","s":"3162405"},{"n":8,"r":"0023333302225663005556670055555700555555000555550000115540000005","s":"62573140"},{"n":7,"r":"4444334446444444444444444244441155511111551110055","s":"5204613"},{"n":7,"r":"3333333555253055555505555551555551145556114455666","s":"1362504"},{"n":6,"r":"450000450030411000440000442200000000","s":"142035"},{"n":8,"r":"1116117311111173112221131111511311111113011111111111111144411111","s":"36247051"},{"n":7,"r":"6556111666611166600006666000663300066332406633244","s":"1530246"},{"n":7,"r":"1444000100000012111111111166111116651111365111116","s":"2416350"},{"n":8,"r":"6666666662226666666266766666367466666774606666646666656466611566","s":"02647153"},{"n":7,"r":"2222622322222222222225522202552224455222445112244","s":"4035162"},{"n":8,"r":"0000775400077244000722443067774437777744377777447777744477777441","s":"61420357"},{"n":7,"r":"2211166221116601111111111155111115511114551131555","s":"1503642"},{"n":8,"r":"5155555551555556555555555575555555555505555455553555555555552555","s":"17526304"},{"n":6,"r":"533333533333523333444033444441444444","s":"041352"},{"n":6,"r":"001115002555000555044334043344444444","s":"425031"},{"n":6,"r":"011111111111112111112115142115142335","s":"042513"},{"n":8,"r":"4444417744444477444444774344444745554447555544672500444400004444","s":"57413602"},{"n":8,"r":"5555555554065552440002224400072044000000330000003330000033100000","s":"63751402"},{"n":6,"r":"303333333333333344233344235111211111","s":"135024"},{"n":8,"r":"7770004455000043550003430000033306606233066663330666663316666633","s":"26135740"},{"n":6,"r":"222212222222022222222555242533222233","s":"420315"},{"n":8,"r":"2221777722211111411111111111115311111113111111131111161110111111","s":"42063751"},{"n":8,"r":"4744455647444466444444664444444444441444440004444422222344422223","s":"51604273"},{"n":6,"r":"333325333355333335311335301445001144","s":"425130"},{"n":7,"r":"0011110000300060000000020000500000055000000004400","s":"5302614"},{"n":6,"r":"234404233444333444434445444455441555","s":"403152"},{"n":7,"r":"0000033000003300000046005555665555562511551111555","s":"5260413"},{"n":8,"r":"1141131611411311144411111011111111111111115111117222211122222111","s":"75316204"},{"n":6,"r":"222222522222222212240000240000200003","s":"204135"},{"n":6,"r":"200033211333113343111333111133151333","s":"304251"},{"n":7,"r":"0555555552555555555555455555555555355566115555111","s":"0241635"},{"n":8,"r":"1141666611116666111666661211660015556000111560031111133311111733","s":"20416375"},{"n":6,"r":"114444212200222200222230222330522330","s":"315240"},{"n":7,"r":"2222222222226620223332221333442133344513333333333","s":"4613025"},{"n":6,"r":"444404445444424444224444233333213333","s":"425031"}],"etages":[{"n":5,"f":2,"r":"11433111331110011100222000002200222100344433444444","s":"2413013024"},{"n":5,"f":2,"r":"00111111113222232222344422233322300333443344133444","s":"1420303142"},{"n":5,"f":2,"r":"44333433332222022220221000324400244022240022400011","s":"0314214203"},{"n":5,"f":2,"r":"42221444214111140333333330001340113422114411141111","s":"2031414203"},{"n":5,"f":2,"r":"42222442004422043111441113333032110324003240033444","s":"2041303142"},{"n":5,"f":2,"r":"32211332113331140000400000033300333022210222222244","s":"2413002413"},{"n":5,"f":2,"r":"22244332443344433314300144144444422443004430044000","s":"4203114203"},{"n":5,"f":2,"r":"00222002222244232222321124111144111033320333303333","s":"1420331420"},{"n":6,"f":2,"r":"111113111133450033550033555523555555222440222444322444335445355555555515","s":"350241513024"},{"n":6,"f":2,"r":"555553555555505555005522114522144522333355333355330555335544231114111111","s":"531420142503"},{"n":6,"f":2,"r":"113003133333344333333333552233552233110333100335333355333333332222222224","s":"402513024135"},{"n":6,"f":2,"r":"111113111113111223512222511444110444555300455500445510555511255511255555","s":"513042351420"},{"n":6,"f":2,"r":"000034100033152333152233112233112333255111223114223104223000222000222000","s":"524130135204"},{"n":6,"f":2,"r":"555552055522551522411112443333433333111000110005222405444455444444344444","s":"205314142530"},{"n":6,"f":2,"r":"555444555412505512553512553112553111555522551222511322511332011422004444","s":"031524152403"},{"n":6,"f":2,"r":"113322413222412222111222555202555222555333512233112234110034111133111333","s":"350241025314"},{"n":5,"f":3,"r":"222222222342022400011111111444114431224302000000004330044300444024442241422","s":"240310241324031"},{"n":5,"f":3,"r":"222112221102224333343334433000433321133211332113222000020000000331144311444","s":"130243024102413"},{"n":5,"f":3,"r":"222002400044000333103330000333003332443322433111110000020044244441133313333","s":"241301302420413"},{"n":5,"f":3,"r":"222441114411144131043311400233002220022100011444110003303333444434221222222","s":"241303024124130"},{"n":5,"f":3,"r":"001113331133331332242222444400444001223311133113334444434444141001112211122","s":"031421420320314"},{"n":6,"f":3,"r":"555355445555555555500555511552511555222000222055220055223445244445214444444244144444444400444440434555435555","s":"304152035241302514"},{"n":6,"f":3,"r":"111255432255430205430005444005444405222544330544333544333551335511335511000222405222445222444222444441443344","s":"253140025314142053"},{"n":6,"f":3,"r":"333000333330333350331110432122422222332211335111555441555444554444550444444444444551225551223555223555223300","s":"514203305142153024"},{"n":6,"f":3,"r":"444433054432004432000033110033111133111000111455211455211155233155333355004444000044200044005541001111031111","s":"315240531402420351"},{"n":6,"f":3,"r":"114444244444224444224443220445222555111111111214555233553233553333550333305444355444355524555521552521522222","s":"130524053142140253"},{"n":6,"f":3,"r":"015533005533002223002222022242022222444441022231055331055511001111001111522333555333455333444444444441444011","s":"135042314205142053"},{"n":7,"f":2,"r":"03333330033332005333200566461066666006666600666661111111161111144453334455533444503344400334444442","s":"46250313152406"},{"n":7,"f":2,"r":"62222226222222611122211112351113334133344400344442222666221166622266665526664552066455206335550633","s":"40263510241635"},{"n":7,"f":2,"r":"33666666666666644666244666624460665144055544405552261000226110022611002200000550330333333333333433","s":"14263052035164"},{"n":7,"f":2,"r":"55556665555566552224650222260000226111111611111133344444334444516644441664444111444411100441110222","s":"41530260624135"},{"n":6,"f":4,"r":"000244022230000330000000500110001110555555555455055551033531033333333323444100444100244300223333555533555533111433111433100433000033000055002555","s":"514203130524352041403152"},{"n":6,"f":4,"r":"444341454441444411244411444441444000351110355510334411332411222441222444005222055223155523555523544433544444233155233111233111333111333100334000","s":"315024524130140253503142"},{"n":6,"f":4,"r":"255555205555200555000443004433001113444443044443444543224533223333223311233115223555225555222555222055244055555552555555515445510343510333000333","s":"041352203514425031503142"}],"knuffels":[{"n":7,"k":2,"r":"1600022160022211152221115222111555211445531144533","s":"14135603042625"},{"n":7,"k":2,"r":"0000000000001122004415204431544466355566665556666","s":"23560135260414"},{"n":7,"k":2,"r":"2264455222644522204442200444220444433441443344144","s":"25360135260414"},{"n":7,"k":2,"r":"2221111222244466224446605444600054400003330003333","s":"34015613042625"},{"n":7,"k":2,"r":"0044445044455500011550201115233311533331163333366","s":"14035613042625"},{"n":7,"k":2,"r":"2222211222221166225116005333440003344000334400003","s":"25260403561314"},{"n":7,"k":2,"r":"6655442066554200666226666622366662236661213333111","s":"25350136260414"},{"n":7,"k":2,"r":"5004444550044455554445522446332144633111443331144","s":"25350136260414"},{"n":7,"k":2,"r":"3333333333334455333665532266552226605511110001111","s":"23560135260414"},{"n":7,"k":2,"r":"6640044664444544445551144445112444422224432222433","s":"34015613042625"},{"n":7,"k":2,"r":"2444111244441122244113300415330061533336663333666","s":"25350136260414"},{"n":7,"k":2,"r":"2664444526464655666665553366550336655003615500311","s":"04135613042625"},{"n":8,"k":2,"r":"6666440066622455666244556662245563344444644444444114474444447774","s":"6703036712451245"},{"n":8,"k":2,"r":"0000025570066255776662557446622577722223777222337771223377712333","s":"1246461257570303"},{"n":8,"k":2,"r":"6666111166611144666177443667774436577744335044443300022230000222","s":"1413575702024636"},{"n":8,"k":2,"r":"6633337766333577662275776222777764477777447717774447117744111100","s":"2305052367141467"},{"n":8,"k":2,"r":"0000111100511131255114432555174425555744555544445555544455666644","s":"1246370505271634"},{"n":8,"k":2,"r":"4177000041170000111100031111100311116663121166532226665322266663","s":"0303575712464612"},{"n":8,"k":2,"r":"3114666231146442344444023444402234447222747772227777755277777752","s":"1424060527173536"},{"n":8,"k":2,"r":"6644444466344400666330006666600066615525771155257755555577755555","s":"4527370136260415"},{"n":8,"k":2,"r":"1117773311177722111777221144772214466722544462225555262250002222","s":"6714153726040523"},{"n":8,"k":2,"r":"1111466011646660666666006666666673666656736662257333322273332222","s":"1413673406072525"},{"n":8,"k":2,"r":"6666222466662244666661446660011477700011770003335000000050000000","s":"4747125612560303"},{"n":8,"k":2,"r":"2222221122222311666633716666337765444777005444770004444700444444","s":"2617353517260404"},{"n":9,"k":2,"r":"355577777335577777335555777333544477663555777663555172688805172688800000888880000","s":"373701450168682425"},{"n":9,"k":2,"r":"444440000444428000444228000441122230221122533222222533222226556722266666722266666","s":"782515373816260404"},{"n":9,"k":2,"r":"222233335722225555725555555761155555761111555766660888666666088646666686446666666","s":"562307072358681414"},{"n":9,"k":2,"r":"444474444334474448334444488355444888355400888335000888555000666522100666522110666","s":"464608072525781313"},{"n":9,"k":2,"r":"116466666116646666666666626666868226666888886666880005333880555333377555337777555","s":"030427163467125858"},{"n":9,"k":2,"r":"777776333777777633777787333777882333400002233400002233500222211555222222555222222","s":"352648470203781516"}],"vormen":[{"name":"Yuzu","n":8,"r":"xxxxx30xxx3433xxx533333x153333361133666622236666x226666xxx7776xx","s":"63150724"},{"name":"Koffie","n":8,"r":"x1117756x11xx556x12xx556x11666661111666610036644x033666xxx3333xx","s":"46250713"},{"name":"Wolk","n":8,"r":"xxx77xxxxx5744xxx550044x155064441156664411666662x336666xxx3xx6xx","s":"42630715"},{"name":"Hart","n":8,"r":"x66xx55x16664455111444251114442511174444x144444xxx3344xxxxx00xxx","s":"17063524"},{"name":"Blad","n":8,"r":"xxxx4444xxx51444xx051447x0056644555566445556624x555666xx33666xxx","s":"64720531"},{"name":"Kroon","n":8,"r":"7xx43xx676x43x6666663662666666626662222266622221x562222xx562200x","s":"30425716"},{"name":"Vis","n":8,"r":"xx7777xxx177777x113377771122226644222255x222255xxx2225xxx00xx55x","s":"51370642"},{"name":"Paddo","n":8,"r":"xx3377xxx117776x017777660477777644477722xx4777xxxx4777xxxx4557xx","s":"31607524"},{"name":"Ster","n":8,"r":"xxx77xxxxx6755xx44666222x466622xxx6666xxx366111xx33xx11x33xxxx00","s":"35062417"},{"name":"Huis","n":8,"r":"xxx00xxxxx5507xxx555677x155566331111113311111123x11xx22xx41xx22x","s":"35247061"},{"name":"Vlinder","n":8,"r":"77xxxx33777xx34377333333x553333xx533113x00001666000xx66200xxxx22","s":"06314257"},{"name":"Capy","n":8,"r":"xxx00444xx000014x30000153331111536611175x6611177x66xxx77x62xxx77","s":"53704162"},{"name":"Bloem","n":8,"r":"xx2xx0xxx320001xx320411x5322411155574466x557446xx557444xxx5xx4xx","s":"24170635"}],"spurt":{"5":[{"n":5,"r":"4411144111331203333033300","s":"20314"},{"n":5,"r":"4444414420112221113313333","s":"14203"},{"n":5,"r":"1004411444444434244444444","s":"20413"},{"n":5,"r":"4442244122443330033300033","s":"42031"},{"n":5,"r":"3331133233333333004400000","s":"42031"},{"n":5,"r":"3224432241302413334433344","s":"24130"},{"n":5,"r":"2221342111421114001140011","s":"41302"},{"n":5,"r":"0000444444112241122232222","s":"24130"},{"n":5,"r":"0111400324033443334444444","s":"13024"},{"n":5,"r":"4444444402142221122213322","s":"13042"},{"n":5,"r":"3331133321400110001101111","s":"13024"},{"n":5,"r":"0033311344113421144444444","s":"02413"},{"n":5,"r":"4444344100441004400022220","s":"42031"},{"n":5,"r":"1111111122141101111011310","s":"03142"},{"n":5,"r":"0012200222032223334234442","s":"20413"},{"n":5,"r":"0411204422443224442244444","s":"30241"},{"n":5,"r":"0000100131141111111211111","s":"03142"},{"n":5,"r":"4022244322443224422244412","s":"14203"},{"n":5,"r":"0002200000400001103011110","s":"42031"},{"n":5,"r":"2222222221002222224232222","s":"24130"},{"n":5,"r":"2233022330223301233322343","s":"14203"},{"n":5,"r":"1224210222112221132211122","s":"31420"},{"n":5,"r":"4222144441044440443400004","s":"24130"},{"n":5,"r":"4421144411444114400134401","s":"24130"},{"n":5,"r":"3324431444314443340433444","s":"24130"},{"n":5,"r":"3331133311033113321133114","s":"13024"},{"n":5,"r":"0442244222444444444344144","s":"03142"},{"n":5,"r":"0000000144200442204422034","s":"02413"},{"n":5,"r":"0000200000410001103011111","s":"42031"},{"n":5,"r":"0000000001030012334123311","s":"24130"}],"6":[{"n":6,"r":"111331411111111111005111000112000000","s":"304251"},{"n":6,"r":"002111001111001151401151401331401331","s":"251403"},{"n":6,"r":"555501555300555500244400224400444440","s":"531402"},{"n":6,"r":"322222322222312222222422255420555555","s":"041352"},{"n":6,"r":"333344333344333140333550322555555555","s":"413520"},{"n":6,"r":"434555444555444555441555000002000000","s":"140253"},{"n":6,"r":"300055331115335555333255345555333555","s":"240315"},{"n":6,"r":"333322222122242220222220225222222222","s":"031524"},{"n":6,"r":"434444444441444444444404544444444224","s":"152403"},{"n":6,"r":"001112015111011144011111001311001111","s":"524130"},{"n":6,"r":"111112522222222222232222000042000002","s":"305142"},{"n":6,"r":"444443333443333033533333333331322211","s":"413052"},{"n":6,"r":"333500333200222204212244222224222222","s":"304152"},{"n":6,"r":"110000110002115100111100111143333333","s":"352041"},{"n":6,"r":"333433333333333310332300332300533300","s":"314250"},{"n":6,"r":"000001000111440001335533333333333233","s":"140253"},{"n":6,"r":"233333333303333300333501443301333311","s":"025314"},{"n":6,"r":"411105441155442255442225442222322222","s":"425130"},{"n":6,"r":"115504100004100044000044000003020000","s":"304251"},{"n":6,"r":"333333333355311333330033222033222334","s":"241305"},{"n":6,"r":"111111111444011133015532055533555533","s":"130524"},{"n":6,"r":"440023440003144003145500445544444444","s":"425031"},{"n":6,"r":"322444322400332444444444444441454444","s":"240351"},{"n":6,"r":"000004002200100030100000000500000000","s":"524031"},{"n":6,"r":"444555444455444435221444222222222002","s":"514203"},{"n":6,"r":"333544333542333344333344133334330333","s":"351402"},{"n":6,"r":"000023000003000033440033500133500113","s":"425130"},{"n":6,"r":"331003311333333334323333353333553333","s":"425130"},{"n":6,"r":"554440554440551111555111555355255555","s":"524130"},{"n":6,"r":"525500555000555440555000555011553001","s":"153042"}],"7":[{"n":7,"r":"4444666444246644444434444443445543314500334444033","s":"5316204"},{"n":7,"r":"6666666666333565444250545525555552555555555555551","s":"1420536"},{"n":7,"r":"2223355223335522222164222116222266622666662066666","s":"6350241"},{"n":7,"r":"2222232222222216662221666624566666655660666666006","s":"5206314"},{"n":7,"r":"1121110111111011111141111144111664431154441115555","s":"2615304"},{"n":7,"r":"5560000550000055000000300000000000122222012222244","s":"2041635"},{"n":7,"r":"0222122022222200002240000000003300000330600005000","s":"4160253"},{"n":7,"r":"1111111553114452511445255444555004455550445555564","s":"4261305"},{"n":7,"r":"6660000166600066630006666000666620465555545555555","s":"5031462"},{"n":7,"r":"0000000000100000000050260445336444533655556666555","s":"5361402"},{"n":7,"r":"0200033000003300006330040333000005310000530000033","s":"1642503"},{"n":7,"r":"1115544111144411444426144444114444410444441133444","s":"4260513"},{"n":7,"r":"1211111111114431111001111100111110011116601156660","s":"1503642"},{"n":7,"r":"3331665333116344313634433333333333303333333323333","s":"6351402"},{"n":7,"r":"3333116343336633533663355336233333333333333333033","s":"5163024"},{"n":7,"r":"2035533203133320313332333363233333333433333333333","s":"4135026"},{"n":7,"r":"5555666001566610113331112333113333311333341133333","s":"2513064"},{"n":7,"r":"5554111555111155511110551111555511655221165522316","s":"3150624"},{"n":7,"r":"1133333511143351100005000020506000050000005500000","s":"6415203"},{"n":7,"r":"2222222222222610022261001244111114411131115111111","s":"4625130"}]},"groei":[[{"n":4,"r":"0012111211321333","s":"1302","gv":""},{"n":5,"r":"1001211112111324133344333","s":"24130","gv":"12","ir":4,"ic":0},{"n":6,"r":"000111010012511112511132441333444333","s":"253041","gv":"45","ir":0,"ic":0},{"n":7,"r":"0000111601001265111125511132544133354443335555533","s":"1603524","gv":"45","ir":6,"ic":0},{"n":8,"r":"5555555150000111560100125651111255511132554413337544433375555533","s":"52714630","gv":"236","ir":0,"ic":0},{"n":9,"r":"755555551750000111756010012756511112755511132755441333775444333775555533788555553","s":"038257461","gv":"135","ir":8,"ic":0}],[{"n":4,"r":"0213022302232222","s":"2031","gv":""},{"n":5,"r":"0244402133022330223322222","s":"42031","gv":"3","ir":0,"ic":4},{"n":6,"r":"002444002133002233002233222222552222","s":"531420","gv":"01","ir":5,"ic":0},{"n":7,"r":"0026666002444400213330022333002233322222225522222","s":"4631520","gv":"236","ir":0,"ic":6},{"n":8,"r":"0066667700266666002444460021333300223333002233332222222255222222","s":"74631520","gv":"46","ir":0,"ic":7},{"n":9,"r":"006666888006666777002666667002444466002133333002233333002233333222222222552222222","s":"748631520","gv":"5678","ir":0,"ic":8}],[{"n":4,"r":"2233222222212022","s":"2031","gv":""},{"n":5,"r":"2224422333222212221120222","s":"42031","gv":"4","ir":0,"ic":4},{"n":6,"r":"225554222444223333222211222111202222","s":"352041","gv":"235","ir":0,"ic":5},{"n":7,"r":"2255111225554122244412233331222211122211162022226","s":"4253061","gv":"46","ir":0,"ic":6},{"n":8,"r":"5555511122255111722555417222444122233331222221112222111622022226","s":"35064172","gv":"137","ir":0,"ic":0},{"n":9,"r":"222255111255555111222255111272255541872224441822233331822222111822221116822022226","s":"246175083","gv":"23478","ir":0,"ic":0}],[{"n":4,"r":"1122112211330003","s":"2031","gv":""},{"n":5,"r":"1122211222113340003400034","s":"20314","gv":"12","ir":4,"ic":4},{"n":6,"r":"112222112222113345000345000345003345","s":"203514","gv":"012","ir":5,"ic":5},{"n":7,"r":"6112222611222211133450000345000034500033450033444","s":"0416253","gv":"34","ir":6,"ic":0},{"n":8,"r":"6112222261122222111334550000345500003455000334540033444400033447","s":"04162537","gv":"346","ir":7,"ic":7},{"n":9,"r":"666112222861122222861122222811133455000003455000003455000033454000334444000033447","s":"150273648","gv":"345","ir":0,"ic":0}],[{"n":4,"r":"2220222012201330","s":"1302","gv":""},{"n":5,"r":"2220022200122001330013344","s":"13024","gv":"12","ir":4,"ic":4},{"n":6,"r":"222000222000122005133005133445133344","s":"130524","gv":"02","ir":5,"ic":5},{"n":7,"r":"2200000222000622200061220056133005613344541333444","s":"3160524","gv":"16","ir":0,"ic":6},{"n":8,"r":"2220000022220006222200061122005611330056113344543133344433377444","s":"52716403","gv":"12","ir":7,"ic":0},{"n":9,"r":"222888800222000000222200066222200066112200566113300566113344544313334444333774444","s":"582716403","gv":"23478","ir":0,"ic":8}],[{"n":4,"r":"3300100010001022","s":"1302","gv":""},{"n":5,"r":"4440043300110001100011022","s":"02413","gv":"34","ir":0,"ic":0},{"n":6,"r":"555500444400443300111000111000111022","s":"203514","gv":"235","ir":0,"ic":0},{"n":7,"r":"5555000444400044330001110000111000211102221110662","s":"2035164","gv":"12","ir":6,"ic":6},{"n":8,"r":"7755500075555000444440004443300041110000111100021111022211110662","s":"03146275","gv":"237","ir":0,"ic":0},{"n":9,"r":"778855000777555000775555000444444000444433000141110000111110002111110222111110662","s":"314257086","gv":"123","ir":0,"ic":0}],[{"n":4,"r":"1100110033323333","s":"2031","gv":""},{"n":5,"r":"1110011100333323333333433","s":"31402","gv":"01","ir":4,"ic":0},{"n":6,"r":"111100111100333332333333533433533433","s":"425130","gv":"01","ir":5,"ic":0},{"n":7,"r":"1111100111110033333323333333353343365334336555555","s":"5162403","gv":"03","ir":6,"ic":0},{"n":8,"r":"1111770011111000111110003333332233333333353343336533433365555555","s":"57162403","gv":"34","ir":0,"ic":7},{"n":9,"r":"111177000111177008111110008111110008333333228333333333353343333653343335655555555","s":"758162403","gv":"134","ir":0,"ic":8}],[{"n":4,"r":"0000100000223332","s":"2031","gv":""},{"n":5,"r":"0000011000000224333244332","s":"31420","gv":"23","ir":4,"ic":0},{"n":6,"r":"000000011000000022443332544332554332","s":"415302","gv":"23","ir":5,"ic":0},{"n":7,"r":"0000666000000000110000000022444333255443325554332","s":"5026413","gv":"24","ir":0,"ic":0},{"n":8,"r":"0000677700006667000000000011000000000220444333225544332255543322","s":"75026413","gv":"237","ir":0,"ic":7},{"n":9,"r":"666666887600006777600006667600000000600110000600000220444433322555443322555543322","s":"682037514","gv":"148","ir":0,"ic":0}],[{"n":4,"r":"2211222033003333","s":"2031","gv":""},{"n":5,"r":"2221132220333004333343333","s":"31420","gv":"13","ir":4,"ic":0},{"n":6,"r":"255551222111322200333000433330433330","s":"351420","gv":"45","ir":0,"ic":5},{"n":7,"r":"2255555625555162221116322200633300044333304433330","s":"4062531","gv":"236","ir":0,"ic":0},{"n":8,"r":"2225555526255551262221112632220026333000444333304443333044437770","s":"31706425","gv":"124","ir":7,"ic":0},{"n":9,"r":"255555588222555558262555511262221111263222000263330000444333300444333300444377700","s":"831706425","gv":"1345","ir":0,"ic":8}],[{"n":4,"r":"1112311230000000","s":"1302","gv":""},{"n":5,"r":"1114411124311243000000000","s":"41302","gv":"24","ir":0,"ic":4},{"n":6,"r":"331444311144311124331124530000500000","s":"152403","gv":"23","ir":0,"ic":0},{"n":7,"r":"3300000331444031114403111240331124053000005000006","s":"3152406","gv":"15","ir":0,"ic":6},{"n":8,"r":"3300000033144400311144003111240033112400530000065000006600000777","s":"31524706","gv":"234","ir":7,"ic":7},{"n":9,"r":"330000000331444000311144000311124000331124000530000066500000666000007777000007788","s":"315247068","gv":"134","ir":8,"ic":8}],[{"n":4,"r":"1001111122212233","s":"1302","gv":""},{"n":5,"r":"1001111111222112233324433","s":"13042","gv":"01","ir":4,"ic":4},{"n":6,"r":"100111111111222111223333244333244553","s":"130524","gv":"02","ir":5,"ic":5},{"n":7,"r":"1001111111111122211162233336244333324455332245555","s":"1364205","gv":"014","ir":6,"ic":6},{"n":8,"r":"1001111111111116222111662233336624433333244553332245555322277755","s":"13752064","gv":"015","ir":7,"ic":7},{"n":9,"r":"110011881110011111111111116222211166222333366224433333224455333222455553222277755","s":"620841375","gv":"1378","ir":0,"ic":0}],[{"n":4,"r":"0001111111131223","s":"2031","gv":""},{"n":5,"r":"0000141111411131122311133","s":"13024","gv":"3","ir":4,"ic":0},{"n":6,"r":"000011411111411133112235111335111355","s":"140253","gv":"23","ir":5,"ic":5},{"n":7,"r":"6660011600001144111114411133111223511113351111355","s":"0251364","gv":"13","ir":0,"ic":0},{"n":8,"r":"6666007766660011660000111441111114411133111122351111133511111355","s":"61302475","gv":"145","ir":0,"ic":0},{"n":9,"r":"668880000666600770666600110660000110144111110144111330111122355111113355111113555","s":"361802475","gv":"145","ir":0,"ic":8}],[{"n":4,"r":"3333220020001100","s":"2031","gv":""},{"n":5,"r":"3444333333220032000011000","s":"24031","gv":"2","ir":0,"ic":4},{"n":6,"r":"334443333333522003520000511000555000","s":"351420","gv":"24","ir":5,"ic":0},{"n":7,"r":"3334443333333355220035520000651100065550006655555","s":"4135206","gv":"03","ir":6,"ic":0},{"n":8,"r":"4444477743334443333333335552200355520000565110006655500066655555","s":"50246317","gv":"267","ir":0,"ic":0},{"n":9,"r":"888444477444444777343334443333333333555522003555520000556511000566555000666655555","s":"061357428","gv":"4568","ir":0,"ic":0}],[{"n":4,"r":"0032333213333333","s":"1302","gv":""},{"n":5,"r":"4442240032433321133313333","s":"02413","gv":"13","ir":0,"ic":0},{"n":6,"r":"445552444422440032443332111333113333","s":"203514","gv":"25","ir":0,"ic":0},{"n":7,"r":"6665555644555264444224440032444333241113331113333","s":"0314625","gv":"234","ir":0,"ic":0},{"n":8,"r":"6665555564455522644442224440032244433322411133331113333311113377","s":"03146257","gv":"1235","ir":7,"ic":7},{"n":9,"r":"666655555464455522464444222444400322444433322441113333111133333111113377881113777","s":"142573680","gv":"01367","ir":8,"ic":0}],[{"n":4,"r":"1111301200020022","s":"2031","gv":""},{"n":5,"r":"1111133012000020002244022","s":"31420","gv":"03","ir":4,"ic":0},{"n":6,"r":"111111533012500002500022544022544022","s":"425031","gv":"012","ir":5,"ic":0},{"n":7,"r":"6111111111111155330125500002550002255440225544022","s":"0536142","gv":"23","ir":0,"ic":0},{"n":8,"r":"6611111176111111711111117553301275500002555000225554402255544022","s":"16047253","gv":"567","ir":0,"ic":0},{"n":9,"r":"561111888566111111576111111571111111575533012575500002555500022555544022555544022","s":"720351864","gv":"147","ir":0,"ic":0}],[{"n":4,"r":"0000000310001022","s":"1302","gv":""},{"n":5,"r":"0000000003010004102240002","s":"24130","gv":"02","ir":4,"ic":0},{"n":6,"r":"000000000003001000541022540002544400","s":"152403","gv":"12","ir":5,"ic":0},{"n":7,"r":"0000000000003300100025410222540002254440026666002","s":"4625031","gv":"245","ir":6,"ic":6},{"n":8,"r":"0000000000000033000100025541022255400022554440026666600266777000","s":"57361402","gv":"013","ir":7,"ic":0},{"n":9,"r":"000000000000000033000010002055410222855400022555444002566666002566777000555577000","s":"684703152","gv":"126","ir":8,"ic":0}],[{"n":4,"r":"2333201120110011","s":"2031","gv":""},{"n":5,"r":"2333320111201140011401144","s":"20314","gv":"23","ir":4,"ic":4},{"n":6,"r":"233331201111201141001141011441001555","s":"204153","gv":"013","ir":5,"ic":5},{"n":7,"r":"6666333233331320111112011411001141101144110015555","s":"2604153","gv":"234","ir":0,"ic":6},{"n":8,"r":"6666311166663331233331312011111120114111001141170114411700155557","s":"52604173","gv":"2345","ir":0,"ic":7},{"n":9,"r":"226661111266663111266663331223333131820111111820114111000114117001144117000155557","s":"163705284","gv":"5678","ir":0,"ic":0}],[{"n":4,"r":"1122011301131111","s":"2031","gv":""},{"n":5,"r":"1122201134011341111414444","s":"20314","gv":"02","ir":4,"ic":4},{"n":6,"r":"112222011344011344111145144445444445","s":"403152","gv":"13","ir":5,"ic":5},{"n":7,"r":"1126622112222201134420113444111145514444554444455","s":"4603152","gv":"56","ir":0,"ic":6},{"n":8,"r":"1126622211266227112222270113442201134444111145551444455544444555","s":"64703152","gv":"3467","ir":0,"ic":7},{"n":9,"r":"111266222111266227111222227801134422001134444011114555014444555044444555000444445","s":"758042631","gv":"4567","ir":8,"ic":0}],[{"n":4,"r":"1333133213331303","s":"1302","gv":""},{"n":5,"r":"1333313322133321303200034","s":"13024","gv":"12","ir":4,"ic":4},{"n":6,"r":"222222133332133222133325130325000344","s":"130524","gv":"45","ir":0,"ic":5},{"n":7,"r":"6662222622222211333321133222113332511303251000344","s":"0241635","gv":"23","ir":0,"ic":0},{"n":8,"r":"6666222266222222111333321113322211133325111303251100034471100044","s":"13527460","gv":"2456","ir":7,"ic":0},{"n":9,"r":"688666222666662222666222222111133332111133222111133325111130325111000344771100044","s":"204638571","gv":"2367","ir":0,"ic":0}],[{"n":4,"r":"1000111012131233","s":"2031","gv":""},{"n":5,"r":"4444441000111101121311233","s":"03142","gv":"24","ir":0,"ic":0},{"n":6,"r":"555544544444541000511110111213111233","s":"024153","gv":"24","ir":0,"ic":0},{"n":7,"r":"5555444544444454100005111106111213611123361122333","s":"0241635","gv":"123","ir":6,"ic":6},{"n":8,"r":"1777544415555444154444441541000015111106111121361111233611122333","s":"20351746","gv":"236","ir":0,"ic":0},{"n":9,"r":"777885444717775444715555444115444444115410000115111106111112136111112336111122333","s":"302461857","gv":"468","ir":0,"ic":0}]]};
+const LEVELS=DATA.levels,DAILY=DATA.daily,ETAGES=DATA.etages,KNUFFELS=DATA.knuffels,VORMEN=DATA.vormen,SPURT=DATA.spurt,GROEI=DATA.groei;let GC=null;
+const ZONES={4:["Terras","Begin rustig met vier capy’s."],5:["Theetuin","Vijf capy’s, net zoveel kleuren."],6:["Koffiehoek","Nu telt elke zet."],7:["Badhuis","Kijk eerst naar de kleinste kleuren."],8:["Dakterras","Hier helpen kruisjes je vooruit."],9:["Bergbron","De laatste klim."]};
+const CAPYS=[
+ {name:"Yuzu",at:0,fur:"#A9683A",dark:"#7B4725",snout:"#C98E5E",acc:"yuzu",q:"Ik zit. Dat is mijn hele plan."},
+ {name:"Mochi",at:2,fur:"#BE8650",dark:"#8E5B30",snout:"#E0B282",acc:"towel",q:"Het water is warm. Meer hoef ik niet te weten."},
+ {name:"Boba",at:5,fur:"#8B5530",dark:"#633819",snout:"#B27C50",acc:"shades",q:"Niet storen, ik doe niets."},
+ {name:"Latte",at:9,fur:"#D2A777",dark:"#A67A4C",snout:"#EFD0A8",acc:"beret",q:"Eén shot espresso, drie uur zitten."},
+ {name:"Noa",at:14,fur:"#A9683A",dark:"#7B4725",snout:"#D2A070",acc:"flower",q:"Deze bloem is van mij. Denk ik."},
+ {name:"Pip",at:22,fur:"#C69162",dark:"#986539",snout:"#E9C69C",acc:"bow",q:"Ik ken iedereen hier. Iedereen zit."},
+ {name:"Kiki",at:32,fur:"#935E3B",dark:"#693E22",snout:"#BC8A61",acc:"party",q:"Feestje? Goed, maar wel zittend."},
+ {name:"Baron",at:45,fur:"#70462C",dark:"#4B2C19",snout:"#A17452",acc:"tophat",q:"Goedenavond. Mijn stoel staat in het bad."}
+];
+const ACC={
+ yuzu:`<circle cx="50" cy="8" r="13" fill="#FFA41B"/><circle cx="46" cy="4" r="3" fill="#FFD27A"/><path d="M50-5c2-6 8-7 12-5-1 5-7 8-12 5z" fill="#3E9B4F"/>`,
+ towel:`<path d="M26 16c10-11 38-11 48 0l-4 12c-13-6-27-6-40 0z" fill="#FDFBF4"/><path d="M28 21c13-7 31-7 44 0" stroke="#5CB8C4" stroke-width="3" fill="none"/>`,
+ shades:`<rect x="16" y="30" width="29" height="17" rx="7" fill="#17231E"/><rect x="55" y="30" width="29" height="17" rx="7" fill="#17231E"/><path d="M45 36h10" stroke="#17231E" stroke-width="3"/><path d="M22 35l8 0" stroke="#fff" stroke-width="2.5" stroke-linecap="round"/>`,
+ beret:`<path d="M20 22c6-18 56-20 62-2 1 5-12 9-30 9s-34-2-32-7z" fill="#D8375C"/><circle cx="51" cy="4" r="3.5" fill="#D8375C"/>`,
+ flower:`<g transform="translate(76 22)"><circle cx="0" cy="-8" r="6.5" fill="#FF8FB5"/><circle cx="8" cy="-2" r="6.5" fill="#FF8FB5"/><circle cx="5" cy="7" r="6.5" fill="#FF8FB5"/><circle cx="-5" cy="7" r="6.5" fill="#FF8FB5"/><circle cx="-8" cy="-2" r="6.5" fill="#FF8FB5"/><circle r="5" fill="#FFD84D"/></g>`,
+ bow:`<path d="M50 17L33 7c-3 7-3 13 0 20zM50 17l17-10c3 7 3 13 0 20z" fill="#3D86E0"/><circle cx="50" cy="17" r="5" fill="#2C63AD"/>`,
+ party:`<path d="M50-12L33 21c11 5 23 5 34 0z" fill="#8D5CE0"/><path d="M41 4l18 2M37 13l27 2" stroke="#FFD84D" stroke-width="3"/><circle cx="50" cy="-11" r="4.5" fill="#FF8FB5"/>`,
+ tophat:`<rect x="31" y="-12" width="38" height="31" rx="3" fill="#20262B"/><rect x="31" y="9" width="38" height="6" fill="#D8375C"/><rect x="21" y="16" width="58" height="7" rx="3.5" fill="#20262B"/>`
+};
+function head(c){return `<ellipse cx="25" cy="17" rx="7.5" ry="8.5" fill="${c.dark}"/><ellipse cx="75" cy="17" rx="7.5" ry="8.5" fill="${c.dark}"/><path d="M31 14c10-5 28-5 38 0 10 6 15 20 15 36v20c0 15-14 23-34 23S16 85 16 70V50c0-16 5-30 15-36z" fill="${c.fur}"/><path d="M24 66c0-9 11-13 26-13s26 4 26 13v6c0 12-11 19-26 19S24 84 24 72z" fill="${c.snout}"/><rect x="31" y="56" width="38" height="14" rx="7" fill="${c.dark}"/><path d="M41 61l-3 4M59 61l3 4" stroke="#22150D" stroke-width="3.500" stroke-linecap="round"/><path d="M50 70v8M39 80q5 4 11-2 6 6 11 2" fill="none" stroke="#3B2518" stroke-width="2.800" stroke-linecap="round" stroke-linejoin="round"/><g class="eye-o"><circle cx="29" cy="39" r="5" fill="#22150D"/><circle cx="71" cy="39" r="5" fill="#22150D"/><path d="M22 36h14M64 36h14" stroke="${c.fur}" stroke-width="5"/><path d="M23 38h12M65 38h12" stroke="#22150D" stroke-width="2.200" stroke-linecap="round"/></g><g class="eye-h" fill="none" stroke="#22150D" stroke-width="3.600" stroke-linecap="round"><path d="M23 41q6-7 12 0M65 41q6-7 12 0"/></g>${ACC[c.acc]}`}
+function side(c){const hat=c.acc==="shades"?`<rect x="99" y="31" width="20" height="13" rx="5" fill="#17231E"/><path d="M99 36L84 33" stroke="#17231E" stroke-width="3"/>`:`<g transform="translate(70 12) scale(.58)">${ACC[c.acc]}</g>`;
+ return `<rect x="24" y="78" width="15" height="20" rx="7" fill="${c.dark}"/><rect x="80" y="78" width="15" height="20" rx="7" fill="${c.dark}"/><path d="M6 60C6 36 30 26 58 26c14 0 24 2 32 8l6 40c-8 12-22 18-40 18C26 92 6 82 6 60z" fill="${c.fur}"/><rect x="50" y="80" width="15" height="17" rx="7" fill="${c.dark}"/><rect x="12" y="80" width="15" height="17" rx="7" fill="${c.dark}"/><ellipse cx="91" cy="23" rx="6.500" ry="7.500" fill="${c.dark}"/><path d="M82 32c8-13 26-14 36-4l15 15c7 7 6 21-3 25l-23 6C94 77 82 70 80 56c-1-9-1-17 2-24z" fill="${c.fur}"/><path d="M108 58l25-14c6 7 5 20-3 24l-20 5c-6-3-7-11-2-15z" fill="${c.snout}"/><ellipse cx="131" cy="50" rx="2.400" ry="3.200" fill="#22150D"/><path d="M133 62q-8 3-15 1" fill="none" stroke="#3B2518" stroke-width="2.200" stroke-linecap="round"/><path class="eye-c" d="M103 39q6 4 12 0" fill="none" stroke="#22150D" stroke-width="2.600" stroke-linecap="round"/><g class="eye-o"><circle cx="109" cy="38" r="3.800" fill="#22150D"/><path d="M103 35.500h12" stroke="${c.fur}" stroke-width="4"/><path d="M104 37h10" stroke="#22150D" stroke-width="1.800" stroke-linecap="round"/></g>${hat}`}
+const capyHead=c=>`<svg class="c" viewBox="0 -13 100 106" aria-hidden="true">${head(c)}</svg>`;
+const capyFull=c=>`<svg viewBox="0 -2 140 102" aria-hidden="true">${side(c)}</svg>`;
+const YUZU=`<svg viewBox="0 0 24 24" aria-hidden="true"><circle cx="12" cy="14" r="9" fill="#FFA41B"/><circle cx="9" cy="11" r="2" fill="#FFD27A"/><path d="M12 5c1-3 5-4 7-3-1 3-4 5-7 3z" fill="#3E9B4F"/></svg>`;
+const ICON={
+ cafe:`<path d="M4 8h13v6a6 6 0 01-6 6H10a6 6 0 01-6-6zM17 9h2a2.5 2.5 0 010 5h-2M8 2v3M12 2v3" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"/>`,
+ levels:`<path d="M4 5h6v6H4zM14 5h6v6h-6zM4 15h6v5H4zM14 15h6v5h-6z" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linejoin="round"/>`,
+ shop:`<path d="M5 9h14l-1 11H6zM9 9V6a3 3 0 016 0v3" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"/>`,
+ capy:`<path d="M6 8a3 3 0 115 -2h2a3 3 0 115 2c2 4 1 12-6 12S4 12 6 8z" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linejoin="round"/><circle cx="9.500" cy="12" r="1.200" fill="currentColor"/><circle cx="14.500" cy="12" r="1.200" fill="currentColor"/>`,
+ gear:`<path d="M4 7h10M18 7h2M4 17h2M10 17h10" stroke="currentColor" stroke-width="2.2" stroke-linecap="round"/><circle cx="16" cy="7" r="2.200" fill="none" stroke="currentColor" stroke-width="2.2"/><circle cx="8" cy="17" r="2.200" fill="none" stroke="currentColor" stroke-width="2.2"/>`,
+ back:`<path d="M15 5l-7 7 7 7" fill="none" stroke="currentColor" stroke-width="2.6" stroke-linecap="round" stroke-linejoin="round"/>`,
+ undo:`<path d="M9 7L4 12l5 5M5 12h10a5 5 0 010 10" transform="translate(0 -4)" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"/>`,
+ clear:`<path d="M5 7h14M10 7V4h4v3M7 7l1 13h8l1-13" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"/>`,
+ hint:`<path d="M12 3a6 6 0 00-3.500 10.900V16h7v-2.100A6 6 0 0012 3zM10 20h4" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"/>`,
+ star:`<path d="M12 2l3 6.500 7 .9-5.100 4.900 1.300 7L12 18l-6.200 3.300 1.300-7L2 9.400l7-.9z" fill="currentColor"/>`
+};
+const ic=(k)=>`<svg viewBox="0 0 24 24" aria-hidden="true">${ICON[k]}</svg>`;
+const KEY="capi-cafe-v1";
+const fresh=()=>({yuzu:20,done:{},decor:[],hints:3,auto:false,sound:true,haptics:true,streak:0,lastDaily:-9,dailyDone:{},best:{},zones:{},cur:null,tipAt:Date.now(),tut:false,m2:true,edone:{},kdone:{},vdone:{},sbest:0,sboards:0,gdone:{},inv:{gras:4,wortel:2},seeds:{gras:2},pets:{},rooms:{cafe:true,tuin:false,bad:false},plotN:3,plots:[],gifts:[],giftAt:Date.now(),treasures:{},goals:null,vbase:Date.now(),rbase:Date.now(),fast:false,seen:Date.now(),view:"cafe",newRoom:null});
+let S=fresh();
+try{const s=localStorage.getItem(KEY);if(s){const o=JSON.parse(s);if(o.decor&&o.decor.includes("bath")){o.rooms=Object.assign({cafe:true,tuin:false,bad:false},o.rooms||{});o.rooms.bad=true;o.decor=o.decor.filter(x=>x!=="bath")}localStorage.setItem(KEY,JSON.stringify(o))}if(s){const o=JSON.parse(s);if(!o.m2){o.auto=false;o.m2=true}S=Object.assign(S,o)}}catch(e){}
+function save(){try{localStorage.setItem(KEY,JSON.stringify(S))}catch(e){}}
+
+const $=(s,r=document)=>r.querySelector(s);
+const view=$("#view"),nav=$("#nav"),dlg=$("#dlg");
+let tab="cafe",G=null,timerId=0,justBought=null,quote=null;
+const doneCount=()=>Object.keys(S.done).length+Object.keys(S.edone).length+Object.keys(S.kdone).length+Object.keys(S.vdone).length;
+const nextGroei=()=>{for(let i=0;i<GROEI.length;i++)if(!(i in S.gdone))return i;return -1};
+const nextVorm=()=>{for(let i=0;i<VORMEN.length;i++)if(!(i in S.vdone))return i;return -1};
+let SP=null;
+const nextKnuffel=()=>{for(let i=0;i<KNUFFELS.length;i++)if(!(i in S.kdone))return i;return -1};
+const nextEtage=()=>{for(let i=0;i<ETAGES.length;i++)if(!(i in S.edone))return i;return -1};
+let ltab="bad";
+const nextLevel=()=>{for(let i=0;i<LEVELS.length;i++)if(!(i in S.done))return i;return -1};
+const owned=()=>CAPYS.filter(c=>doneCount()>=c.at);
+const nextCapy=()=>CAPYS.find(c=>doneCount()<c.at);
+const dayNo=()=>{const d=new Date();return Math.floor(Date.UTC(d.getFullYear(),d.getMonth(),d.getDate())/864e5)};
+const curStreak=()=>S.lastDaily>=dayNo()-1?S.streak:0;
+const fmt=s=>Math.floor(s/60)+":"+String(s%60).padStart(2,"0");
+
+let ac=null;
+function tone(f,d=.1,t="sine",v=.12,at=0){if(!S.sound)return;try{ac=ac||new (window.AudioContext||window.webkitAudioContext)();const o=ac.createOscillator(),g=ac.createGain(),n=ac.currentTime+at;o.type=t;o.frequency.setValueAtTime(f,n);g.gain.setValueAtTime(v,n);g.gain.exponentialRampToValueAtTime(.001,n+d);o.connect(g).connect(ac.destination);o.start(n);o.stop(n+d)}catch(e){}}
+const SCALE=[523,587,659,784,880,1047,1175,1319,1568,1760];
+function hap(p){if(S.haptics&&navigator.vibrate){try{navigator.vibrate(p)}catch(e){}}}
+const sfx={pet(){tone(660,.08,"sine",.07);tone(880,.12,"sine",.06,.07)},munch(){[0,.2,.4,.6,.8].forEach(t=>tone(190+Math.random()*80,.05,"square",.03,t))},gift(){[784,988,1319].forEach((f,i)=>tone(f,.15,"triangle",.07,i*.07))},harvest(){tone(523,.1,"triangle",.08);tone(784,.16,"triangle",.08,.08)},level(){[523,659,784,1047,1319,1568].forEach((f,i)=>tone(f,.22,"triangle",.08,i*.09))},plop(){tone(300,.08);tone(480,.08,"sine",.08,.05)},tick(){tone(1100,.035,"triangle",.045)},erase(){tone(640,.04,"triangle",.04)},capy(k){const f=SCALE[Math.min(k-1,SCALE.length-1)];tone(f*.5,.09,"sine",.13);tone(f,.16,"triangle",.1,.05)},bad(){tone(196,.16,"triangle",.14);tone(147,.24,"triangle",.14,.13)},steam(){if(!S.sound)return;try{ac=ac||new (window.AudioContext||window.webkitAudioContext)();const t=ac.currentTime,len=ac.sampleRate*.42|0,b=ac.createBuffer(1,len,ac.sampleRate),d=b.getChannelData(0);for(let i=0;i<len;i++)d[i]=Math.random()*2-1;const s=ac.createBufferSource(),f=ac.createBiquadFilter(),g=ac.createGain();s.buffer=b;f.type="bandpass";f.Q.value=.8;f.frequency.setValueAtTime(700,t);f.frequency.exponentialRampToValueAtTime(3400,t+.36);g.gain.setValueAtTime(.001,t);g.gain.exponentialRampToValueAtTime(.09,t+.09);g.gain.exponentialRampToValueAtTime(.001,t+.42);s.connect(f).connect(g).connect(ac.destination);s.start(t)}catch(e){}},hug(){tone(740,.14,"sine",.09);tone(988,.22,"sine",.09,.1)},ding(){tone(880,.09,"sine",.08);tone(1175,.16,"sine",.08,.07)},win(){[523,659,784,1047,1319].forEach((f,i)=>tone(f,.3,"triangle",.1,i*.1))},buy(){tone(660,.12,"triangle");tone(990,.18,"triangle",.1,.1)}};
+
+function toast(m){const t=$("#toast");t.textContent=m;t.classList.add("on");clearTimeout(toast.t);toast.t=setTimeout(()=>t.classList.remove("on"),2200)}
+
+/* ---- Wereld: kamers, voer, tuin, cadeautjes ---- */
+const FOOD={
+ gras:{name:"Gras",full:20,joy:2,price:5,seed:3,yld:3,min:3,svg:`<path d="M4 22c0-7 1-11 3-15 1 6 1 10 1 15zM9 22c0-8 2-13 5-18-1 7 0 12 0 18zM14 22c1-6 3-10 7-12-3 4-3 8-3 12z" fill="#5DBB55" stroke="#2E7D32" stroke-width="1.200" stroke-linejoin="round"/>`},
+ wortel:{name:"Wortel",full:25,joy:6,price:9,seed:6,yld:2,min:10,svg:`<path d="M15 8L4 20c-1 1.500.500 3 2 2L18 11z" fill="#F57C00" stroke="#B85A00" stroke-width="1.200" stroke-linejoin="round"/><path d="M9 15l2 1M12 12l2 1" stroke="#B85A00" stroke-width="1.200" stroke-linecap="round"/><path d="M16 8c-1-3 0-6 2-6 0 2 0 3 1 4 1-2 3-2 4-1-2 1-3 2-3 4 2 0 3 1 3 2-3 1-5 0-7-3z" fill="#43A047"/>`},
+ mais:{name:"Maïs",full:35,joy:6,price:14,seed:10,yld:2,min:25,svg:`<ellipse cx="12" cy="11" rx="5" ry="9" fill="#FFCA28" stroke="#C79100" stroke-width="1.200"/><path d="M9 6h6M8 10h8M8 14h8M9 18h6M12 3v16" stroke="#E0A800" stroke-width="1"/><path d="M5 22c1-7 3-11 7-12-2 4-3 8-3 12zM19 22c-1-7-3-11-7-12 2 4 3 8 3 12z" fill="#7CB342" stroke="#4E7D2A" stroke-width="1.100"/>`},
+ meloen:{name:"Watermeloen",full:45,joy:14,price:22,seed:15,yld:1,min:60,svg:`<path d="M2 8a10 10 0 0020 0z" fill="#43A047" stroke="#2E6B30" stroke-width="1.200"/><path d="M4 8a8 8 0 0016 0z" fill="#EF5350"/><path d="M8 11v1M12 12v1M16 11v1M10 14v1M14 14v1" stroke="#2B1B14" stroke-width="1.600" stroke-linecap="round"/>`},
+ taart:{name:"Yuzutaart",full:25,joy:35,price:40,svg:`<path d="M3 13l17-6 1 4v8H3z" fill="#FFE8B0" stroke="#B88A3A" stroke-width="1.200" stroke-linejoin="round"/><path d="M3 13l17-6 1 4L3 16z" fill="#FFF6DD"/><path d="M3 16h18" stroke="#F2B705" stroke-width="2"/><circle cx="16" cy="6" r="3.300" fill="#FFA41B"/><path d="M16 3c1-2 3-2 4-1-1 1-2 2-4 1z" fill="#3E9B4F"/>`}
+};
+const FAV={Yuzu:"meloen",Mochi:"mais",Boba:"gras",Latte:"taart",Noa:"wortel",Pip:"meloen",Kiki:"taart",Baron:"mais"};
+const TREAS=[
+ ["schelp","Schelp",`<path d="M12 21L4 9c2-5 14-5 16 0z" fill="#F7C7B5" stroke="#C47C67" stroke-width="1.300" stroke-linejoin="round"/><path d="M12 21L8 8M12 21V7M12 21l4-13" stroke="#C47C67" stroke-width="1.100"/>`],
+ ["veer","Veer",`<path d="M5 21C7 11 12 4 20 3c-1 8-7 14-15 18z" fill="#9AD0F5" stroke="#4E8DB8" stroke-width="1.300"/><path d="M5 21L17 7" stroke="#4E8DB8" stroke-width="1.200"/>`],
+ ["kiezel","Kiezel",`<ellipse cx="12" cy="14" rx="9" ry="6" fill="#B9B1A6" stroke="#7D756B" stroke-width="1.300"/><ellipse cx="9" cy="12" rx="3" ry="1.300" fill="#fff" opacity=".5"/>`],
+ ["klaver","Klavertje",`<g fill="#55B85A" stroke="#2E7D32" stroke-width="1.100"><circle cx="9" cy="9" r="4"/><circle cx="15" cy="9" r="4"/><circle cx="9" cy="15" r="4"/><circle cx="15" cy="15" r="4"/></g><path d="M12 12l5 9" stroke="#2E7D32" stroke-width="1.600"/>`],
+ ["blad","Herfstblad",`<path d="M12 22C4 18 3 9 12 2c9 7 8 16 0 20z" fill="#F08A3C" stroke="#B3541A" stroke-width="1.300"/><path d="M12 22V6M12 13l-4-3M12 17l4-4" stroke="#B3541A" stroke-width="1.100"/>`],
+ ["knoop","Knoop",`<circle cx="12" cy="12" r="9" fill="#E9799B" stroke="#A9445F" stroke-width="1.300"/><g fill="#A9445F"><circle cx="9.500" cy="9.500" r="1.400"/><circle cx="14.500" cy="9.500" r="1.400"/><circle cx="9.500" cy="14.500" r="1.400"/><circle cx="14.500" cy="14.500" r="1.400"/></g>`],
+ ["denne","Dennenappel",`<ellipse cx="12" cy="13" rx="6" ry="8.500" fill="#9C6B3E" stroke="#5F3C1E" stroke-width="1.300"/><path d="M7 10l5 3 5-3M6.500 14l5.500 3 5.500-3M8 18l4 2 4-2" fill="none" stroke="#5F3C1E" stroke-width="1.100"/>`],
+ ["kristal","Glimsteen",`<path d="M12 2l7 7-7 13L5 9z" fill="#B9A4F2" stroke="#6E52B8" stroke-width="1.300" stroke-linejoin="round"/><path d="M5 9h14M12 2v20" stroke="#6E52B8" stroke-width="1"/>`],
+ ["eikel","Eikel",`<path d="M6 10h12c0 7-3 11-6 12-3-1-6-5-6-12z" fill="#D29A5B" stroke="#8C5A26" stroke-width="1.300"/><path d="M4 10c0-4 4-6 8-6s8 2 8 6z" fill="#7A4B2A" stroke="#4E2E15" stroke-width="1.300"/><path d="M12 4V1" stroke="#4E2E15" stroke-width="1.600"/>`],
+ ["bloem","Madeliefje",`<g fill="#fff" stroke="#C9B9A6" stroke-width="1"><ellipse cx="12" cy="5" rx="2.600" ry="4"/><ellipse cx="12" cy="19" rx="2.600" ry="4"/><ellipse cx="5" cy="12" rx="4" ry="2.600"/><ellipse cx="19" cy="12" rx="4" ry="2.600"/></g><circle cx="12" cy="12" r="3.300" fill="#FFCA28"/>`],
+ ["sleutel","Oude sleutel",`<circle cx="7" cy="12" r="4.500" fill="none" stroke="#C99A2E" stroke-width="2.600"/><path d="M11 12h10M17 12v4M20 12v3" stroke="#C99A2E" stroke-width="2.600" stroke-linecap="round"/>`],
+ ["goud","Gouden yuzu",`<circle cx="12" cy="13" r="8" fill="#FFD54F" stroke="#C99A00" stroke-width="1.400"/><circle cx="9" cy="10" r="2.200" fill="#FFF3B0"/><path d="M12 5c1-3 5-4 7-2-1 2-4 4-7 2z" fill="#3E9B4F"/>`]
+];
+const LV=[0,20,60,120,200];
+const LVREW=[null,null,"Lievelingseten ontdekt + 20 yuzu","Yuzutaart + 30 yuzu","50 yuzu","Gouden yuzu voor je schatkist + 80 yuzu"];
+const GOALS={solve:["Los 3 puzzels op",3],feed:["Geef 4 keer eten",4],pet:["Aai 5 keer een capy",5],harvest:["Oogst 2 keer in de tuin",2],gift:["Raap 2 cadeautjes op",2],fav:["Geef een lievelingseten",1],stars:["Haal 3 sterren in een puzzel",1],daily:["Speel de dagpuzzel",1]};
+const ROOMN={cafe:"Café",tuin:"Tuin",bad:"Badhuis"};
+const AREA={cafe:[50,350,214,262],tuin:[50,350,232,264],bad:[44,356,258,266]};
+const DECOR=[
+ {id:"rug",room:"cafe",name:"Zacht vloerkleed",price:30,view:"30 190 340 80",svg:`<ellipse cx="200" cy="233" rx="165" ry="32" fill="#E9799B"/><ellipse cx="200" cy="233" rx="138" ry="24" fill="#F7BCCD"/><ellipse cx="200" cy="233" rx="110" ry="17" fill="#E9799B"/>`},
+ {id:"kussen",room:"cafe",name:"Zitkussens",price:40,view:"110 214 190 42",svg:`<ellipse cx="150" cy="238" rx="30" ry="11" fill="#5CB8C4"/><ellipse cx="150" cy="235" rx="25" ry="7" fill="#8ED3DB"/><ellipse cx="258" cy="242" rx="30" ry="11" fill="#FFB84D"/><ellipse cx="258" cy="239" rx="25" ry="7" fill="#FFD58A"/>`},
+ {id:"plant",room:"cafe",name:"Grote plant",price:45,view:"0 90 90 110",svg:`<path d="M38 170c-30-8-34-40-22-56 14 10 26 28 22 56zM40 170c-2-30 10-52 24-60 9 20 2 48-24 60zM40 172c-16-18-14-52-2-74 14 22 16 52 2 74z" fill="#3B9B62"/><path d="M38 172c-2-24-1-48 0-70" stroke="#256E42" stroke-width="2" fill="none"/><path d="M18 166h44l-6 34H24z" fill="#E7E0D0"/><path d="M15 164h50v8H15z" fill="#CFC6B2"/>`},
+ {id:"lamp",room:"cafe",name:"Papieren lantaarns",price:70,view:"0 0 400 90",svg:`<path d="M0 8q100 26 200 6t200 8" fill="none" stroke="#5B3A22" stroke-width="2"/>${[[62,16,"#FF7B5C"],[138,20,"#FFD24D"],[270,17,"#FF7B5C"],[346,18,"#FFD24D"]].map(([x,y,f])=>`<path d="M${x} ${y}v8" stroke="#5B3A22" stroke-width="2"/><ellipse class="glow" cx="${x}" cy="${y+22}" rx="15" ry="17" fill="${f}"/><path d="M${x-14} ${y+22}h28M${x-11} ${y+13}h22M${x-11} ${y+31}h22" stroke="#fff" stroke-opacity=".55"/><rect x="${x-6}" y="${y+37}" width="12" height="4" fill="#5B3A22"/>`).join("")}`},
+ {id:"art",room:"cafe",name:"Portret van Yuzu",price:90,view:"262 28 66 80",svg:`<rect x="268" y="34" width="52" height="66" rx="4" fill="#5E3A20"/><rect x="273" y="39" width="42" height="56" fill="#FFE9B8"/><circle cx="294" cy="74" r="14" fill="#A9683A"/><rect x="284" y="74" width="20" height="10" rx="5" fill="#C98E5E"/><circle cx="294" cy="56" r="6" fill="#FFA41B"/>`},
+ {id:"tree",room:"cafe",name:"Yuzuboom in pot",price:100,view:"310 50 90 150",svg:`<path d="M362 200v-74" stroke="#6F4526" stroke-width="9"/><circle cx="360" cy="95" r="36" fill="#3B9B62"/><circle cx="337" cy="116" r="23" fill="#2F8953"/><circle cx="382" cy="118" r="23" fill="#2F8953"/>${[[343,86],[370,76],[381,108],[350,115],[325,116]].map(([x,y])=>`<circle cx="${x}" cy="${y}" r="7" fill="#FFB31A"/>`).join("")}<path d="M340 182h44l-5 26h-34z" fill="#C56B3D"/>`},
+ {id:"paper",room:"cafe",name:"Vrolijk behang",price:120,view:"0 0 400 150",svg:`<g fill="#FFFFFF" fill-opacity=".22">${[...Array(10).keys()].map(i=>`<rect x="${i*40}" y="0" width="20" height="150"/>`).join("")}</g>`},
+ {id:"bar",room:"cafe",name:"Koffiebar",price:140,view:"225 80 150 120",svg:`<rect x="240" y="146" width="120" height="50" rx="4" fill="#8A5A34"/><rect x="232" y="138" width="136" height="11" rx="4" fill="#5E3A20"/><path d="M252 160h96M252 176h96" stroke="#6E4527" stroke-width="3"/><rect x="288" y="102" width="38" height="36" rx="6" fill="#DDE4E4"/><rect x="295" y="109" width="24" height="9" rx="3" fill="#20262B"/><path d="M307 118v8" stroke="#20262B" stroke-width="4"/><rect x="299" y="128" width="16" height="10" rx="2" fill="#FFF"/><rect x="246" y="124" width="16" height="14" rx="3" fill="#fff"/><rect x="338" y="124" width="16" height="14" rx="3" fill="#FFBE1A"/>`},
+ {id:"hammock",room:"cafe",name:"Hangmat",price:170,view:"20 90 150 80",svg:`<path d="M34 92v82M156 92v82" stroke="#7A4B2A" stroke-width="7" stroke-linecap="round"/><path d="M34 112c28 60 94 60 122 0-30 22-92 22-122 0z" fill="#F0805C"/><path d="M36 116c30 22 88 22 118 0" stroke="#FFD24D" stroke-width="4" fill="none"/>`},
+ {id:"neon",room:"cafe",name:"Lichtbord",price:300,view:"140 18 120 62",svg:`<rect x="146" y="24" width="108" height="50" rx="14" fill="#173E39"/><rect x="150" y="28" width="100" height="42" rx="11" fill="none" stroke="#FF8FB5" stroke-width="3"/><text x="200" y="60" text-anchor="middle" font-family="'Bagel Fat One','Arial Rounded MT Bold',sans-serif" font-size="27" fill="#FFD24D">CAPI</text>`},
+ {id:"bloemen",room:"tuin",name:"Bloemenrand",price:40,view:"0 150 400 50",svg:`${[...Array(13).keys()].map(i=>{const x=12+i*31,c=["#FF8FB5","#FFD24D","#B39DFF","#FF7B5C"][i%4];return `<path d="M${x} 196v-22" stroke="#3E8E41" stroke-width="2.500"/><circle cx="${x}" cy="172" r="6" fill="${c}"/><circle cx="${x}" cy="172" r="2.500" fill="#fff"/>`}).join("")}`},
+ {id:"bankje",room:"tuin",name:"Tuinbankje",price:55,view:"306 168 92 52",svg:`<rect x="314" y="176" width="78" height="10" rx="3" fill="#A86A3C"/><rect x="314" y="192" width="78" height="9" rx="3" fill="#C27D49"/><path d="M322 201v16M384 201v16M322 186v6M384 186v6" stroke="#6F4526" stroke-width="5" stroke-linecap="round"/>`},
+ {id:"vogelhuis",room:"tuin",name:"Vogelhuisje",price:60,view:"14 70 60 130",svg:`<path d="M44 198V112" stroke="#7A4B2A" stroke-width="6"/><path d="M22 96l22-20 22 20z" fill="#D8375C"/><rect x="26" y="95" width="36" height="28" fill="#F3D9A6"/><circle cx="44" cy="108" r="6" fill="#3B2518"/>`},
+ {id:"lichtjes",room:"tuin",name:"Lichtslinger",price:80,view:"0 0 400 70",svg:`<path d="M0 14q100 34 200 10t200 12" fill="none" stroke="#4A3324" stroke-width="2"/>${[30,70,110,150,190,230,270,310,350,390].map((x,i)=>`<circle class="glow" cx="${x}" cy="${20+Math.round(16*Math.sin(i/1.6+.4))}" r="5" fill="${["#FFD24D","#FF8FB5","#8ED3DB"][i%3]}"/>`).join("")}`},
+ {id:"vijver",room:"tuin",name:"Vijvertje",price:120,view:"4 224 134 46",svg:`<ellipse cx="70" cy="250" rx="64" ry="19" fill="#7A6A55"/><ellipse cx="70" cy="248" rx="56" ry="14" fill="#4FB7D4"/><ellipse cx="50" cy="244" rx="14" ry="3" fill="#fff" opacity=".45"/><circle cx="108" cy="250" r="6" fill="#55B85A"/><circle cx="30" cy="253" r="5" fill="#55B85A"/>`},
+ {id:"zonbloem",room:"tuin",name:"Zonnebloemen",price:90,view:"300 60 100 140",svg:`${[[322,80],[352,66],[380,86]].map(([x,y])=>`<path d="M${x} 198V${y+12}" stroke="#3E8E41" stroke-width="4"/><path d="M${x} ${y+60}q-14-6-18 4" fill="#4CAF50"/><g transform="translate(${x} ${y})">${[...Array(10).keys()].map(k=>`<ellipse rx="5" ry="12" transform="rotate(${k*36}) translate(0 -13)" fill="#FFC107"/>`).join("")}<circle r="10" fill="#7A4B2A"/></g>`).join("")}`},
+ {id:"eendjes",room:"bad",name:"Badeendjes",price:40,view:"120 180 230 50",svg:`${[[150,206],[262,198],[318,214]].map(([x,y])=>`<g class="bobx"><ellipse cx="${x}" cy="${y}" rx="11" ry="7" fill="#FFD54F"/><circle cx="${x+7}" cy="${y-8}" r="6" fill="#FFD54F"/><path d="M${x+12} ${y-8}l6 1-6 2z" fill="#FF8A3D"/><circle cx="${x+9}" cy="${y-10}" r="1.300" fill="#222"/></g>`).join("")}`},
+ {id:"handdoek",room:"bad",name:"Handdoekenrek",price:45,view:"20 120 70 90",svg:`<path d="M30 200v-72M80 200v-72M26 132h58" stroke="#8A5A34" stroke-width="5" stroke-linecap="round"/><path d="M34 134h18v40H34z" fill="#FF8FB5"/><path d="M56 134h20v34H56z" fill="#8ED3DB"/><path d="M34 166h18M56 160h20" stroke="#fff" stroke-width="3"/>`},
+ {id:"yuzus",room:"bad",name:"Drijvende yuzu’s",price:50,view:"110 186 240 40",svg:`${[[128,214],[176,200],[214,222],[244,204],[286,216],[330,204]].map(([x,y])=>`<g class="bobx"><circle cx="${x}" cy="${y}" r="7" fill="#FFA41B"/><circle cx="${x-2}" cy="${y-2}" r="2" fill="#FFD27A"/></g>`).join("")}`},
+ {id:"bamboe",room:"bad",name:"Bamboe",price:60,view:"340 30 60 170",svg:`${[352,370,388].map((x,i)=>`<path d="M${x} 196V${40+i*14}" stroke="#7CB342" stroke-width="8"/>${[70,110,150].map(y=>`<path d="M${x-4} ${y+i*6}h8" stroke="#4E7D2A" stroke-width="2"/>`).join("")}<path d="M${x} ${60+i*14}q12-6 18 2q-10 4-18-2z" fill="#8BC34A"/>`).join("")}`},
+ {id:"lantaarn",room:"bad",name:"Stenen lantaarn",price:80,view:"16 120 60 90",svg:`<rect x="38" y="176" width="16" height="26" fill="#9E9A92"/><rect x="28" y="168" width="36" height="9" rx="2" fill="#B5B0A6"/><rect x="32" y="146" width="28" height="22" fill="#B5B0A6"/><rect class="glow" x="38" y="151" width="16" height="12" fill="#FFD24D"/><path d="M22 147l24-18 24 18z" fill="#8F8A80"/>`},
+ {id:"waterval",room:"bad",name:"Kleine waterval",price:160,view:"290 70 110 150",svg:`<path d="M300 200c-8-30 2-62 18-84 12-16 30-24 48-20 24 6 34 34 34 64v50z" fill="#8C8577"/><path d="M318 140c8-10 22-14 34-10M330 176c10-6 24-6 34 0" stroke="#6F695E" stroke-width="4" fill="none" stroke-linecap="round"/><path d="M336 112h22c2 30 0 64-4 96h-20c4-30 4-64 2-96z" fill="#7FD3E6"/><path class="fall" d="M342 116v88M352 116v88" stroke="#fff" stroke-width="3" stroke-dasharray="6 10" opacity=".85"/><ellipse cx="346" cy="210" rx="20" ry="5" fill="#fff" opacity=".6"/>`}
+];
+const SPOTS=[
+ {room:"cafe",need:"hammock",x:94,y:150,s:.48,pose:"sleep",out:[94,218]},
+ {room:"cafe",need:"kussen",x:150,y:240,pose:"sit"},{room:"cafe",need:"kussen",x:258,y:244,pose:"sit"},
+ {room:"tuin",need:"bankje",x:354,y:194,s:.44,pose:"sit",out:[340,240]},
+ {room:"tuin",need:"vijver",x:72,y:264,pose:"soak",out:[160,246]},
+ {room:"bad",x:126,y:240,pose:"soak",out:[126,260]},{room:"bad",x:196,y:234,pose:"soak",out:[196,260]},{room:"bad",x:266,y:238,pose:"soak",out:[266,260]},{room:"bad",x:326,y:234,pose:"soak",out:[326,260]}
+];
+const vnow=()=>S.vbase+(Date.now()-S.rbase)*(S.fast?60:1);
+function setFast(on){const v=vnow();S.fast=on;S.vbase=v;S.rbase=Date.now();save()}
+const night=()=>{const h=new Date().getHours();return h>=22||h<7};
+const foodIcon=(id,cls="")=>`<svg class="fi ${cls}" viewBox="0 0 24 24" aria-hidden="true">${FOOD[id].svg}</svg>`;
+const treasIcon=(t,cls="")=>`<svg class="fi ${cls}" viewBox="0 0 24 24" aria-hidden="true">${t[2]}</svg>`;
+const hasD=id=>S.decor.includes(id);
+function P(c){let p=S.pets[c.name];const t=vnow();if(!p)p=S.pets[c.name]={full:72,joy:62,xp:0,lvl:1,t,favKnown:false,petAt:0};
+ const h=(t-p.t)/36e5;if(h>0){p.full=Math.max(5,p.full-3.5*h);p.joy=Math.max(10,p.joy-(p.full<25?5:2)*(S.rooms.bad?.6:1)*h);p.t=t}return p}
+function mood(c){const p=P(c);if(p.full<25)return "honger";if(p.joy<30)return "verveeld";if(p.joy>=75&&p.full>=60)return "dolblij";return "tevreden"}
+function cozy(){const pts=S.decor.length+(S.rooms.tuin?2:0)+(S.rooms.bad?3:0);return Math.min(5,1+Math.floor(pts/3))}
+function tipRate(){let r=cozy()*2;for(const c of owned()){const p=P(c);r+=p.full<25?.6:2*(.6+p.joy/100)}return Math.max(1,Math.round(r))}
+const tipCap=()=>30+cozy()*15;
+const tipsNow=()=>Math.max(0,Math.min(tipCap(),Math.floor((vnow()-S.tipAt)/36e5*tipRate())));
+function goalsToday(){const d=dayNo();if(!S.goals||S.goals.d!==d){const pool=Object.keys(GOALS).filter(k=>k!=="harvest"||S.rooms.tuin);let r=(d*7919)%233280;const pick=[];while(pick.length<3){r=(r*9301+49297)%233280;const k=pool[r%pool.length];if(!pick.includes(k))pick.push(k)}S.goals={d,list:pick.map(k=>({k,n:0,got:false})),bonus:false};save()}return S.goals}
+function goal(k,a=1){const g=goalsToday(),it=g.list.find(x=>x.k===k);if(!it||it.n>=GOALS[k][1])return;it.n=Math.min(GOALS[k][1],it.n+a);save();if(it.n>=GOALS[k][1])toast(`Dagdoel gehaald: ${GOALS[k][0]}`)}
+function spawnGifts(){const happy=owned().filter(c=>P(c).joy>=45).length,step=15*6e4,t=vnow();
+ if(!happy||S.gifts.length>=3){S.giftAt=Math.max(S.giftAt,t-step);return 0}
+ let k=0;while(t-S.giftAt>=step&&S.gifts.length<3){S.giftAt+=step;const rooms=Object.keys(S.rooms).filter(r=>S.rooms[r]),room=rooms[Math.random()*rooms.length|0],[x0,x1,y0,y1]=AREA[room];
+  const pool=TREAS.filter(t=>t[0]!=="goud"),w=pool.map((t,i)=>i<4?3:i<8?2:1),sum=w.reduce((a,b)=>a+b);let r=Math.random()*sum,i=0;while(r>w[i]){r-=w[i];i++}
+  S.gifts.push({id:Date.now()+"-"+k,room,x:x0+20+Math.random()*(x1-x0-40),y:y0+Math.random()*(y1-y0),item:pool[i][0]});k++}
+ if(S.gifts.length>=3)S.giftAt=t;return k}
+const plotReady=pl=>pl.seed&&vnow()-pl.at>=FOOD[pl.seed].min*6e4;
+function ensureRooms(){if(!S.rooms.tuin&&doneCount()>=3){S.rooms.tuin=true;S.newRoom="tuin";save()}while(S.plots.length<S.plotN)S.plots.push({seed:null,at:0})}
+
+/* runtime */
+const W={actors:{},raf:0,last:0,sel:null,giftT:0,panelT:0};
+const sc=y=>.5+(y-205)*.0034;
+function randIn(room){let[x0,x1,y0,y1]=AREA[room];if(room==="tuin"&&hasD("vijver"))x0=150;return[x0+Math.random()*(x1-x0),y0+Math.random()*(y1-y0)]}
+function syncActors(){const cs=owned(),rooms=Object.keys(S.rooms).filter(r=>S.rooms[r]);
+ for(const c of cs){if(W.actors[c.name])continue;const w={cafe:5,tuin:2,bad:3},tot=rooms.reduce((a,r)=>a+w[r],0);let r=Math.random()*tot,room="cafe";for(const k of rooms){if(r<w[k]){room=k;break}r-=w[k]}
+  const[x,y]=randIn(room);W.actors[c.name]={c,room,x,y,dir:Math.random()<.5?1:-1,st:"idle",tm:1+Math.random()*3,spot:null,react:0,food:null}}
+ for(const a of Object.values(W.actors))if(!S.rooms[a.room]){a.room="cafe";[a.x,a.y]=randIn("cafe");a.st="idle";a.spot=null}}
+const spotFree=sp=>!Object.values(W.actors).some(a=>a.spot===sp);
+function goTo(a,x,y,then){a.tx=x;a.ty=y;a.then=then||null;a.st="walk"}
+function hop(a,x,y,then){a.hx=a.x;a.hy=a.y;a.hx2=x;a.hy2=y;a.ht=0;a.then=then||null;a.st="hop"}
+function leaveSpot(a,then){const sp=a.spot;a.spot=null;if(sp&&sp.out){hop(a,sp.out[0],sp.out[1],then)}else then()}
+function decide(a){
+ const go=()=>{const r=Math.random(),p=P(a.c);
+  if(night()){const sp=SPOTS.find(s=>s.room===a.room&&s.pose==="sleep"&&(!s.need||hasD(s.need))&&spotFree(s));if(sp)return toSpot(a,sp);a.st="sleep";a.tm=20+Math.random()*30;return}
+  if(r<.05&&Object.values(S.rooms).filter(Boolean).length>1){const rooms=Object.keys(S.rooms).filter(k=>S.rooms[k]&&k!==a.room),to=rooms[Math.random()*rooms.length|0];const ex=a.x<200?-40:440;return goTo(a,ex,a.y,()=>{a.room=to;a.x=ex<0?440:-40;const[x,y]=randIn(to);a.y=y;goTo(a,x,y);if(to===W.room||a.room===W.room)drawActors()})}
+  const sps=SPOTS.filter(s=>s.room===a.room&&(!s.need||hasD(s.need))&&spotFree(s)),pSpot=a.room==="bad"?.7:.3;
+  if(sps.length&&r<pSpot+.05)return toSpot(a,sps[Math.random()*sps.length|0]);
+  if(r<.85||p.full<25){const[x,y]=randIn(a.room);return goTo(a,x,y)}
+  a.st=Math.random()<.35?"sit":"idle";a.tm=3+Math.random()*5};
+ if(a.spot)leaveSpot(a,go);else go()}
+function toSpot(a,sp){a.spot=sp;const ent=sp.out||[sp.x,sp.y];goTo(a,ent[0],ent[1],()=>{const done=()=>{a.st=sp.pose;a.tm=(sp.pose==="sleep"?20:10)+Math.random()*14};if(sp.out)hop(a,sp.x,sp.y,done);else{a.x=sp.x;a.y=sp.y;done()}})}
+function step(a,dt){
+ if(a.react>0)a.react-=dt;
+ switch(a.st){
+  case"walk":{const p=P(a.c),sp=(p.full<25?28:46)*dt,dx=a.tx-a.x,dy=a.ty-a.y,d=Math.hypot(dx,dy);if(Math.abs(dx)>.5)a.dir=dx>0?1:-1;if(d<=sp){a.x=a.tx;a.y=a.ty;if(a.then){const f=a.then;a.then=null;f()}else{a.st="idle";a.tm=1.5+Math.random()*4}}else{a.x+=dx/d*sp;a.y+=dy/d*sp}break}
+  case"hop":{a.ht+=dt/.5;const k=Math.min(1,a.ht);if(a.hx2!==a.hx)a.dir=a.hx2>a.hx?1:-1;a.x=a.hx+(a.hx2-a.hx)*k;a.y=a.hy+(a.hy2-a.hy)*k-Math.sin(k*Math.PI)*20;if(k>=1){const f=a.then;a.then=null;a.st="idle";a.tm=1;if(f)f()}break}
+  case"eat":a.tm-=dt;if(a.tm<=0){a.food=null;a.st=a.spot?a.spot.pose:"idle";a.tm=2;markOver(a)}break;
+  default:a.tm-=dt;if(a.tm<=0)decide(a)}
+}
+function actorSVG(a){return `<g class="act" data-pet="${a.c.name}" role="button" tabindex="0" aria-label="${a.c.name}, ${mood(a.c)}"><g class="bw"><rect x="10" y="10" width="125" height="90" fill="transparent"/><g class="bob">${side(a.c)}</g></g><g class="over"></g></g>`}
+function overSVG(a){const s=a.sc||.4,p=P(a.c),hx=(110-70)*a.dir*s,hy=-92*s;let o="";
+ if(W.sel===a.c.name)o+=`<path class="selm" d="M${hx-7} ${hy-30}h14l-7 9z" fill="var(--yuzu)" stroke="var(--edge)" stroke-width="2" stroke-linejoin="round"/>`;
+ if(a.st==="eat"&&a.food)o+=`<svg class="munch" x="${(128-70)*a.dir*s-11}" y="${-52*s-12}" width="22" height="22" viewBox="0 0 24 24">${FOOD[a.food].svg}</svg>`;
+ else if(a.st==="sleep")o+=`<g class="zz" font-weight="800" fill="#fff" stroke="var(--edge)" stroke-width="3" paint-order="stroke" font-family="Gabarito,sans-serif"><text x="${hx}" y="${hy}" font-size="15">z</text><text x="${hx+10}" y="${hy-12}" font-size="20">Z</text></g>`;
+ else if(p.full<25)o+=`<g transform="translate(${hx+(a.dir>0?6:-6)} ${hy-14})"><circle r="15" fill="#fff" stroke="var(--edge)" stroke-width="2"/><circle cx="${a.dir>0?-12:12}" cy="13" r="4" fill="#fff" stroke="var(--edge)" stroke-width="2"/><svg x="-10" y="-10" width="20" height="20" viewBox="0 0 24 24">${FOOD[FAV[a.c.name]&&P(a.c).favKnown?FAV[a.c.name]:"gras"].svg}</svg></g>`;
+ if(a.st==="soak")o+=`<ellipse cx="${(60-70)*a.dir*s}" cy="${-38*s}" rx="${54*s}" ry="${7*s}" fill="none" stroke="#fff" stroke-width="2" opacity=".75" class="ripple"/>`;
+ return o}
+function markOver(a){a.overKey=null}
+function drawActors(){const L=$("#L-act");if(!L)return;const list=Object.values(W.actors).filter(a=>a.room===W.room);L.innerHTML=list.map(actorSVG).join("");list.forEach(a=>{a.el=L.querySelector(`[data-pet="${a.c.name}"]`);a.overKey=null});W.order=""}
+function frame(t){
+ if(tab!=="cafe"||G||!$("#L-act")){W.raf=0;return}
+ const dt=Math.min(.1,(t-(W.last||t))/1000);W.last=t;
+ for(const a of Object.values(W.actors))step(a,dt);
+ const vis=Object.values(W.actors).filter(a=>a.room===W.room);
+ if(vis.some(a=>!a.el||!a.el.isConnected))drawActors();
+ const ord=vis.slice().sort((p,q)=>p.y-q.y),key=ord.map(a=>a.c.name).join();
+ if(key!==W.order){const L=$("#L-act");ord.forEach(a=>L.appendChild(a.el));W.order=key}
+ for(const a of vis){const s=a.spot&&a.spot.s&&(a.st===a.spot.pose)?a.spot.s:sc(a.y);a.sc=s;
+  a.el.setAttribute("transform",`translate(${a.x.toFixed(1)} ${a.y.toFixed(1)})`);
+  const bw=a.el.firstChild;bw.setAttribute("transform",`scale(${(a.dir*s).toFixed(3)} ${s.toFixed(3)}) translate(-70 -97)`);
+  const cls=`act st-${a.st}${a.react>0?" pet":""}${P(a.c).full<25?" hungry":""}`;if(a.el.getAttribute("class")!==cls)a.el.setAttribute("class",cls);
+  const b=bw.lastChild;if(a.st==="soak"){if(!b.getAttribute("clip-path"))b.setAttribute("clip-path","url(#soakclip)")}else if(b.getAttribute("clip-path"))b.removeAttribute("clip-path");
+  const k=[a.st,a.dir,W.sel===a.c.name,P(a.c).full<25,a.food,Math.round(s*50)].join();if(k!==a.overKey){a.overKey=k;a.el.lastChild.innerHTML=overSVG(a)}}
+ W.giftT+=dt;if(W.giftT>5){W.giftT=0;if(spawnGifts()){save();drawGifts()}}
+ W.panelT+=dt;if(W.panelT>4){W.panelT=0;refreshLive()}
+ W.raf=requestAnimationFrame(frame)}
+function startWorld(){ensureRooms();syncActors();W.room=S.view&&S.rooms[S.view]?S.view:"cafe";if(!W.raf){W.last=0;W.raf=requestAnimationFrame(frame)}}
+
+/* tekenen kamers */
+function roomBG(room){const n=night(),dk=n?`<rect width="400" height="270" fill="#0C1638" opacity=".22"/>`:"",win=(x,y,w,h)=>`<rect x="${x}" y="${y}" width="${w}" height="${h}" rx="9" fill="var(--wood)"/><rect x="${x+7}" y="${y+7}" width="${w-14}" height="${h-14}" rx="5" fill="${n?"#1E2A5C":"var(--sky)"}"/>${n?`<circle cx="${x+w-24}" cy="${y+22}" r="7" fill="#FFF3B0"/><circle cx="${x+20}" cy="${y+18}" r="1.500" fill="#fff"/><circle cx="${x+34}" cy="${y+40}" r="1.200" fill="#fff"/>`:""}<path d="M${x+w/2} ${y+7}v${h-14}M${x+7} ${y+h/2}h${w-14}" stroke="var(--wood)" stroke-width="4"/>`;
+ const D=id=>hasD(id)?`<g class="dec ${W.pop===id?"pop":""}">${DECOR.find(d=>d.id===id).svg}</g>`:"";
+ if(room==="cafe")return {back:`<rect width="400" height="190" fill="var(--wall)"/><path d="M0 150h400v40H0z" fill="var(--wall2)"/><rect y="186" width="400" height="84" fill="var(--floor)"/><path d="M0 214h400M0 244h400M70 186l-24 28M180 214l-10 30M300 186l14 28M250 244l8 26M90 244l-12 26" stroke="var(--floor2)" stroke-width="2.500"/><rect y="182" width="400" height="7" fill="var(--wood)"/>${D("paper")}${D("art")}${win(42,34,84,74)}<g><rect x="152" y="92" width="74" height="54" rx="5" fill="#5E3A20"/><rect x="157" y="97" width="64" height="44" rx="3" fill="#2F4A3F"/><text x="189" y="114" text-anchor="middle" font-size="11" font-weight="800" fill="#F7FBEA" font-family="Gabarito,sans-serif">MENU</text><path d="M166 124h22M166 132h30M200 124h12" stroke="#F7FBEA" stroke-width="2" stroke-linecap="round" opacity=".7"/><circle cx="208" cy="132" r="4" fill="#FFA41B"/></g>${D("neon")}${D("lamp")}${D("tree")}${D("bar")}${D("hammock")}${D("plant")}${D("rug")}${D("kussen")}`,dk};
+ if(room==="tuin")return {back:`<rect width="400" height="200" fill="${n?"#1E2A5C":"var(--sky)"}"/>${n?`<circle cx="330" cy="40" r="14" fill="#FFF3B0"/>${[[40,30],[90,60],[150,24],[220,50],[270,20],[380,70]].map(([x,y])=>`<circle cx="${x}" cy="${y}" r="1.400" fill="#fff"/>`).join("")}`:`<circle cx="330" cy="44" r="20" fill="#FFD54F"/>`}<path d="M0 150c60-40 120-40 180-10s130 10 220-24v84H0z" fill="var(--hill)"/><rect y="160" width="400" height="110" fill="var(--grass)"/><path d="M0 200h400" stroke="var(--grass2)" stroke-width="3"/>${[...Array(11).keys()].map(i=>`<rect x="${4+i*39}" y="130" width="9" height="42" rx="3" fill="#C9A06A"/>`).join("")}<path d="M0 142h400M0 158h400" stroke="#B88A55" stroke-width="5"/>${D("zonbloem")}${D("vogelhuis")}${D("lichtjes")}${D("bloemen")}<g id="plots"></g>${D("bankje")}${D("vijver")}`,dk};
+ return {back:`<rect width="400" height="250" fill="var(--tile)"/><path d="${[...Array(10).keys()].map(i=>`M${i*44} 0v250`).join("")}${[...Array(6).keys()].map(i=>`M0 ${i*40+20}h400`).join("")}" stroke="var(--tile2)" stroke-width="2"/>${win(150,28,100,70)}${D("bamboe")}${D("waterval")}<rect y="246" width="400" height="24" fill="var(--floor)"/><ellipse cx="230" cy="222" rx="152" ry="38" fill="#8C8577"/><ellipse cx="230" cy="220" rx="140" ry="31" fill="var(--pool)"/><ellipse cx="190" cy="212" rx="60" ry="6" fill="#fff" opacity=".25"/>${D("eendjes")}${D("yuzus")}${D("handdoek")}${D("lantaarn")}`,dk}}
+function plotsSVG(){if(W.room!=="tuin")return"";return S.plots.map((pl,k)=>{const x=36+k*52,y=208;let crop="";
+ if(pl.seed){const f=FOOD[pl.seed],pr=Math.min(1,(vnow()-pl.at)/(f.min*6e4));
+  if(pr>=1)crop=`<g class="ripe"><svg x="${x-18}" y="${y-42}" width="36" height="36" viewBox="0 0 24 24">${f.svg}</svg><path d="M${x+16} ${y-42}l2 5 5 2-5 2-2 5-2-5-5-2 5-2z" fill="#FFF3B0" class="spark"/></g>`;
+  else if(pr>=.5)crop=`<path d="M${x} ${y-4}v-16M${x} ${y-12}q-10-6-12 2M${x} ${y-16}q10-6 12 2" stroke="#3E8E41" stroke-width="3" fill="none" stroke-linecap="round"/>`;
+  else crop=`<path d="M${x} ${y-4}v-8M${x} ${y-10}q-6-4-7 1M${x} ${y-10}q6-4 7 1" stroke="#4CAF50" stroke-width="2.500" fill="none" stroke-linecap="round"/>`}
+ return `<g class="plot" data-plot="${k}" role="button" tabindex="0" aria-label="Moestuinbak ${k+1}, ${pl.seed?(plotReady(pl)?FOOD[pl.seed].name+" is klaar":FOOD[pl.seed].name+" groeit"):"leeg"}"><rect x="${x-26}" y="${y-44}" width="52" height="56" fill="transparent"/><ellipse cx="${x}" cy="${y}" rx="24" ry="9" fill="var(--soil)"/><ellipse cx="${x}" cy="${y-2}" rx="20" ry="5" fill="var(--soil2)"/>${crop}</g>`}).join("")}
+function drawPlots(){const g=$("#plots");if(g)g.innerHTML=plotsSVG()}
+function giftsSVG(){return S.gifts.filter(g=>g.room===W.room).map(g=>{const t=TREAS.find(x=>x[0]===g.item);return `<g class="gift" data-gift="${g.id}" role="button" tabindex="0" aria-label="Cadeautje oprapen" transform="translate(${g.x.toFixed(0)} ${g.y.toFixed(0)})"><circle r="16" fill="transparent"/><g class="gin"><rect x="-10" y="-14" width="20" height="16" rx="3" fill="#FF8FB5" stroke="var(--edge)" stroke-width="2"/><path d="M0-14v16M-10-8h20" stroke="#FFD24D" stroke-width="3"/><path d="M0-14c-6-8-12-2-6 0M0-14c6-8 12-2 6 0" fill="none" stroke="#FFD24D" stroke-width="2.500"/></g><path class="spark" d="M12-18l2 4 4 2-4 2-2 4-2-4-4-2 4-2z" fill="#FFF3B0"/></g>`}).join("")}
+function drawGifts(){const g=$("#L-gift");if(g)g.innerHTML=giftsSVG()}
+function sceneHTML(){const r=roomBG(W.room);return `<svg viewBox="0 0 400 270" role="group" aria-label="${ROOMN[W.room]}"><defs><clipPath id="soakclip"><rect x="-20" y="-40" width="180" height="98"/></clipPath></defs>${r.back}<g id="L-gift">${giftsSVG()}</g><g id="L-act"></g>${r.dk}</svg><div class="fx" id="fx"></div>`}
+function fxAt(x,y,html,cls="fxh"){const f=$("#fx");if(!f)return;const i=document.createElement("i");i.className=cls;i.style.left=x/4+"%";i.style.top=y/2.7+"%";i.innerHTML=html;f.appendChild(i);setTimeout(()=>i.remove(),1400)}
+const HEARTS=`<svg viewBox="0 0 24 24" aria-hidden="true"><path d="M12 21C6 16.300 2 12.800 2 8.300 2 5.200 4.400 3 7.300 3c1.900 0 3.700 1 4.700 2.700C13 4 14.800 3 16.700 3 19.600 3 22 5.200 22 8.300c0 4.500-4 8-10 12.700z" fill="#EE4D7B" stroke="#fff" stroke-width="2"/></svg>`;
+
+/* acties */
+function selectCapy(name,switchRoom){W.sel=name;const a=W.actors[name];if(switchRoom&&a&&a.room!==W.room){W.room=a.room;S.view=a.room;renderScene()}renderPanel()}
+function petCapy(name){const a=W.actors[name],c=CAPYS.find(x=>x.name===name),p=P(c),t=vnow();
+ if(a){a.react=.6;fxAt(a.x,a.y-80*(a.sc||.4),HEARTS);if(a.st==="sleep"){a.st="idle";a.tm=2}}
+ sfx.pet();hap(8);
+ if(t-p.petAt>3*6e4){p.petAt=t;p.joy=Math.min(100,p.joy+6);gainXp(c,3);goal("pet")}
+ save();W.sel=name;renderPanel()}
+function feed(name,fid){const c=CAPYS.find(x=>x.name===name),p=P(c),f=FOOD[fid];
+ if(!S.inv[fid])return;if(p.full>=95)return toast(`${name} zit helemaal vol.`);
+ S.inv[fid]--;const fav=FAV[name]===fid;p.full=Math.min(100,p.full+f.full);p.joy=Math.min(100,p.joy+f.joy*(fav?2:1)+(fav?8:0));
+ const firstFav=fav&&!p.favKnown;if(fav)p.favKnown=true;
+ goal("feed");if(fav)goal("fav");
+ let a=W.actors[name];if(a){if(a.room!==W.room){a.room=W.room;a.spot=null;a.x=-40;a.y=randIn(W.room)[1];goTo(a,60+Math.random()*80,a.y,()=>{a.st="eat";a.tm=2.6;a.food=fid})}else{a.st="eat";a.tm=2.6;a.food=fid;a.then=null}
+  markOver(a);setTimeout(()=>{if(a.room===W.room)fxAt(a.x,a.y-80*(a.sc||.4),fav?HEARTS+HEARTS:HEARTS)},900)}
+ sfx.munch();hap(10);save();
+ gainXp(c,fav?20:8);
+ if(firstFav)setTimeout(()=>toast(`${f.name} is het lievelingseten van ${name}!`),600);
+ renderPanel()}
+function gainXp(c,x){const p=P(c);p.xp+=x;let up=false;while(p.lvl<5&&p.xp>=LV[p.lvl]){p.lvl++;up=true;levelReward(c,p.lvl)}save();if(up)setTimeout(()=>levelDlg(c),700)}
+function levelReward(c,l){const p=P(c);if(l===2){p.favKnown=true;S.yuzu+=20}if(l===3){S.inv.taart=(S.inv.taart||0)+1;S.yuzu+=30}if(l===4)S.yuzu+=50;if(l===5){S.treasures.goud=(S.treasures.goud||0)+1;S.yuzu+=80}}
+function levelDlg(c){if(dlg.open)return;const p=P(c);sfx.level();dlg.innerHTML=`<div class="newcapy">${capyFull(c)}<b>${c.name} is je vriend</b><div class="lvh big">${lvlHearts(p.lvl)}</div></div><p class="intro">Vriendschap niveau ${p.lvl}</p><div class="bonus">${LVREW[p.lvl]}</div>${p.lvl===2?`<p class="intro">${c.name} houdt van ${foodIcon(FAV[c.name],"inl")} ${FOOD[FAV[c.name]].name.toLowerCase()}.</p>`:""}<button class="btn" data-act="close">Lief!</button>`;dlg.showModal()}
+const lvlHearts=l=>[1,2,3,4,5].map(i=>`<svg viewBox="0 0 24 24" class="${i<=l?"on":""}" aria-hidden="true"><path d="M12 20C6.500 15.600 3 12.500 3 8.500 3 5.800 5.100 4 7.500 4c1.800 0 3.500 1 4.500 2.700C13 5 14.700 4 16.500 4 18.900 4 21 5.800 21 8.500c0 4-3.500 7.100-9 11.500z" fill="currentColor"/></svg>`).join("");
+function pickGift(id){const i=S.gifts.findIndex(g=>g.id===id);if(i<0)return;const g=S.gifts[i];S.gifts.splice(i,1);const t=TREAS.find(x=>x[0]===g.item),isNew=!S.treasures[g.item];S.treasures[g.item]=(S.treasures[g.item]||0)+1;S.yuzu+=isNew?15:5;goal("gift");save();sfx.gift();hap(12);
+ fxAt(g.x,g.y-20,treasIcon(t),"fxg");drawGifts();renderPanel();updPill();toast(isNew?`Nieuw in je schatkist: ${t[1]}! +15 yuzu`:`${t[1]} gevonden, +5 yuzu`)}
+function tapPlot(k){const pl=S.plots[k];
+ if(pl.seed&&plotReady(pl)){const f=FOOD[pl.seed];S.inv[pl.seed]=(S.inv[pl.seed]||0)+f.yld;const x=36+k*52;for(let i=0;i<f.yld;i++)setTimeout(()=>fxAt(x,178,foodIcon(pl.seed||"gras"),"fxg"),i*120);toast(`${f.yld}× ${f.name.toLowerCase()} geoogst`);pl.seed=null;goal("harvest");sfx.harvest();hap(12);save();drawPlots();return renderPanel()}
+ if(pl.seed){const left=Math.ceil((FOOD[pl.seed].min*6e4-(vnow()-pl.at))/6e4);return toast(`${FOOD[pl.seed].name} is over ${left} ${left===1?"minuut":"minuten"} klaar.`)}
+ W.plot=k;const own=Object.keys(FOOD).filter(f=>FOOD[f].seed);
+ dlg.innerHTML=`<h2>Wat plant je?</h2><div class="seeds">${own.map(f=>{const n=S.seeds[f]||0;return `<button class="seedb" data-plant="${f}" ${n?"":"disabled"}>${foodIcon(f)}<b>${FOOD[f].name}</b><span>${n} zaadjes · ${FOOD[f].min<60?FOOD[f].min+" min":FOOD[f].min/60+" uur"} · geeft ${FOOD[f].yld}</span></button>`}).join("")}</div><button class="btn quiet" data-act="toshop" data-v="zaad">Zaadjes kopen</button><button class="btn" data-act="close">Sluiten</button>`;dlg.showModal()}
+function plant(f){const pl=S.plots[W.plot];if(!pl||pl.seed||!S.seeds[f])return;S.seeds[f]--;pl.seed=f;pl.at=vnow();sfx.plop();save();dlg.close();drawPlots();renderPanel()}
+function updPill(){const p=$(".pill");if(p){p.innerHTML=YUZU+S.yuzu;p.setAttribute("aria-label",S.yuzu+" yuzu")}}
+
+/* panelen */
+function renderScene(){const st=$("#stage");if(!st)return;st.innerHTML=sceneHTML();drawActors();drawPlots();$$(".roomc").forEach(b=>b.setAttribute("aria-pressed",b.dataset.room===W.room));W.pop=null}
+const $$=(s)=>[...document.querySelectorAll(s)];
+function bar(v,cls){return `<span class="mbar ${cls}"><i style="width:${Math.round(v)}%"></i></span>`}
+function renderPanel(){const el=$("#panel");if(!el)return;const cs=owned();
+ const strip=`<div class="strip" role="group" aria-label="Je capy’s">${cs.map(c=>{const p=P(c),m=mood(c);return `<button class="av ${W.sel===c.name?"sel":""} ${m}" data-sel="${c.name}" aria-label="${c.name}, ${m}" style="--f:${p.full}"><svg viewBox="0 -13 100 106" aria-hidden="true">${head(c)}</svg>${m==="honger"?`<span class="bdg">!</span>`:""}</button>`}).join("")}</div>`;
+ let det="";
+ if(W.sel){const c=CAPYS.find(x=>x.name===W.sel),p=P(c),a=W.actors[c.name],m=mood(c),fav=FAV[c.name],nx=LV[p.lvl]||LV[4];
+  const status=a&&a.st==="sleep"?"slaapt":a&&a.st==="soak"?"ligt lekker in bad":a&&a.st==="eat"?"zit te smikkelen":m==="honger"?"heeft honger":m==="verveeld"?"wil aandacht":m==="dolblij"?"is dolblij":"is tevreden";
+  const foods=Object.keys(FOOD).map(f=>{const n=S.inv[f]||0;return `<button class="food ${fav===f&&p.favKnown?"fav":""}" data-feed="${f}" ${n?"":"disabled"} aria-label="${FOOD[f].name}, ${n} over${fav===f&&p.favKnown?", lievelingseten":""}">${foodIcon(f)}<span>${n}</span></button>`}).join("");
+  det=`<div class="det"><div class="dh"><b>${c.name}</b><span class="lvh" aria-label="Vriendschap ${p.lvl} van 5">${lvlHearts(p.lvl)}</span></div><p class="stt">${c.name} ${status}${a&&a.room!==W.room?` in ${{cafe:"het café",tuin:"de tuin",bad:"het badhuis"}[a.room]}`:""}.</p><div class="bars"><span>Buik</span>${bar(p.full,"bf")}<span>Blij</span>${bar(p.joy,"bj")}<span>Vriend</span>${bar(p.lvl>=5?100:(p.xp-LV[p.lvl-1])/(nx-LV[p.lvl-1])*100,"bx")}</div><div class="foods">${foods}</div>${Object.values(S.inv).some(Boolean)?"":`<button class="btn quiet sm" data-act="toshop" data-v="voer">Je voer is op, naar de winkel</button>`}<p class="tip">Tik op ${c.name} in het café om te aaien.${p.favKnown?` Lievelingseten: ${FOOD[fav].name.toLowerCase()}.`:" Ontdek wat het lievelingseten is."}</p></div>`}
+ else det=`<p class="det empty">Tik op een capy om te aaien, en kies hier wat ze eten.</p>`;
+ el.innerHTML=strip+det}
+function refreshLive(){if(spawnGifts()){save();drawGifts()}if(W.room==="tuin")drawPlots();renderPanel();const tj=$("#tips");if(tj){const v=tipsNow(),cap=tipCap();tj.disabled=!v;tj.querySelector("i").style.width=v/cap*100+"%";tj.querySelector(".get").textContent=v?`Pak ${v}`:"Spaart nog"}}
+function goalsHTML(){const g=goalsToday(),all=g.list.every(x=>x.got);return `<div class="goals"><div class="gh"><b>Dagdoelen</b><span>${g.list.filter(x=>x.got).length} van 3</span></div>${g.list.map((x,i)=>{const[t,n]=GOALS[x.k],ok=x.n>=n;return `<div class="goal ${x.got?"got":""}"><span class="gt">${t}</span>${x.got?`<span class="ok">Klaar</span>`:ok?`<button class="claim" data-claim="${i}">Pak 15</button>`:`<span class="gp">${x.n}/${n}</span>`}</div>`}).join("")}${all&&!g.bonus?`<button class="btn sm" data-act="gbonus">Pak je beloning: taart en 30 yuzu</button>`:g.bonus?`<p class="tip">Morgen staan er nieuwe doelen klaar.</p>`:""}</div>`}
+
+const yuzuPill=()=>`<span class="pill" aria-label="${S.yuzu} yuzu">${YUZU}${S.yuzu}</span>`;
+const topbar=t=>`<header class="top"><h1>${t}</h1>${yuzuPill()}<button class="iconbtn" data-act="settings" aria-label="Instellingen">${ic("gear")}</button></header>`;
+
+function renderNav(){nav.style.display=G?"none":"";nav.innerHTML=[["cafe","Café"],["levels","Puzzels"],["shop","Winkel"],["capy","Familie"]].map(([k,l])=>`<button data-tab="${k}" ${tab===k?'aria-current="page"':""}>${ic(k)}${l}</button>`).join("")}
+function render(){
+ clearInterval(timerId);renderNav();view.style.padding="";
+ if(tab==="cafe")renderCafe();else if(tab==="levels")renderLevels();else if(tab==="shop")renderShop();else renderCapys();
+ view.scrollTop=0;
+}
+const HEARTI=`<svg viewBox="0 0 24 24" width="28" height="28" aria-hidden="true"><path d="M12 20C6.500 15.600 3 12.500 3 8.500 3 5.800 5.100 4 7.500 4c1.800 0 3.500 1 4.500 2.700C13 5 14.700 4 16.500 4 18.900 4 21 5.800 21 8.500c0 4-3.500 7.100-9 11.500z" fill="currentColor"/></svg>`;
+const TOWER=`<svg viewBox="0 0 24 24" width="30" height="30" aria-hidden="true"><path d="M12 3l9 4-9 4-9-4zM3 12l9 4 9-4M3 17l9 4 9-4" fill="none" stroke="currentColor" stroke-width="2.200" stroke-linecap="round" stroke-linejoin="round"/></svg>`;
+const BOLT=`<svg viewBox="0 0 24 24" width="26" height="26" aria-hidden="true"><path d="M13 2L5 14h6l-1 8 8-12h-6z" fill="currentColor"/></svg>`;
+function showBubble(m){const b=$("#bubble");if(!b)return;b.textContent=m;b.classList.add("on");clearTimeout(showBubble.t);showBubble.t=setTimeout(()=>b.classList.remove("on"),3600)}
+const LOCK=`<svg viewBox="0 0 24 24" width="16" height="16" aria-hidden="true"><path d="M7 11V8a5 5 0 0110 0v3M5 11h14v10H5z" fill="none" stroke="currentColor" stroke-width="2.400" stroke-linejoin="round"/></svg>`;
+function renderCafe(){
+ startWorld();
+ const n=nextLevel(),cur=S.cur&&S.cur.mode==="level"?S.cur:null,d=dayNo(),doneToday=!!S.dailyDone[d],st=curStreak(),dcur=S.cur&&S.cur.mode==="daily"&&S.cur.idx===d;
+ const v=tipsNow(),cap=tipCap(),cz=cozy();
+ const rooms=["cafe","tuin","bad"].map(r=>S.rooms[r]?`<button class="roomc" data-room="${r}" aria-pressed="${W.room===r}">${ROOMN[r]}</button>`:`<button class="roomc locked" data-act="lockroom" data-v="${r}">${LOCK}${ROOMN[r]}</button>`).join("");
+ const main=cur?`<button class="btn" data-level="${cur.idx}">Ga verder met level ${cur.idx+1}</button>`:n<0?`<button class="btn" data-act="tab-levels">Kies een puzzel</button>`:`<button class="btn" data-act="next">Speel level ${n+1}</button>`;
+ const tips=`<button class="tips" id="tips" data-act="tips" ${v?"":"disabled"}><span class="jar">${YUZU}</span><span class="tt"><b>Fooienpot <small>${tipRate()} per uur</small></b><span class="bar"><i style="width:${v/cap*100}%"></i></span></span><span class="get">${v?`Pak ${v}`:"Spaart nog"}</span></button>`;
+ view.innerHTML=topbar("Capi Café")+`<div class="rooms">${rooms}<span class="cozy" role="img" aria-label="Gezelligheid ${cz} van 5">${[1,2,3,4,5].map(i=>`<svg viewBox="0 0 24 24" class="${i<=cz?"on":""}" aria-hidden="true">${ICON.star}</svg>`).join("")}</span></div><div class="scene ${night()?"night":""}" id="stage"></div><div class="panel" id="panel"></div>${tips}${main}<button class="daily" data-act="daily"><span class="cal">${new Date().getDate()}</span><span><span class="big">${doneToday?"Dagpuzzel gehaald":dcur?"Ga verder met de dagpuzzel":"Dagpuzzel"}</span><br><span class="sub">${doneToday?`Morgen weer een nieuwe, serie: ${st} ${st===1?"dag":"dagen"}`:st?`Houd je serie van ${st} ${st===1?"dag":"dagen"} vast, +40 yuzu`:"Elke dag één puzzel, +40 yuzu"}</span></span></button>${goalsHTML()}`;
+ renderScene();renderPanel();
+ if(S.newRoom&&!dlg.open){const r=S.newRoom;S.newRoom=null;if(r==="tuin"){S.seeds.gras=(S.seeds.gras||0)+3;S.seeds.wortel=(S.seeds.wortel||0)+1}save();
+  dlg.innerHTML=`<h2>${r==="tuin"?"De tuin is open!":"Het badhuis is open!"}</h2><p class="intro">${r==="tuin"?"Plant zaadjes in de moestuinbakken en oogst je eigen voer. Kom later terug om te oogsten.":"Je capy’s ontspannen in het warme water. Ze blijven langer blij."}</p>${r==="tuin"?`<div class="bonus">Cadeau: 3 graszaadjes en 1 wortelzaadje</div>`:""}<button class="btn" data-act="gotoroom" data-v="${r}">Kijk in ${r==="tuin"?"de tuin":"het badhuis"}</button>`;dlg.showModal()}
+}
+function renderLevels(){
+ const GROW=`<svg viewBox="0 0 24 24" width="26" height="26" aria-hidden="true"><path d="M3 21V14h7v7zM10 21V9h11v12zM13 3h8v3M21 3l-6 6" fill="none" stroke="currentColor" stroke-width="2.200" stroke-linejoin="round" stroke-linecap="round"/></svg>`;
+ const gc=S.cur&&S.cur.mode==="groei"?S.cur:null;
+ const modes=`<button class="daily newmode" data-act="groei"><span class="cal">${GROW}</span><span><span class="big">Groeibad <em>Nieuw</em></span><br><span class="sub">${gc?`Ga verder met groeibad ${(gc.idx/10|0)+1}, ${GROEI[gc.idx/10|0][gc.idx%10].n} bij ${GROEI[gc.idx/10|0][gc.idx%10].n}`:`Van 4 bij 4 naar 9 bij 9 in één bad. ${Object.keys(S.gdone).length} van ${GROEI.length} gehaald`}</span></span></button><div class="duo"><button class="daily" data-act="etages"><span class="cal">${TOWER}</span><span><span class="big">Etages</span><br><span class="sub">${S.cur&&S.cur.mode==="etage"?"Ga verder":`${Object.keys(S.edone).length} van ${ETAGES.length}`}</span></span></button><button class="daily" data-act="knuffels"><span class="cal">${HEARTI}</span><span><span class="big">Knuffels</span><br><span class="sub">${S.cur&&S.cur.mode==="knuffel"?"Ga verder":`${Object.keys(S.kdone).length} van ${KNUFFELS.length}`}</span></span></button><button class="daily" data-act="vormen"><span class="cal">${ic("star")}</span><span><span class="big">Vormen</span><br><span class="sub">${Object.keys(S.vdone).length} van ${VORMEN.length}</span></span></button><button class="daily" data-act="spurt"><span class="cal">${BOLT}</span><span><span class="big">Spurt</span><br><span class="sub">${S.sbest?`Record ${S.sbest}`:"2 minuten"}</span></span></button></div><h2 class="section-h">Alle puzzels</h2>`;
+ const seg=modes+`<div class="seg"><button data-act="ltab" data-v="bad" aria-pressed="${ltab==="bad"}">Klassiek</button><button data-act="ltab" data-v="etage" aria-pressed="${ltab==="etage"}">Etages</button><button data-act="ltab" data-v="knuffel" aria-pressed="${ltab==="knuffel"}">Knuffels</button><button data-act="ltab" data-v="vorm" aria-pressed="${ltab==="vorm"}">Vormen</button><button data-act="ltab" data-v="groei" aria-pressed="${ltab==="groei"}">Groei</button></div>`;
+ if(ltab==="groei"){const ng=nextGroei();view.innerHTML=topbar("Puzzels")+seg+`<p class="section-p" style="margin-top:12px">Elk groeibad gaat van 4 bij 4 naar 9 bij 9.</p><div class="levels">`+GROEI.map((_,x)=>{const s=S.gdone[x],open=x in S.gdone||x===ng;return `<button class="lv ${x===ng?"next":""}" ${open?`data-groei="${x}"`:"disabled"} aria-label="Groeibad ${x+1}${s?`, ${s} sterren`:open?"":", op slot"}">${x+1}<small>${s?"★".repeat(s):""}</small></button>`}).join("")+"</div>";return}
+ if(ltab==="vorm"){view.innerHTML=topbar("Puzzels")+seg+`<p class="section-p" style="margin-top:12px">Jouw album: ${Object.keys(S.vdone).length} van ${VORMEN.length} vormen verzameld.</p><div class="album">`+VORMEN.map((l,x)=>{const s=S.vdone[x];return `<button class="shapecard" data-vorm="${x}" aria-label="${s?l.name+", "+s+" sterren":"Nog niet verzameld"}">${shapeSVG(l,!!s)}<b>${s?l.name:"?"}</b><small>${s?"★".repeat(s):""}</small></button>`}).join("")+"</div>";return}
+ if(ltab==="knuffel"){const nk=nextKnuffel();let h=topbar("Puzzels")+seg+`<p class="section-p" style="margin-top:12px">Elke kleur één knuffelpaar, elke rij en kolom twee capy’s.</p>`,key=0;KNUFFELS.forEach((l,x)=>{if(l.n!==key){if(key)h+="</div>";key=l.n;h+=`<h2 class="section-h">${l.n} bij ${l.n}</h2><div class="levels">`}const s=S.kdone[x],open=x in S.kdone||x===nk;h+=`<button class="lv ${x===nk?"next":""}" ${open?`data-knuffel="${x}"`:"disabled"} aria-label="Puzzel ${x+1}${s?`, ${s} sterren`:open?"":", op slot"}">${x+1}<small>${s?"★".repeat(s):""}</small></button>`});view.innerHTML=h+"</div>";return}
+ if(ltab==="etage"){const ne=nextEtage();let h=topbar("Puzzels")+seg,key="";ETAGES.forEach((l,x)=>{const k=l.f+"-"+l.n;if(k!==key){if(key)h+="</div>";key=k;h+=`<h2 class="section-h">${["","","Twee","Drie","Vier"][l.f]} etages, ${l.n} bij ${l.n}</h2><div class="levels">`}const s=S.edone[x],open=x in S.edone||x===ne;h+=`<button class="lv ${x===ne?"next":""}" ${open?`data-etage="${x}"`:"disabled"} aria-label="Puzzel ${x+1}${s?`, ${s} sterren`:open?"":", op slot"}">${x+1}<small>${s?"★".repeat(s):""}</small></button>`});view.innerHTML=h+"</div>";return}
+ const n=nextLevel();let h=topbar("Puzzels")+seg,i=0;
+ for(const size of [4,5,6,7,8,9]){const list=LEVELS.map((l,x)=>[l,x]).filter(([l])=>l.n===size);
+  const zd=list.filter(([,x])=>x in S.done).length;h+=`<h2 class="section-h">${ZONES[size][0]}, ${size} bij ${size}</h2><p class="section-p">${ZONES[size][1]} ${zd} van ${list.length} gehaald${S.zones[size]?"":", zone afmaken geeft +50 yuzu"}.</p><div class="levels">`;
+  for(const[,x]of list){const s=S.done[x],open=x in S.done||x===n;h+=`<button class="lv ${x===n?"next":""}" ${open?`data-level="${x}"`:"disabled"} aria-label="Level ${x+1}${s?`, ${s} sterren`:open?"":", op slot"}">${x+1}<small>${s?"★".repeat(s):""}</small></button>`}
+  h+="</div>"}
+ view.innerHTML=h;
+}
+let stab="voer",droom="cafe";
+const EXP=()=>[{id:"bad",name:"Badhuis",desc:"Een warm bad. Capy’s blijven langer blij.",price:200,own:S.rooms.bad},{id:"plot",name:"Extra moestuinbak",desc:S.rooms.tuin?`Je hebt er ${S.plotN} van de 6.`:"Eerst moet de tuin open zijn.",price:[0,0,0,60,90,130][S.plotN]||0,own:S.plotN>=6,lock:!S.rooms.tuin}];
+function renderShop(){
+ const seg=`<div class="seg">${[["voer","Voer"],["zaad","Zaden"],["decor","Inrichten"],["uit","Uitbreiden"]].map(([k,l])=>`<button data-stab="${k}" aria-pressed="${stab===k}">${l}</button>`).join("")}</div>`;
+ let h="";
+ if(stab==="voer")h=`<p class="section-p">Voer gaat naar je voorraad. Elke capy heeft een lievelingseten dat extra blij maakt.</p><div class="shopgrid">`+Object.keys(FOOD).map(f=>{const F=FOOD[f],can=S.yuzu>=F.price;return `<div class="fcard"><span class="fic">${foodIcon(f)}</span><b>${F.name}</b><span class="eff">+${F.full} buik · +${F.joy} blij</span><span class="have">Je hebt er ${S.inv[f]||0}</span><button class="buy" data-sbuy="${f}" ${can?"":"disabled"}>${can?`Koop voor ${F.price}`:`Nog ${F.price-S.yuzu} nodig`}</button></div>`}).join("")+"</div>";
+ else if(stab==="zaad")h=(S.rooms.tuin?`<p class="section-p">Plant zaadjes in de tuin. Zelf kweken is veel goedkoper dan kopen.</p>`:`<p class="section-p">De tuin gaat open na 3 opgeloste puzzels. Zaadjes kun je alvast kopen.</p>`)+`<div class="shopgrid">`+Object.keys(FOOD).filter(f=>FOOD[f].seed).map(f=>{const F=FOOD[f],can=S.yuzu>=F.seed;return `<div class="fcard"><span class="fic pack">${foodIcon(f)}</span><b>${F.name}zaad</b><span class="eff">Geeft ${F.yld} in ${F.min<60?F.min+" min":F.min/60+" uur"}</span><span class="have">Je hebt er ${S.seeds[f]||0}</span><button class="buy" data-zbuy="${f}" ${can?"":"disabled"}>${can?`Koop voor ${F.seed}`:`Nog ${F.seed-S.yuzu} nodig`}</button></div>`}).join("")+"</div>";
+ else if(stab==="decor"){const rs=`<div class="chips">${["cafe","tuin","bad"].map(r=>`<button data-droom="${r}" aria-pressed="${droom===r}">${ROOMN[r]}</button>`).join("")}</div>`;
+  h=rs+(S.rooms[droom]?`<p class="section-p">Meer spullen maken je café gezelliger, en dan sparen de capy’s meer fooien. Op sommige spullen gaan ze zitten of liggen.</p><div class="items">`+DECOR.filter(d=>d.room===droom).map(d=>{const own=hasD(d.id),can=S.yuzu>=d.price;return `<div class="item"><div class="pre ${d.room}"><svg viewBox="${d.view}" aria-hidden="true">${d.svg}</svg></div><b>${d.name}</b><button class="buy" ${own||!can?"disabled":""} data-buy="${d.id}">${own?"Staat er al":can?`Koop voor ${d.price}`:`Nog ${d.price-S.yuzu} nodig`}</button></div>`}).join("")+"</div>":`<p class="locknote">${droom==="tuin"?"De tuin gaat open na 3 opgeloste puzzels.":"Koop eerst het badhuis onder Uitbreiden."}</p>`)}
+ else h=`<p class="section-p">Maak je café groter. Elke nieuwe ruimte maakt het gezelliger.</p><div class="exps"><div class="exp"><b>Tuin</b><span>Moestuin voor je eigen voer.</span>${S.rooms.tuin?`<span class="ok">Open</span>`:`<span class="gp">Gaat open na 3 puzzels (${Math.min(3,doneCount())}/3)</span>`}</div>`+EXP().map(x=>`<div class="exp"><b>${x.name}</b><span>${x.desc}</span>${x.own?`<span class="ok">${x.id==="plot"?"Maximaal":"Open"}</span>`:`<button class="buy" data-xbuy="${x.id}" ${x.lock||S.yuzu<x.price?"disabled":""}>${S.yuzu<x.price?`Nog ${x.price-S.yuzu} nodig`:`Koop voor ${x.price}`}</button>`}</div>`).join("")+"</div>";
+ const y=view.scrollTop;view.innerHTML=topbar("Winkel")+seg+h;view.scrollTop=y;
+}
+function renderCapys(){
+ const dc=doneCount(),cs=owned();
+ view.innerHTML=topbar("Familie")+`<p class="section-p">${cs.length} van de ${CAPYS.length} capy’s wonen bij jou.</p><div class="fam">`+CAPYS.map(c=>{if(dc<c.at)return `<div class="card locked">${capyFull(c)}<b>Nog niet gevonden</b><span>Haal ${c.at} puzzels</span></div>`;const p=P(c),f=FAV[c.name];
+  return `<button class="card" data-visit="${c.name}">${capyFull(c)}<b>${c.name}</b><span class="lvh" aria-label="Vriendschap ${p.lvl}">${lvlHearts(p.lvl)}</span><span class="bars sm"><span>Buik</span>${bar(p.full,"bf")}<span>Blij</span>${bar(p.joy,"bj")}</span><span>${p.favKnown?`Houdt van ${foodIcon(f,"inl")} ${FOOD[f].name.toLowerCase()}`:"Lievelingseten: nog geheim"}</span><span class="q">“${c.q}”</span></button>`}).join("")+`</div><h2 class="section-h">Schatkist</h2><p class="section-p">Blije capy’s laten cadeautjes achter. ${Object.keys(S.treasures).length} van ${TREAS.length} gevonden.</p><div class="tgrid">`+TREAS.map(t=>{const n=S.treasures[t[0]];return `<div class="tcard ${n?"":"locked"}">${treasIcon(t)}<b>${n?t[1]:"?"}</b><span>${n?"×"+n:t[0]==="goud"?"Vriendschap 5":""}</span></div>`}).join("")+"</div>";
+}
+
+/* ---- Puzzel ---- */
+function attacks(n,reg,a,b){if(a===b)return false;const ra=a/n|0,ca=a%n,rb=b/n|0,cb=b%n;return ra===rb||ca===cb||reg[a]===reg[b]||(Math.abs(ra-rb)<=1&&Math.abs(ca-cb)<=1)}
+const steamR=n=>n>=7?2:1;
+function clearAround(i){const{n,hid}=G,R=steamR(n),r=i/n|0,c=i%n,o=[];for(let x=0;x<n*n;x++){if(!hid[x])continue;const d=Math.max(Math.abs((x/n|0)-r),Math.abs(x%n-c));if(d<=R)o.push([x,d])}return o}
+function liftFog(list){if(!list.length)return;sfx.steam();list.forEach(([x,d])=>{G.hid[x]=0;const c=$(`.cell[data-i="${x}"]`),f=c&&c.querySelector(".fog");if(c)c.classList.remove("fogged");if(f){f.style.transitionDelay=d*75+"ms";f.classList.add("gone");setTimeout(()=>f.remove(),900)}})}
+const atk=(a,b)=>{if(a===b)return false;const{n,NN,reg,hid}=G,fa=a/NN|0,fb=b/NN|0,pa=a%NN,pb=b%NN;if(fa!==fb)return Math.abs(fa-fb)===1&&pa===pb;const ra=pa/n|0,ca=pa%n,rb=pb/n|0,cb=pb%n;return ra===rb||ca===cb||(Math.abs(ra-rb)<=1&&Math.abs(ca-cb)<=1)||(!hid[a]&&!hid[b]&&reg[a]===reg[b])};
+function infoUnits(){const{n,NN,F,reg,hid,cells}=G,u=[];
+ for(let f=0;f<F;f++){const base=f*NN;for(let i=0;i<n;i++){u.push({k:"rij",f,c:[...Array(n).keys()].map(x=>base+i*n+x)});u.push({k:"kolom",f,c:[...Array(n).keys()].map(x=>base+x*n+i)});
+  const vis=[...Array(NN).keys()].map(x=>base+x).filter(x=>reg[x]===f*n+i&&!hid[x]);
+  if(vis.length&&vis.every(x=>{const p=x-base,r=p/n|0,c=p%n;return[[r-1,c],[r+1,c],[r,c-1],[r,c+1]].every(([a,b])=>a<0||b<0||a>=n||b>=n||!hid[base+a*n+b])}))u.push({k:"kleur",f,c:vis})}}
+ return u.filter(x=>!x.c.some(y=>cells[y]===2))}
+function etageIntro(){S.etageSeen=true;save();dlg.innerHTML=`<svg class="steamart" viewBox="0 -10 200 130" aria-hidden="true"><path d="M100 70l74 22-74 24-74-24z" fill="var(--r3)" stroke="var(--edge)" stroke-width="3"/><path d="M88 89l24 7M112 89l-24 7" stroke="var(--berry)" stroke-width="5" stroke-linecap="round"/><path d="M100 58v22" stroke="var(--edge)" stroke-width="2.500" stroke-dasharray="4 4"/><path d="M100 22l74 22-74 24-74-24z" fill="var(--r1)" stroke="var(--edge)" stroke-width="3"/><g transform="translate(76 -2) scale(.48)">${head(CAPYS[0])}</g></svg><h2>Etages</h2><p class="intro">Elke etage is een eigen puzzel met de gewone regels. Nieuw: een capy mag niet recht boven of onder een andere capy zitten.</p><p class="intro">Geen enkele etage kun je los oplossen, dus wissel via de lift rechts. Een schaduw laat zien dat er een capy boven of onder een vakje zit.</p><p class="intro">Tik voor een kruisje, dubbeltik voor een capy.</p><button class="btn" data-act="close">Aan de slag</button>`;if(!dlg.open)dlg.showModal()}
+function pairCtx(n,reg){const N=n*n,rows=[],cols=[],colors=[],nb=[];
+ for(let i=0;i<n;i++){rows.push([...Array(n).keys()].map(c=>i*n+c));cols.push([...Array(n).keys()].map(r=>r*n+i));colors.push([...Array(N).keys()].filter(x=>reg[x]===i))}
+ for(let x=0;x<N;x++){const r=x/n|0,c=x%n,o=[];for(let a=-1;a<=1;a++)for(let b=-1;b<=1;b++){if((a||b)&&r+a>=0&&r+a<n&&c+b>=0&&c+b<n)o.push((r+a)*n+c+b)}nb.push(o)}
+ return{n,N,reg,nb,units:[...rows.map((c,i)=>({k:"rij",c})),...cols.map((c,i)=>({k:"kolom",c})),...colors.map((c,i)=>({k:"kleur",c}))]}}
+function pairStep(C,s){const{N,reg,nb,units}=C;
+ for(let x=0;x<N;x++){if(s[x]!==1)continue;const m=nb[x].filter(y=>s[y]===1);
+  if(m.length>1||m.some(y=>reg[y]!==reg[x]))return{bad:true};
+  for(const y of nb[x])if(s[y]===0&&reg[y]!==reg[x])return{i:y,v:-1,why:"raak",from:x};
+  if(m.length===1){for(const y of nb[x])if(s[y]===0)return{i:y,v:-1,why:"bezet",from:x}}
+  else{const o=nb[x].filter(y=>s[y]===0&&reg[y]===reg[x]);if(!o.length)return{bad:true};if(o.length===1)return{i:o[0],v:1,why:"maatje",from:x}}}
+ for(const u of units){let k=0;const o=[];for(const x of u.c){if(s[x]===1)k++;else if(s[x]===0)o.push(x)}
+  if(k>2||k+o.length<2)return{bad:true};
+  if(k===2&&o.length)return{i:o[0],v:-1,why:"vol",unit:u};
+  if(k+o.length===2&&o.length)return{i:o[0],v:1,why:"precies",unit:u}}
+ for(let x=0;x<N;x++){if(s[x]!==0)continue;if(!nb[x].some(y=>s[y]>=0&&reg[y]===reg[x]))return{i:x,v:-1,why:"geenmaatje"}}
+ return null}
+function pairFix(C,s){for(;;){const t=pairStep(C,s);if(!t)return true;if(t.bad)return false;s[t.i]=t.v}}
+function pairWhatIf(C,s,N){for(let x=0;x<C.N;x++){if(s[x]!==0)continue;const a=s.slice();a[x]=1;if(!pairFix(C,a))return{i:x,v:-1,why:"alsdan"};const b=s.slice();b[x]=-1;if(!pairFix(C,b))return{i:x,v:1,why:"alsdan"}}return null}
+const pairState=()=>{const s=new Int8Array(G.N);G.cells.forEach((v,i)=>{s[i]=v===2?1:v?-1:0});return s};
+const pairMates=x=>G.C.nb[x].filter(y=>G.cells[y]===2);
+function pairBlocked(){const{C,cells,reg}=G,b=new Set();cells.forEach((v,x)=>{if(v===2)return;for(const u of C.units)if(u.c.includes(x)&&u.c.filter(y=>cells[y]===2).length>=2)b.add(x);for(const y of pairMates(x))if(reg[y]!==reg[x]||pairMates(y).length)b.add(x)});return b}
+function pairReason(i){const{C,cells,reg}=G;
+ for(const u of C.units)if(u.c.includes(i)){const k=u.c.filter(y=>cells[y]===2);if(k.length>=2)return{msg:`Deze ${u.k} heeft al twee capy’s.`,cause:k}}
+ const m=pairMates(i).find(y=>reg[y]!==reg[i]);if(m!==undefined)return{msg:"Capy’s uit verschillende kleuren mogen elkaar niet raken.",cause:[m]};
+ if(!C.nb[i].some(y=>reg[y]===reg[i]&&cells[y]!==3))return{msg:"Hier kan geen maatje van dezelfde kleur naast zitten.",cause:[]};
+ const o=pairMates(i).find(y=>reg[y]===reg[i]);if(o===undefined&&G.cells.some((v,y)=>v===2&&reg[y]===reg[i]))return{msg:"Het maatje moet de capy van deze kleur raken.",cause:G.sol.filter(y=>cells[y]===2&&reg[y]===reg[i])};
+ return{msg:"Hier past geen capy, dan loopt het paar of een rij vast.",cause:[]}}
+function pairHint(put){const{C,cells}=G,s=pairState(),xs=[];
+ for(;;){let t=pairStep(C,s);if(t&&t.bad)break;if(!t)t=pairWhatIf(C,s);if(!t)break;
+  if(t.v===-1){s[t.i]=-1;if(cells[t.i]===0)xs.push(t.i);continue}
+  if(xs.length)setCells(xs.map(i=>[i,1]));
+  return put(t.i,t.why==="maatje"?"Deze capy heeft nog maar één plek voor zijn maatje.":t.why==="precies"?`In deze ${t.unit.k} zijn nog precies genoeg plekken over.`:"Elke andere keuze loopt vast, dus hier hoort een capy.")}
+ if(xs.length)setCells(xs.map(i=>[i,1]));put(G.sol.find(i=>cells[i]!==2),"Hier hoort een capy.")}
+function paintHearts(){if(G.k!==2)return;const b=$("#board"),{n}=G;G.cells.forEach((v,x)=>{if(v!==2)return;const m=pairMates(x)[0];const el=$(`.cell[data-i="${x}"] .c`);if(!el)return;if(m===undefined){el.classList.remove("hug");return}
+  el.style.setProperty("--lx",((m%n)-(x%n))*7+"%");el.style.setProperty("--ly",((m/n|0)-(x/n|0))*7+"%");el.classList.add("hug");
+  if(x<m&&!G.hearts.has(x)){G.hearts.add(x);const h=document.createElement("i");h.className="heart";h.style.left=((x%n)+(m%n)+1)/2/n*100+"%";h.style.top=((x/n|0)+(m/n|0)+1)/2/n*100+"%";h.innerHTML=HEART;b.appendChild(h)}})}
+const HEART=`<svg viewBox="0 0 24 24" aria-hidden="true"><path d="M12 21C6 16.300 2 12.800 2 8.300 2 5.200 4.400 3 7.300 3c1.900 0 3.700 1 4.700 2.700C13 4 14.800 3 16.700 3 19.600 3 22 5.200 22 8.300c0 4.500-4 8-10 12.700z" fill="#EE4D7B" stroke="#fff" stroke-width="2"/></svg>`;
+function knuffelIntro(){S.knuffelSeen=true;save();dlg.innerHTML=`<svg class="steamart" viewBox="0 0 200 90" aria-hidden="true"><g transform="translate(36 2) scale(.72)">${head(CAPYS[0])}</g><g transform="translate(92 2) scale(.72)">${head(CAPYS[1])}</g><g transform="translate(84 44) scale(1.300)"><path d="M12 21C6 16.300 2 12.800 2 8.300 2 5.200 4.400 3 7.300 3c1.900 0 3.700 1 4.700 2.700C13 4 14.800 3 16.700 3 19.600 3 22 5.200 22 8.300c0 4.500-4 8-10 12.700z" fill="#EE4D7B" stroke="#fff" stroke-width="2"/></g></svg><h2>Knuffelparen</h2><p class="intro">Elke kleur krijgt hier één knuffelpaar: twee capy’s die elkaar raken, ook schuin mag.</p><p class="intro">Elke rij en kolom krijgt twee capy’s. Capy’s uit verschillende paren raken elkaar nooit.</p><p class="intro">Tik voor een kruisje, dubbeltik voor een capy.</p><button class="btn" data-act="close">Aan de slag</button>`;if(!dlg.open)dlg.showModal()}
+function vormIntro(){S.vormSeen=true;save();dlg.innerHTML=`<div class="steamart shapeart">${shapeSVG(VORMEN.find(v=>v.name==="Hart"),true)}</div><h2>Vormborden</h2><p class="intro">De regels blijven hetzelfde: elke rij, kolom en kleur krijgt één capy, en capy’s raken elkaar niet.</p><p class="intro">Alleen is het bord nu een vorm. De gaten tellen niet mee, dus tel goed. Elke opgeloste vorm komt in je album.</p><p class="intro">Tik voor een kruisje, dubbeltik voor een capy.</p><button class="btn" data-act="close">Aan de slag</button>`;if(!dlg.open)dlg.showModal()}
+const SHAPEC={Hart:"#EE4D7B",Yuzu:"#FFA41B",Koffie:"#8A5A34",Wolk:"#6FA8DC",Blad:"#3E9B4F",Kroon:"#E5A800",Vis:"#2FA7A0",Paddo:"#D8375C",Ster:"#F2B705",Huis:"#C56B3D",Vlinder:"#8D5CE0",Capy:"#A9683A",Bloem:"#F06FA8"};
+function shapeSVG(l,done){const{n}=l;let s="";[...l.r].forEach((v,x)=>{if(v!=="x")s+=`<rect x="${x%n}" y="${x/n|0}" width="1.020" height="1.020" fill="${done?(SHAPEC[l.name]||"var(--water)"):"var(--muted)"}" fill-opacity="${done?1:.45}"/>`});return `<svg viewBox="0 0 ${n} ${n}" aria-hidden="true">${s}</svg>`}
+function groeiIntro(){S.groeiSeen=true;save();dlg.innerHTML=`<svg class="steamart" viewBox="0 0 200 90" aria-hidden="true">${[[18,40,30],[62,30,40],[116,18,54]].map(([x,y,w],i)=>`<rect x="${x}" y="${y}" width="${w}" height="${w}" rx="5" fill="var(--r${i+2})" stroke="var(--edge)" stroke-width="3"/>`).join("")}<path d="M52 56h6M106 50h6" stroke="var(--edge)" stroke-width="3" stroke-linecap="round"/><g transform="translate(124 24) scale(.38)">${head(CAPYS[0])}</g></svg><h2>Groeibad</h2><p class="intro">Je begint met een klein bad van 4 bij 4. Los je het op, dan groeit het bad met een rij en een kolom erbij.</p><p class="intro">Een deel van je capy’s blijft zitten, de rest zoekt een nieuwe plek. Zo werk je door tot 9 bij 9.</p><p class="intro">Fouten en tijd tellen over het hele bad.</p><button class="btn" data-act="close">Aan de slag</button>`;if(!dlg.open)dlg.showModal()}
+function growNext(){const run=GROEI[G.run],next=run[G.stage+1],n=G.n;G.over=true;clearInterval(timerId);persist();
+ const keep=new Set([...next.gv].map(Number)),b=$("#board");b.classList.add("won");sfx.ding();hap([15,30,15]);
+ $("#coach").textContent=`Het bad groeit naar ${next.n} bij ${next.n}!`;
+ G.sol.forEach(x=>{const r=x/n|0,R=r+(r>=next.ir);if(!keep.has(R)){const el=$(`.cell[data-i="${x}"]`);el&&el.classList.add("leave")}});
+ setTimeout(()=>{if(!G||G.mode!=="groei")return;const sk={},stay=[];G.sol.forEach(x=>{const r=x/n|0,c=x%n,R=r+(r>=next.ir),C=c+(c>=next.ic);if(keep.has(R)){sk[R*next.n+C]=skinIdx(x);stay.push([r,c])}});const crosses=[];G.cells.forEach((v,y)=>{if(v!==1)return;const yr=y/n|0,yc=y%n;if(stay.some(([r,c])=>yr===r||yc===c||(Math.abs(yr-r)<=1&&Math.abs(yc-c)<=1)))crosses.push((yr+(yr>=next.ir))*next.n+yc+(yc>=next.ic))});GC={time:G.time,mistakes:G.mistakes,hints:G.hints,skin:sk,crosses,grow:{ir:next.ir,ic:next.ic}};const idx=G.idx+1;S.cur=null;G=null;start(next,"groei",idx);sfx.harvest()},1250)}
+function spurtIntro(){dlg.innerHTML=`<h2>Capy-spurt</h2><p class="intro">Los in 2 minuten zoveel mogelijk borden op. Elk opgelost bord geeft extra tijd, en de borden worden steeds groter.</p><p class="intro">Een foute capy kost 10 seconden. Loop je vast, sla dan over voor 15 seconden.</p>${S.sbest?`<p class="bonus">Jouw record: ${S.sbest} punten, ${S.sboards} ${S.sboards===1?"bord":"borden"}</p>`:""}<p class="intro">Tik voor een kruisje, dubbeltik voor een capy.</p><button class="btn" data-act="sgo">Start</button><button class="btn quiet" data-act="close">Terug</button>`;if(!dlg.open)dlg.showModal()}
+const shuf=a=>{a=a.slice();for(let i=a.length-1;i>0;i--){const j=Math.random()*(i+1)|0;[a[i],a[j]]=[a[j],a[i]]}return a};
+function spurtGo(){if(dlg.open)dlg.close();SP={time:120,score:0,boards:0,bag:{5:shuf(SPURT[5]),6:shuf(SPURT[6]),7:shuf(SPURT[7])},pause:false,last:121};spurtBoard();clearInterval(timerId);timerId=setInterval(spurtTick,200)}
+function spurtBoard(){const b=SP.boards,n=b<4?5:b<10?6:7,bag=SP.bag[n];if(!bag.length)SP.bag[n]=shuf(SPURT[n]);const l=SP.bag[n].pop();G=null;start(l,"spurt",0);spurtShow()}
+function spurtShow(){const t=$("#timer"),s=$("#score");if(t){t.textContent=fmt(Math.max(0,Math.ceil(SP.time)));t.classList.toggle("low",SP.time<=10)}if(s)s.textContent=SP.score}
+function spurtTick(){if(!SP||!G||G.mode!=="spurt"||G.over&&!SP.pause||dlg.open||document.hidden||SP.pause)return;SP.time-=.2;const w=Math.ceil(SP.time);if(w<SP.last){SP.last=w;if(w<=10&&w>0)tone(880,.05,"triangle",.05)}spurtShow();if(SP.time<=0)spurtEnd()}
+function spurtWin(){G.over=true;SP.pause=true;$("#board").classList.add("won");SP.boards++;SP.score+=50+(G.mistakes?0:25);SP.time+=G.n>=6?20:15;SP.last=Math.ceil(SP.time)+1;sfx.ding();spurtShow();$("#coach").textContent=`${SP.boards} ${SP.boards===1?"bord":"borden"} klaar, tijd erbij!`;setTimeout(()=>{if(SP&&G&&G.mode==="spurt"){SP.pause=false;spurtBoard()}},520)}
+function spurtEnd(){G.over=true;clearInterval(timerId);sfx.win();hap([20,40,50]);const rec=SP.score>S.sbest,gain=Math.min(60,SP.boards*4);if(rec){S.sbest=SP.score;S.sboards=SP.boards}S.yuzu+=gain;save();const{score,boards}=SP;
+ dlg.innerHTML=`<h2>Tijd voorbij!</h2><div class="bigscore">${score}</div><p class="intro">${boards} ${boards===1?"bord":"borden"} opgelost</p>${rec&&score?`<p class="bonus">Nieuw record!</p>`:`<p class="intro">Jouw record: ${S.sbest} punten</p>`}<div class="reward">${gain?YUZU+"+"+gain+" yuzu":""}</div><div class="share" id="sharetxt">Capy-spurt: ${score} punten, ${boards} ${boards===1?"bord":"borden"}</div><button class="btn" data-act="sgo">Nog een keer</button><button class="btn quiet" data-act="share">Deel je score</button><button class="btn quiet" data-act="home">Naar het café</button>`;dlg.showModal()}
+function steamIntro(){S.steamSeen=true;save();dlg.innerHTML=`<svg class="steamart" viewBox="0 0 200 100" aria-hidden="true"><g transform="translate(64 8) scale(.72)">${head(CAPYS[0])}</g><g fill="var(--steam2)" stroke="var(--edge)" stroke-width="3"><path d="M10 92c-11-2-10-19 3-19 1-13 21-16 27-4 12-5 22 5 18 15 9 1 8 9 3 9z"/><path d="M140 92c-11-2-10-19 3-19 1-13 21-16 27-4 12-5 22 5 18 15 9 1 8 9 3 9z"/></g></svg><h2>Stoom in het bad</h2><p class="intro">Onder de stoom zie je de kleuren niet en kun je nog geen capy zetten. Elke goede capy blaast de stoom om zich heen weg.</p><p class="intro">Er is altijd een zet te vinden zonder te gokken.</p><button class="btn" data-act="close">Aan de slag</button>`;if(!dlg.open)dlg.showModal()}
+function persist(){if(G&&!G.over&&G.tut===null&&G.mode!=="spurt")S.cur={mode:G.mode,idx:G.idx,fl:G.fl,cells:G.cells,hints:G.hints,mistakes:G.mistakes,time:G.time,skin:G.skin||null};save()}
+function start(l,mode,idx){
+ const c=S.cur&&S.cur.mode===mode&&S.cur.idx===idx?S.cur:null;
+ const n=l.n,F=l.f||1,k=l.k||1,NN=n*n,N=NN*F,reg=[...l.r].map((v,x)=>v==="x"?-1:+v+(x/NN|0)*n),shape=l.r.includes("x"),sol=[...l.s].map((v,i)=>{const j=i/k|0;return (j/n|0)*NN+(j%n)*n+ +v});
+ const hid=l.m?[...l.m].map(Number):new Array(N).fill(0);
+ G={n,F,k,shape,name:l.name,C:k===2?pairCtx(n,reg):null,hearts:new Set(),NN,N,fl:c&&c.fl||0,reg,sol,hid,steam:!!l.m,mode,idx,cells:c?c.cells.slice():new Array(N).fill(0),hist:[],hints:c?c.hints:0,mistakes:c?c.mistakes:0,time:c?c.time:0,combo:0,over:false,tut:null};
+ G.cells.forEach((v,i)=>{if(v===2)clearAround(i).forEach(([x])=>G.hid[x]=0)});
+ if(shape&&!c)reg.forEach((v,x)=>{if(v<0)G.cells[x]=4});
+ if(mode==="groei"){G.run=idx/10|0;G.stage=idx%10;G.skin=c&&c.skin?Object.assign({},c.skin):{};
+  if(!c&&l.gv){const giv=[...l.gv].map(R=>+R*n+ +l.s[R]);giv.forEach(x=>{G.cells[x]=2});
+   if(GC){G.skin=Object.assign({},GC.skin);(GC.crosses||[]).forEach(x=>{if(G.cells[x]===0)G.cells[x]=1})}}
+  if(GC){G.time=GC.time;G.mistakes=GC.mistakes;G.hints=GC.hints;if(GC.grow&&!c)G.grown=GC.grow;GC=null}}
+ if(!c&&!S.tut&&F===1&&k===1&&!shape&&mode!=="spurt"&&mode!=="groei")tutInit();
+ renderNav();renderGame();if(mode==="spurt")return;persist();
+ if(G.steam&&!S.steamSeen&&G.tut===null)steamIntro();
+ if(F>1&&!S.etageSeen)etageIntro();
+ if(k===2&&!S.knuffelSeen)knuffelIntro();
+ if(shape&&!S.vormSeen)vormIntro();
+ if(mode==="groei"&&!S.groeiSeen)groeiIntro();
+ clearInterval(timerId);
+ timerId=setInterval(()=>{if(!G||G.over||dlg.open||document.hidden)return;G.time++;const t=$("#timer");if(t)t.textContent=fmt(G.time);if(G.time%5===0)persist()},1000);
+}
+const TIPS=["Elke rij, kolom en kleur krijgt één capy. Capy’s raken elkaar niet, ook niet schuin.","Begin bij de kleinste kleur: daar zijn de minste plekken.","Twijfel je? Zet eerst kruisjes. Een foute capy kost een ster."];
+function coachText(){
+ if(G.tut!==null)return G.tutSteps[G.tut].msg;
+ if(G.mode==="groei")return G.stage?"Een paar capy’s zijn blijven zitten. Zet de rest erbij.":"Los dit kleine bad op. Daarna groeit het, en blijft een deel van je capy’s zitten.";if(G.mode==="spurt")return"Elke rij, kolom en kleur één capy. Capy’s raken elkaar niet.";if(G.k===2)return"Elke kleur krijgt één knuffelpaar, en elke rij en kolom krijgt twee capy’s.";if(G.F>1)return"Een capy mag niet recht boven of onder een andere capy zitten.";if(G.hid.some(Boolean))return"Zoek een zet op de heldere vakjes. Elke goede capy blaast stoom weg.";return G.mode==="level"&&G.idx<3?TIPS[G.idx]:TIPS[0];
+}
+function tutInit(){
+ const{n,sol}=G,isSol=i=>sol.includes(i);
+ const S0=sol.find(i=>!G.hid[i]),A=[...Array(n*n).keys()].find(i=>!isSol(i));
+ let B=-1;for(let i=n;i<n*n-1&&B<0;i++)if(i%n<n-1&&!isSol(i)&&!isSol(i+1)&&i!==A&&i+1!==A)B=i;
+ const C=B+1;
+ G.tutSteps=[
+  {msg:"Tik op het gemarkeerde vakje. Een kruisje onthoudt waar geen capy kan.",t:[A],gesture:"tap",ok:()=>G.cells[A]===1},
+  {msg:"Tik nog een keer om het kruisje weg te halen.",t:[A],gesture:"tap",ok:()=>G.cells[A]===0},
+  {msg:"Veeg over deze twee vakjes voor meerdere kruisjes tegelijk.",t:[B,C],gesture:"swipe",ok:()=>G.cells[B]===1&&G.cells[C]===1},
+  {msg:"Dubbeltik hier om een capy te plaatsen. Dat is meteen je zet: een foute capy kost een ster.",t:[S0],gesture:"double",ok:()=>G.cells[S0]===2}
+ ];
+ G.tut=0;
+}
+function tutStep(){
+ if(G.tut===null||!G.tutSteps[G.tut].ok())return;
+ G.tut++;
+ if(G.tut>=G.tutSteps.length){G.tut=null;S.tut=true;save();$(".tools").innerHTML=toolsHTML();$("#coach").textContent="Goed zo! Zet de rest neer: elke rij, kolom en kleur krijgt één capy.";paint();drawTut();persist();if(G.steam&&!S.steamSeen)steamIntro();return}
+ $("#coach").textContent=coachText();drawTut();
+}
+function drawTut(){
+ const b=$("#board");if(!b)return;b.querySelectorAll(".ghost").forEach(x=>x.remove());document.querySelectorAll(".cell.tut").forEach(x=>x.classList.remove("tut"));
+ if(G.tut===null)return;
+ const st=G.tutSteps[G.tut],n=G.n,g=document.createElement("i"),f=st.t[0];
+ st.t.forEach(i=>b.children[i].classList.add("tut"));
+ g.className="ghost "+st.gesture;g.style.left=(f%n+.5)/n*100+"%";g.style.top=((f/n|0)+.5)/n*100+"%";b.appendChild(g);
+}
+function toolsHTML(){return G.tut!==null?`<button data-act="skiptut">Uitleg overslaan</button>`:`<button data-act="undo" id="undo">${ic("undo")}Terug</button><button data-act="clear" id="clr">${ic("clear")}Wissen</button>${G.mode==="spurt"?`<button data-act="skipb">Sla over</button>`:`<button data-act="hint" id="hintb">${ic("hint")}<span id="hintl"></span></button>`}`}
+const meterHTML=()=>[1,2,3].map(i=>`<svg viewBox="0 0 24 24" class="on" aria-hidden="true">${ICON.star}</svg>`).join("");
+function boardCells(){
+ const{n,NN,reg,fl,shape}=G,base=fl*NN;let cells="",first=true;
+ for(let p=0;p<NN;p++){const i=base+p,r=p/n|0,c=p%n;if(reg[i]<0){cells+=`<i class="hole"></i>`;continue}const e=[(r>0?reg[i-n]!==reg[i]:shape)?"t":"",(c<n-1?reg[i+1]!==reg[i]:shape)?"r":"",(r<n-1?reg[i+n]!==reg[i]:shape)?"b":"",(c>0?reg[i-1]!==reg[i]:shape)?"l":""].join(" ");
+  const nw=G.grown&&(r===G.grown.ir||c===G.grown.ic)?" new":"";cells+=`<button class="cell ${e}${nw}" data-i="${i}" style="background-color:var(--r${reg[i]%n});--d:${(r+c)*22}ms;--c:${c};--w:${r}" tabindex="${first?0:-1}"></button>`;first=false}
+ return cells}
+function thumb(f){const{n,NN,reg,cells}=G;let s="";for(let p=0;p<NN;p++){const i=f*NN+p,x=p%n,y=p/n|0;s+=`<rect x="${x}" y="${y}" width="1.020" height="1.020" fill="var(--r${reg[i]%n})"/>`;if(cells[i]===2)s+=`<circle cx="${x+.5}" cy="${y+.5}" r=".42" fill="#7B4725"/>`}return `<svg viewBox="0 0 ${n} ${n}" aria-hidden="true">${s}</svg>`}
+const floorCount=f=>{let k=0;for(let p=0;p<G.NN;p++)if(G.cells[f*G.NN+p]===2)k++;return k};
+function paintLift(){const l=$("#lift");if(!l)return;let h="";for(let f=G.F-1;f>=0;f--){const k=floorCount(f),done=k===G.n;h+=`<button data-floor="${f}" ${f===G.fl?'aria-current="true"':""} class="${done?"done":""}" aria-label="Etage ${f+1}, ${k} van ${G.n} capy’s">${thumb(f)}<span class="no">${f+1}</span></button>`}l.innerHTML=h;const t=$("#gtitle");if(t)t.textContent=`Etage ${G.fl+1} van ${G.F}`}
+function gotoFloor(f,sound){if(G.F<2||f===G.fl)return;const up=f>G.fl,b=$("#board");G.fl=f;lastTap.i=-1;b.innerHTML=boardCells();b.classList.add("instant");b.classList.remove("up","down");void b.offsetWidth;b.classList.add(up?"up":"down");if(sound){sfx.ding();hap(6)}paint();persist()}
+function renderGame(){
+ const{n,F}=G;view.style.padding="0";
+ view.innerHTML=`<div id="game"><div class="g-top"><button class="iconbtn" data-act="quit" aria-label="Terug naar het café">${ic("back")}</button><h2 id="gtitle">${G.mode==="groei"?`Groeibad ${G.run+1}`:G.mode==="daily"?"Dagpuzzel":G.mode==="spurt"?"Capy-spurt":G.shape?G.name:F>1?"":G.k===2?"Knuffels "+(G.idx+1):"Level "+(G.idx+1)}</h2>${G.mode==="spurt"?`<span class="score" aria-label="Punten"><span id="score">0</span></span>`:`<span class="meter" id="meter" role="img">${meterHTML()}</span>`}<span class="timer" id="timer" aria-label="Tijd">${fmt(G.time)}</span></div>${G.mode==="groei"?`<div class="gsteps" role="img" aria-label="Bad ${G.stage+1} van ${GROEI[G.run].length}">${GROEI[G.run].map((s,i)=>`<span class="${i<G.stage?"done":i===G.stage?"now":""}">${s.n}×${s.n}</span>`).join("")}</div>`:""}<div class="board-row"><div class="board-wrap"><div class="board ${G.shape?"shape":""}${G.grown?" zoom":""}" id="board" role="grid" aria-label="Puzzelbord. Enter zet of wist een kruisje, spatie plaatst een capy.${F>1?" Page Up en Page Down wisselen van etage.":""}" style="--n:${n};grid-template-columns:repeat(${n},1fr);grid-template-rows:repeat(${n},1fr)">${boardCells()}</div></div>${F>1?`<div class="lift" id="lift" role="group" aria-label="Lift"></div>`:""}</div><p class="coach" id="coach" aria-live="polite">${coachText()}</p><div class="tools">${toolsHTML()}</div></div>`;
+ bindBoard();paint();drawTut();
+ if(G.grown){const b=$("#board"),s=G.n/(G.n-1);b.style.setProperty("--s",s);b.style.transformOrigin=`${G.grown.ic===0?"100%":"0%"} ${G.grown.ir===0?"100%":"0%"}`;$(".board-wrap").classList.add("clip");const g=G;setTimeout(()=>{b.classList.remove("zoom");$(".board-wrap")&&$(".board-wrap").classList.remove("clip");if(g===G)G.grown=null},1300)}
+}
+const hintLabel=()=>S.hints>0?`Hint (${S.hints})`:"Hint, 15 yuzu";
+const stars=()=>Math.max(1,3-G.mistakes-(G.hints?1:0));
+const placed=()=>{const p=[];G.cells.forEach((v,i)=>{if(v===2)p.push(i)});return p};
+function blocked(){if(G.k===2)return pairBlocked();const b=new Set();for(const x of placed())for(let i=0;i<G.N;i++)if(atk(x,i))b.add(i);return b}
+const XSVG=`<svg class="x" viewBox="0 0 20 20" aria-hidden="true"><path d="M4 4l12 12M16 4L4 16" stroke="currentColor" stroke-width="3.400" stroke-linecap="round"/></svg>`;
+const SHADE=(u,d)=>`<svg class="shade" viewBox="0 0 100 100" aria-hidden="true"><path d="M31 18c10-5 28-5 38 0 8 5 12 18 12 32v18c0 14-13 22-31 22S19 82 19 68V50c0-14 4-27 12-32z" fill="currentColor"/>${u?`<path d="M80 2l18 24H62z" fill="currentColor"/>`:""}${d?`<path d="M80 98l18-24H62z" fill="currentColor"/>`:""}</svg>`;
+const FOG=`<span class="fog"></span>`;
+function skinIdx(i){const cs=owned();if(G.skin[i]===undefined){const used=new Set(G.cells.map((v,x)=>v===2&&x!==i?G.skin[x]:undefined).filter(v=>v!==undefined));let k=0;while(used.has(k)&&k<cs.length)k++;G.skin[i]=k<cs.length?k:Object.keys(G.skin).length%cs.length}return G.skin[i]}
+function faceFor(i){const cs=owned();if(G.skin)return cs[skinIdx(i)%cs.length]||cs[0];return cs[(G.sol.indexOf(i)+Math.max(0,i%3))%cs.length]||cs[0]}
+function paint(){
+ const blk=S.auto?blocked():new Set(),els=document.querySelectorAll(".cell"),{n,NN,F,fl}=G;let q=0;
+ els.forEach(el=>{const i=+el.dataset.i,p=i%NN,v=G.cells[i],up=fl<F-1&&G.cells[(fl+1)*NN+p]===2,dn=fl>0&&G.cells[(fl-1)*NN+p]===2,want=["","x","capy","wrong"][v]+(up?"^":"")+(dn?"v":"");
+  if(el.dataset.v!==want){el.dataset.v=want;
+   el.innerHTML=(v===2?capyHead(faceFor(i)):v===1?XSVG:v===3?XSVG.replace('class="x"','class="x bad"'):"")+((up||dn)&&v!==2?SHADE(up,dn):"")+(G.hid[i]?FOG:"")}
+  if(v===2){if(el.firstChild)el.firstChild.style.setProperty("--i",q);q++}
+  el.classList.toggle("fogged",!!G.hid[i]);el.classList.toggle("dot",v===0&&blk.has(i));
+  el.setAttribute("aria-label",`Rij ${(p/n|0)+1}, kolom ${p%n+1}, ${G.hid[i]?"onder stoom":"kleur "+(G.reg[i]%n+1)}, ${v===2?"capy":v===1?"kruisje":v===3?"foute plek":"leeg"}${up?", capy erboven":""}${dn?", capy eronder":""}`)});
+ const u=$("#undo");if(u){u.disabled=!G.hist.some(h=>h.some(([i])=>G.cells[i]<2));$("#clr").disabled=!G.cells.some((v,i)=>v===1&&(i/NN|0)===fl);const hl=$("#hintl");if(hl)hl.textContent=hintLabel()}
+ const m=$("#meter");if(m){const s=stars();[...m.children].forEach((x,i)=>x.classList.toggle("on",i<s));m.setAttribute("aria-label",`${s} van de 3 sterren`)}
+ paintLift();paintHearts();
+}
+function setCells(ch){G.hist.push(ch.map(([i])=>[i,G.cells[i]]));ch.forEach(([i,v])=>G.cells[i]=v)}
+const allowed=i=>G.tut===null||G.tutSteps[G.tut].t.includes(i);
+let lastTap={i:-1,t:0,prev:0};
+function nudge(i){const el=$(`.cell[data-i="${i}"]`);el.classList.remove("nudge");void el.offsetWidth;el.classList.add("nudge")}
+function onTap(i){
+ if(G.over)return;
+ if(!allowed(i))return nudge(i);
+ const v=G.cells[i],now=performance.now();
+ if(v>=2){lastTap.i=-1;return nudge(i)}
+ if(lastTap.i===i&&now-lastTap.t<320){G.hist.pop();G.cells[i]=lastTap.prev;lastTap.i=-1;return place(i)}
+ setCells([[i,v?0:1]]);lastTap={i,t:now,prev:v};
+ v?sfx.erase():sfx.tick();hap(4);paint();$("#coach").textContent=coachText();tutStep();persist();
+}
+function reason(i){
+ if(G.k===2)return pairReason(i);
+ const{n,reg,cells}=G,p=placed(),c=p.find(x=>atk(i,x));
+ if(c!==undefined){if((c/G.NN|0)!==(i/G.NN|0))return{msg:`Er zit al een capy recht ${c>i?"boven":"onder"} dit vakje.`,cause:[i]};const msg=reg[i]===reg[c]?"Deze kleur heeft al een capy.":(i/n|0)===(c/n|0)?"Deze rij heeft al een capy.":i%n===c%n?"Deze kolom heeft al een capy.":"Capy’s mogen elkaar niet raken, ook niet schuin.";return{msg,cause:[c]}}
+ const free=x=>cells[x]<2&&!p.some(q=>atk(q,x));
+ for(const u of infoUnits()){if(u.c.includes(i))continue;const f=u.c.filter(free);if(f.length&&f.every(y=>atk(i,y)))return{msg:u.f===G.fl?`Dan is er geen plek meer over in deze ${u.k}.`:`Dan is er op etage ${u.f+1} geen plek meer over in een ${u.k}.`,cause:f.filter(x=>!G.hid[x])}}
+ return{msg:"Hier past geen capy. Kijk nog eens naar de heldere vakjes.",cause:[]};
+}
+function place(i){
+ if(G.hid[i]){paint();nudge(i);$("#coach").textContent="Onder de stoom kun je nog geen capy zetten. Blaas de stoom eerst weg met een goede capy.";return}
+ if(G.sol.includes(i)){
+  G.cells[i]=2;G.combo++;if(G.mode==="spurt"){SP.score+=10;spurtShow()}sfx.capy(G.combo);hap(14);paint();liftFog(clearAround(i));if(G.k===2&&pairMates(i).length){setTimeout(sfx.hug,120);hap([14,30,14])}
+  const el=$(`.cell[data-i="${i}"]`);el.classList.add("ring");setTimeout(()=>el.classList.remove("ring"),520);
+  document.querySelectorAll(".cell").forEach(c=>{const x=+c.dataset.i;if(G.reg[x]===G.reg[i]&&!G.hid[x]){c.classList.add("pulse");setTimeout(()=>c.classList.remove("pulse"),420)}});
+  $("#coach").textContent=coachText();tutStep();persist();
+  if(placed().length===G.sol.length)return win();
+  if(G.F>1&&floorCount(G.fl)===G.n){sfx.ding();$("#coach").textContent=`Etage ${G.fl+1} is klaar.`}
+  return;
+ }
+ const r=reason(i),el=$(`.cell[data-i="${i}"]`);
+ G.mistakes++;G.combo=0;if(G.mode==="daily")G.time+=15;if(G.mode==="spurt"){SP.time-=10;spurtShow();$("#timer").classList.add("hit");setTimeout(()=>{const x=$("#timer");x&&x.classList.remove("hit")},500)}
+ G.cells[i]=3;sfx.bad();hap([30,40,60]);
+ el.dataset.v="";el.innerHTML=capyHead(faceFor(i));el.firstChild.classList.add("nope");
+ const b=$("#board");b.classList.remove("oops");void b.offsetWidth;b.classList.add("oops");
+ r.cause.forEach(x=>{const c=$(`.cell[data-i="${x}"]`);if(!c)return;c.classList.add("cause");setTimeout(()=>c.classList.remove("cause"),1500)});
+ $("#coach").textContent=r.msg+(G.mode==="spurt"?" Min 10 seconden.":G.mode==="daily"?" +15 seconden.":stars()>1||G.mistakes<3?" Dat kost een ster.":"");
+ const t=$("#timer");if(t&&G.mode!=="spurt")t.textContent=fmt(G.time);
+ const lost=$("#meter")&&$("#meter").children[Math.max(0,Math.min(2,stars()))];if(lost&&G.mistakes+(G.hints?1:0)<=2){lost.classList.remove("lost");void lost.offsetWidth;lost.classList.add("lost")}
+ setTimeout(()=>{if(G&&G.cells[i]===3)paint()},620);
+ const m=$("#meter");m&&[...m.children].forEach((x,k)=>x.classList.toggle("on",k<stars()));
+ persist();
+}
+function bindBoard(){
+ const b=$("#board");let d=null;
+ const at=e=>{const el=document.elementFromPoint(e.clientX,e.clientY);const c=el&&el.closest&&el.closest(".cell");return c?+c.dataset.i:-1};
+ const cross=i=>{const n=G.n,p=i%G.NN,r=p/n|0,c=p%n;[...b.querySelectorAll(".cell")].forEach(x=>{const k=+x.dataset.i%G.NN;x.classList.toggle("rc",i>=0&&((k/n|0)===r||k%n===c))})};
+ b.addEventListener("pointerdown",e=>{if(e.button||G.over)return;const c=e.target.closest(".cell");if(!c)return;e.preventDefault();c.focus({preventScroll:true});b.setPointerCapture(e.pointerId);const s=+c.dataset.i;d={s,last:s,moved:false,ch:[],erase:G.cells[s]===1}});
+ const brush=i=>{if(!allowed(i))return;const v=G.cells[i],to=d.erase?0:1;if((d.erase&&v===1)||(!d.erase&&v===0)){d.ch.push([i,v]);G.cells[i]=to;d.erase?sfx.erase():sfx.tick();hap(3)}};
+ b.addEventListener("pointermove",e=>{if(!d)return;const i=at(e);if(i<0||i===d.last)return;if(!d.moved){d.moved=true;lastTap.i=-1;brush(d.s)}brush(i);d.last=i;cross(i);paint()});
+ const end=e=>{if(!d)return;const x=d;d=null;cross(-1);if(x.moved){if(x.ch.length){G.hist.push(x.ch);paint();tutStep();persist()}}else if(e.type==="pointerup")onTap(x.s)};
+ b.addEventListener("pointerup",end);b.addEventListener("pointercancel",end);
+ b.addEventListener("keydown",e=>{const c=e.target.closest(".cell");if(!c)return;let i=+c.dataset.i;const n=G.n,p=i%G.NN,m={ArrowUp:-n,ArrowDown:n,ArrowLeft:-1,ArrowRight:1}[e.key];
+  if(e.key==="PageUp"||e.key==="PageDown"){e.preventDefault();const f=G.fl+(e.key==="PageUp"?1:-1);if(f>=0&&f<G.F){gotoFloor(f,true);const o=b.querySelector(`[data-i="${f*G.NN+p}"]`);o.tabIndex=0;o.focus()}return}
+  if(m){e.preventDefault();const t=p+m;if(t<0||t>=n*n||(Math.abs(m)===1&&(t/n|0)!==(p/n|0)))return;const o=b.querySelector(`[data-i="${i-p+t}"]`);if(!o)return;c.tabIndex=-1;o.tabIndex=0;o.focus()}
+  else if(e.key==="Enter"){e.preventDefault();lastTap.i=-1;onTap(i)}
+  else if(e.key===" "){e.preventDefault();if(!G.over&&allowed(i)&&G.cells[i]<2)place(i)}});
+}
+function hint(){
+ if(G.over)return;
+ if(S.hints>0)S.hints--;else if(S.yuzu>=15)S.yuzu-=15;else{toast("Je hebt 15 yuzu nodig voor een hint.");return}
+ const first=!G.hints;G.hints++;
+ const{n,cells,sol}=G,c=$("#coach"),tail=first?" Deze puzzel levert nu maximaal 2 sterren op.":"";
+ const flash=(i,msg)=>{gotoFloor(i/G.NN|0);paint();c.textContent=msg+tail;const el=$(`.cell[data-i="${i}"]`);el.classList.add("hint");setTimeout(()=>el.classList.remove("hint"),2700);persist()};
+ for(const i of sol)if(cells[i]===1){setCells([[i,0]]);return flash(i,"Hier kan toch een capy zitten, dus het kruisje is weg.")}
+ if(G.k===2)return pairHint((i,msg)=>{cells[i]=2;sfx.capy(++G.combo);flash(i,msg);if(placed().length===sol.length)win()});
+ const p=placed(),isFree=x=>cells[x]===0&&!p.some(q=>atk(q,x)),U=infoUnits();
+ const put=(i,msg)=>{cells[i]=2;sfx.capy(++G.combo);flash(i,msg);liftFog(clearAround(i));if(placed().length===sol.length)win()};
+ for(const u of U){const f=u.c.filter(isFree);if(f.length===1&&!G.hid[f[0]])return put(f[0],`In deze ${u.k} is nog maar één plek vrij.`)}
+ for(let x=0;x<G.N;x++){if(!isFree(x))continue;for(const u of U){if(u.c.includes(x))continue;const f=u.c.filter(isFree);if(f.length&&f.every(y=>atk(x,y))){setCells([[x,1]]);return flash(x,`Een capy hier laat geen plek over in een andere ${u.k}, dus hier komt een kruisje.`)}}}
+ put(sol.find(i=>cells[i]!==2&&!G.hid[i]),"Hier hoort een capy.");
+}
+function win(){
+ if(G.mode==="spurt")return spurtWin();
+ if(G.mode==="groei"&&G.stage<GROEI[G.run].length-1)return growNext();
+ G.over=true;clearInterval(timerId);{const r=[];G.hid.forEach((v,x)=>{if(v)r.push([x,(x/G.n|0)+x%G.n])});liftFog(r)}$("#board").classList.add("won");setTimeout(sfx.win,260);hap([20,40,20,40,50]);
+ const b=$("#board");if(!matchMedia("(prefers-reduced-motion:reduce)").matches)for(let i=0;i<14;i++){const d=document.createElement("i");d.className="drop";d.style.left=Math.random()*94+"%";d.style.animationDelay=.2+Math.random()*.4+"s";b.appendChild(d)}
+ const st=stars(),before=owned().length,R={stars:st,gain:0,bonus:null,best:false,prevDone:doneCount()};
+ if(G.mode==="groei"){const replay=G.run in S.gdone;R.gain=replay?10:40+st*10;S.gdone[G.run]=Math.max(S.gdone[G.run]||0,st)}
+ else if(G.mode==="vorm"){const first=!(G.idx in S.vdone);R.gain=first?30:5;S.vdone[G.idx]=Math.max(S.vdone[G.idx]||0,st);if(first)R.album=VORMEN[G.idx]}
+ else if(G.mode==="knuffel"){const replay=G.idx in S.kdone;R.gain=replay?5:15+st*5;S.kdone[G.idx]=Math.max(S.kdone[G.idx]||0,st)}
+ else if(G.mode==="etage"){const replay=G.idx in S.edone;R.gain=replay?5:15+st*5;S.edone[G.idx]=Math.max(S.edone[G.idx]||0,st)}
+ else if(G.mode==="level"){
+  const replay=G.idx in S.done;R.gain=replay?5:10+st*5;S.done[G.idx]=Math.max(S.done[G.idx]||0,st);
+  const old=S.best[G.idx];if(old===undefined||G.time<old){R.best=old!==undefined;S.best[G.idx]=G.time}
+  const z=G.n;if(!S.zones[z]&&LEVELS.every((l,i)=>l.n!==z||i in S.done)){S.zones[z]=1;R.bonus=[`${ZONES[z][0]} helemaal klaar`,50]}
+ }else{
+  const d=dayNo();if(!S.dailyDone[d]){R.gain=40;S.streak=S.lastDaily===d-1?S.streak+1:1;S.lastDaily=d;S.dailyDone[d]={t:G.time,h:G.hints};
+   if([3,7,14,30,100].includes(S.streak))R.bonus=[`${S.streak} dagen op rij`,S.streak*10]}
+ }
+ S.yuzu+=R.gain+(R.bonus?R.bonus[1]:0);S.cur=null;goal("solve");if(st===3)goal("stars");if(G.mode==="daily")goal("daily");ensureRooms();save();
+ R.fresh=owned().length>before?owned()[owned().length-1]:null;
+ setTimeout(()=>showWin(R),1250);
+}
+function showWin(R){
+ const m=G.mode;let share="";
+ if(m==="daily"){const st=curStreak();share=`Capi Café dagpuzzel ${new Date().toLocaleDateString("nl-NL",{day:"numeric",month:"long"})}\n${fmt(G.time)}, ${"★".repeat(R.stars)}${G.mistakes?`, ${G.mistakes} ${G.mistakes===1?"fout":"fouten"}`:", foutloos"}\nSerie: ${st} ${st===1?"dag":"dagen"}`}
+ const nc=nextCapy(),dc=doneCount();let bar="";
+ if(m!=="daily"&&nc&&!R.fresh&&dc>R.prevDone){const prev=[...CAPYS].reverse().find(c=>c.at<=dc).at,left=nc.at-dc;bar=`<div class="progress"><div class="lbl">Nog ${left} ${left===1?"level":"levels"} tot ${nc.name}</div><div class="bar"><i id="winbar" style="width:${Math.max(0,(R.prevDone-prev)/(nc.at-prev)*100)}%" data-to="${(dc-prev)/(nc.at-prev)*100}"></i></div></div>`}
+ const n=nextLevel();
+ dlg.innerHTML=`<h2>${R.stars===3?"Perfect gezeten!":"Alle capy’s zitten!"}</h2><div class="stars" role="img" aria-label="${R.stars} van de 3 sterren">${[1,2,3].map(i=>`<svg viewBox="0 0 24 24" class="${i<=R.stars?"on":""}" style="--k:${i}" aria-hidden="true">${ICON.star}</svg>`).join("")}</div><div class="reward">${R.gain?`${YUZU}<span>+<span id="count">0</span> yuzu</span>`:""}</div>${R.bonus?`<div class="bonus">${R.bonus[0]}: +${R.bonus[1]} yuzu</div>`:""}${R.best?`<div class="bonus">Nieuwe beste tijd: ${fmt(G.time)}</div>`:""}${R.album?`<div class="newcapy shapeart">${shapeSVG(R.album,true)}<b>${R.album.name} staat in je album</b></div>`:""}${R.fresh?`<div class="newcapy">${capyFull(R.fresh)}<b>${R.fresh.name} komt erbij</b>“${R.fresh.q}”</div>`:""}${G.F>1?`<div class="tower">${[...Array(G.F).keys()].reverse().map(thumb).join("")}</div>`:""}${bar}${m==="daily"?`<div class="share" id="sharetxt">${share}</div><button class="btn" data-act="share">Deel je tijd</button>`:m==="groei"?(nextGroei()>=0?`<button class="btn" data-act="gnext">Volgend groeibad</button>`:""):m==="vorm"?(nextVorm()>=0?`<button class="btn" data-act="vnext">Volgende vorm</button>`:""):m==="knuffel"?(nextKnuffel()>=0?`<button class="btn" data-act="knext">Volgende knuffels</button>`:""):m==="etage"?(nextEtage()>=0?`<button class="btn" data-act="enext">Volgende etages</button>`:""):(n>=0?`<button class="btn" data-act="next">Speel level ${n+1}</button>`:"")}<button class="btn quiet" data-act="home">Naar het café</button>`;
+ dlg.showModal();
+ [1,2,3].forEach(i=>{if(i<=R.stars)setTimeout(()=>tone([659,784,988][i-1],.2,"triangle",.09),i*190)});
+ const c=$("#count");if(c){const t0=performance.now(),go=t=>{const p=Math.min(1,(t-t0)/650);if(!$("#count"))return;c.textContent=Math.round(R.gain*p);if(p<1)requestAnimationFrame(go)};requestAnimationFrame(go)}
+ const w=$("#winbar");if(w)setTimeout(()=>{w.style.width=w.dataset.to+"%"},650);
+}
+function settings(){
+ const sw=(k,l)=>`<div class="row"><span>${l}</span><button class="switch" role="switch" aria-checked="${S[k]}" data-act="toggle" data-k="${k}">${S[k]?"Aan":"Uit"}</button></div>`;
+ dlg.innerHTML=`<h2>Instellingen</h2>${sw("sound","Geluid")}${sw("haptics","Trillen")}${sw("auto","Stippen na het plaatsen van een capy")}${sw("fast","Testmodus: tijd 60× sneller")}<button class="btn quiet" data-act="replaytut" style="margin-top:12px">Bekijk de uitleg opnieuw</button><button class="btn quiet" data-act="reset">Begin opnieuw</button><button class="btn" data-act="close">Klaar</button>`;
+ if(!dlg.open)dlg.showModal();
+}
+async function doShare(){const text=$("#sharetxt").textContent,b=$("[data-act=share]");try{if(navigator.share){await navigator.share({text});return}await navigator.clipboard.writeText(text);b.textContent="Gekopieerd"}catch(e){if(e&&e.name==="AbortError")return;b.textContent="Selecteer de tekst om te delen"}}
+function goHome(){persist();G=null;tab="cafe";if(dlg.open)dlg.close();render()}
+function playNext(){if(dlg.open)dlg.close();const n=nextLevel();G=null;if(n<0)return goHome();start(LEVELS[n],"level",n)}
+function collectTips(){const v=tipsNow();if(!v)return;S.yuzu+=v;S.tipAt=vnow();save();sfx.buy();const from=$("#tips").getBoundingClientRect(),to=$(".pill").getBoundingClientRect();
+ if(!matchMedia("(prefers-reduced-motion:reduce)").matches)for(let i=0;i<6;i++){const d=document.createElement("i");d.className="fly";d.style.cssText=`left:${from.left+from.width/2}px;top:${from.top+10}px;--dx:${to.left-from.left-from.width/2+14}px;--dy:${to.top-from.top}px;animation-delay:${i*60}ms`;document.body.appendChild(d);setTimeout(()=>d.remove(),1100)}
+ setTimeout(()=>{updPill();refreshLive()},700)}
+function welcome(){const away=vnow()-(S.seen||vnow());S.seen=vnow();if(away<2*36e5)return;spawnGifts();const tips=tipsNow(),gifts=S.gifts.length,ripe=S.plots.filter(plotReady).length,hungry=owned().filter(c=>P(c).full<25).map(c=>c.name);
+ const items=[tips?`${YUZU}<span>${tips} yuzu aan fooien</span>`:"",gifts?`${treasIcon(TREAS[0])}<span>${gifts} ${gifts===1?"cadeautje ligt":"cadeautjes liggen"} klaar</span>`:"",ripe?`${foodIcon("gras")}<span>${ripe} ${ripe===1?"bak is":"bakken zijn"} klaar om te oogsten</span>`:"",hungry.length?`${HEARTS}<span>${hungry.join(", ")} ${hungry.length===1?"heeft":"hebben"} honger</span>`:""].filter(Boolean);
+ if(!items.length)return;save();dlg.innerHTML=`<h2>Welkom terug!</h2><p class="intro">Terwijl je weg was:</p><div class="wb">${items.map(x=>`<div>${x}</div>`).join("")}</div><button class="btn" data-act="close">Naar het café</button>`;dlg.showModal()}
+document.addEventListener("click",e=>{
+ const t=e.target.closest("[data-tab],[data-act],[data-level],[data-etage],[data-knuffel],[data-vorm],[data-groei],[data-floor],[data-buy],[data-room],[data-sel],[data-pet],[data-feed],[data-gift],[data-plot],[data-plant],[data-claim],[data-sbuy],[data-zbuy],[data-xbuy],[data-stab],[data-droom],[data-visit]");if(!t)return;
+ const ds=t.dataset;
+ if(ds.room){W.room=ds.room;S.view=ds.room;save();return renderScene()}
+ if(ds.sel)return selectCapy(ds.sel,true);
+ if(ds.pet)return petCapy(ds.pet);
+ if(ds.feed)return feed(W.sel,ds.feed);
+ if(ds.gift)return pickGift(ds.gift);
+ if(ds.plot!==undefined)return tapPlot(+ds.plot);
+ if(ds.plant)return plant(ds.plant);
+ if(ds.claim!==undefined){const g=goalsToday(),it=g.list[+ds.claim];if(it&&!it.got&&it.n>=GOALS[it.k][1]){it.got=true;S.yuzu+=15;save();sfx.buy();renderCafe()}return}
+ if(ds.sbuy){const F=FOOD[ds.sbuy];if(S.yuzu<F.price)return;S.yuzu-=F.price;S.inv[ds.sbuy]=(S.inv[ds.sbuy]||0)+1;save();sfx.buy();hap(8);return renderShop()}
+ if(ds.zbuy){const F=FOOD[ds.zbuy];if(S.yuzu<F.seed)return;S.yuzu-=F.seed;S.seeds[ds.zbuy]=(S.seeds[ds.zbuy]||0)+1;save();sfx.buy();hap(8);return renderShop()}
+ if(ds.xbuy){const x=EXP().find(e=>e.id===ds.xbuy);if(!x||x.own||x.lock||S.yuzu<x.price)return;S.yuzu-=x.price;sfx.level();hap(20);if(x.id==="bad"){S.rooms.bad=true;S.newRoom="bad";S.view="bad";W.room="bad";syncActors();Object.values(W.actors).slice(0,3).forEach(a=>{a.room="bad";[a.x,a.y]=randIn("bad");a.st="idle";a.spot=null})}else{S.plotN++;ensureRooms();S.view="tuin";W.room="tuin";toast("Nieuwe moestuinbak staat in de tuin.")}save();tab="cafe";return render()}
+ if(ds.stab){stab=ds.stab;return renderShop()}
+ if(ds.droom){droom=ds.droom;return renderShop()}
+ if(ds.visit){tab="cafe";render();return selectCapy(ds.visit,true)}
+ if(t.dataset.floor!==undefined)return gotoFloor(+t.dataset.floor,true);
+ if(t.dataset.groei!==undefined){G=null;S.cur=null;return start(GROEI[+t.dataset.groei][0],"groei",+t.dataset.groei*10)}
+ if(t.dataset.vorm!==undefined){G=null;return start(VORMEN[+t.dataset.vorm],"vorm",+t.dataset.vorm)}
+ if(t.dataset.knuffel!==undefined){G=null;return start(KNUFFELS[+t.dataset.knuffel],"knuffel",+t.dataset.knuffel)}
+ if(t.dataset.etage!==undefined){G=null;return start(ETAGES[+t.dataset.etage],"etage",+t.dataset.etage)}
+ if(t.dataset.tab){tab=t.dataset.tab;quote=null;return render()}
+ if(t.dataset.level){G=null;return start(LEVELS[+t.dataset.level],"level",+t.dataset.level)}
+ if(t.dataset.buy){const d=DECOR.find(x=>x.id===t.dataset.buy);if(S.yuzu<d.price||hasD(d.id))return;S.yuzu-=d.price;S.decor.push(d.id);save();sfx.buy();hap(20);W.pop=d.id;S.view=d.room;W.room=d.room;tab="cafe";render();return toast(`${d.name} staat erin. Gezelligheid ${cozy()} van 5.`)}
+  switch(t.dataset.act){
+  case"next":return playNext();
+  case"enext":{if(dlg.open)dlg.close();const k=nextEtage();G=null;if(k<0)return goHome();return start(ETAGES[k],"etage",k)}
+  case"etages":{const c=S.cur&&S.cur.mode==="etage"?S.cur.idx:nextEtage();if(c<0){tab="levels";ltab="etage";return render()}G=null;return start(ETAGES[c],"etage",c)}
+  case"gnext":{if(dlg.open)dlg.close();const k=nextGroei();G=null;if(k<0)return goHome();return start(GROEI[k][0],"groei",k*10)}
+  case"groei":{const c=S.cur&&S.cur.mode==="groei"?S.cur.idx:null;G=null;if(c!==null)return start(GROEI[c/10|0][c%10],"groei",c);const k=nextGroei();if(k<0){ltab="groei";return render()}return start(GROEI[k][0],"groei",k*10)}
+  case"vnext":{if(dlg.open)dlg.close();const k=nextVorm();G=null;if(k<0)return goHome();return start(VORMEN[k],"vorm",k)}
+  case"vormen":tab="levels";ltab="vorm";return render();
+  case"spurt":return spurtIntro();
+  case"sgo":return spurtGo();
+  case"skipb":{if(G.over)return;SP.time-=15;spurtShow();if(SP.time<=0)return spurtEnd();return spurtBoard()}
+  case"knext":{if(dlg.open)dlg.close();const k=nextKnuffel();G=null;if(k<0)return goHome();return start(KNUFFELS[k],"knuffel",k)}
+  case"knuffels":{const c=S.cur&&S.cur.mode==="knuffel"?S.cur.idx:nextKnuffel();if(c<0){tab="levels";ltab="knuffel";return render()}G=null;return start(KNUFFELS[c],"knuffel",c)}
+  case"ltab":ltab=t.dataset.v;return render();
+  case"tab-levels":tab="levels";return render();
+  case"daily":{const d=dayNo();if(S.dailyDone[d])return toast("Deze heb je al gehaald. Morgen staat er een nieuwe klaar.");G=null;return start(DAILY[d%DAILY.length],"daily",d)}
+  case"tips":return collectTips();
+  case"toshop":if(dlg.open)dlg.close();stab=t.dataset.v||"voer";tab="shop";return render();
+  case"gotoroom":dlg.close();W.room=t.dataset.v;S.view=W.room;save();return renderScene();
+  case"lockroom":return toast(t.dataset.v==="tuin"?`De tuin gaat open na 3 puzzels. Nog ${Math.max(0,3-doneCount())} te gaan.`:"Het badhuis koop je in de winkel onder Uitbreiden.");
+  case"gbonus":{const g=goalsToday();if(g.bonus||!g.list.every(x=>x.got))return;g.bonus=true;S.inv.taart=(S.inv.taart||0)+1;S.yuzu+=30;save();sfx.level();toast("Taart en 30 yuzu! Morgen nieuwe doelen.");return renderCafe()}
+  case"settings":return settings();
+  case"quit":case"home":return goHome();
+  case"share":return doShare();
+  case"close":dlg.close();return !G&&tab==="cafe"?render():undefined;
+  case"skiptut":G.tut=null;S.tut=true;G.cells=G.cells.map(v=>v===1?0:v);G.hist=[];$(".tools").innerHTML=toolsHTML();$("#coach").textContent=coachText();drawTut();paint();return persist();
+  case"undo":{let h;while((h=G.hist.pop())){const live=h.filter(([i])=>G.cells[i]<2);if(live.length){live.forEach(([i,v])=>G.cells[i]=v);gotoFloor(live[0][0]/G.NN|0);break}}lastTap.i=-1;paint();$("#coach").textContent=coachText();return persist()}
+  case"clear":{const ch=[];G.cells.forEach((v,i)=>{if(v===1&&(i/G.NN|0)===G.fl)ch.push([i,0])});if(ch.length){setCells(ch);paint();persist()}return}
+  case"hint":return hint();
+  case"toggle":{const k=t.dataset.k;if(k==="fast"){setFast(!S.fast);return settings()}S[k]=!S[k];save();if(G)paint();return settings()}
+  case"replaytut":S.tut=false;save();dlg.close();return toast("De uitleg start bij je volgende nieuwe puzzel.");
+  case"reset":{if(t.dataset.sure){const s=S.sound;S=fresh();S.sound=s;save();W.actors={};W.sel=null;dlg.close();G=null;tab="cafe";quote=null;return render()}t.dataset.sure="1";t.textContent="Tik nogmaals om alles te wissen";return}
+ }
+});
+document.addEventListener("keydown",e=>{const g=e.target.closest&&e.target.closest("[data-capy],[data-pet],[data-gift],[data-plot]");if(g&&(e.key==="Enter"||e.key===" ")){e.preventDefault();g.dispatchEvent(new MouseEvent("click",{bubbles:true}))}});
+document.addEventListener("visibilitychange",()=>{if(document.hidden){if(G)persist();S.seen=vnow();save()}else if(!G&&tab==="cafe"){welcome();render()}});
+setInterval(()=>{if(!document.hidden){S.seen=vnow();save()}},30000);
+ensureRooms();render();welcome();
+</script>
+</body>
+</html>
