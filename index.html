@@ -560,6 +560,9 @@ h2.pz{text-align:center;font-size:30px;margin-bottom:4px}
 .lvbtn{animation:lvin .4s ease both}
 @keyframes spbump{40%{transform:scale(1.35)}}
 @keyframes lvflash{30%{box-shadow:0 0 0 4px var(--yuzu)}}
+.beta{display:flex;align-items:center;gap:12px;text-align:left;background:var(--surface2);border-radius:14px;padding:10px 12px;margin:10px 0 4px;border:2px dashed var(--berry)}
+.beta b{display:block;font-weight:800;color:var(--berry)}.beta span{font-size:13px;color:var(--muted);font-weight:600}
+.beta .switch[aria-checked="true"]{background:var(--berry)}
 @keyframes walk{50%{transform:translateY(-5px) rotate(-1.500deg)}}
 @keyframes chew{50%{transform:scaleY(.96)}}
 @keyframes hopr{40%{transform:translateY(-22px)}}
@@ -933,12 +936,12 @@ const LVT=[
  {need:0,items:[{t:"mode",id:"bad",name:"Klassieke puzzels"},{t:"capy",id:"Yuzu"}]},
  {need:6,items:[{t:"mode",id:"daily",name:"De dagpuzzel"},{t:"capy",id:"Mochi"}]},
  {need:15,items:[{t:"room",id:"tuin",name:"De tuin"}]},
- {need:27,items:[{t:"mode",id:"groei",name:"Groeibad"},{t:"capy",id:"Boba"}]},
+ {need:27,items:[{t:"mode",id:"etage",name:"Etages"},{t:"capy",id:"Boba"}]},
  {need:42,items:[{t:"mode",id:"spurt",name:"Capy-spurt"},{t:"capy",id:"Latte"}]},
- {need:60,items:[{t:"mode",id:"knuffel",name:"Knuffels"},{t:"capy",id:"Noa"}]},
+ {need:60,items:[{t:"mode",id:"vorm",name:"Vormen"},{t:"capy",id:"Noa"}]},
  {need:80,items:[{t:"room",id:"bad",name:"Het badhuis"},{t:"capy",id:"Pip"}]},
- {need:105,items:[{t:"mode",id:"etage",name:"Etages"},{t:"capy",id:"Kiki"}]},
- {need:130,items:[{t:"mode",id:"vorm",name:"Vormen"}]},
+ {need:105,items:[{t:"mode",id:"knuffel",name:"Knuffels"},{t:"capy",id:"Kiki"}]},
+ {need:130,items:[{t:"mode",id:"groei",name:"Groeibad"}]},
  {need:160,items:[{t:"mode",id:"zen",name:"Zen"},{t:"mode",id:"extreme",name:"Extreem"},{t:"capy",id:"Baron"}]}];
 const lvNeed=l=>l<=LVT.length?LVT[l-1].need:160+35*(l-10);
 const lvItems=l=>l<=LVT.length?LVT[l-1].items:[{t:"yuzu",n:60}];
@@ -949,7 +952,7 @@ function cafeLv(){const s=totalStars();let l=1;while(s>=lvNeed(l+1))l++;return l
 const capyLv=n=>{for(let l=1;l<=LVT.length;l++)if(LVT[l-1].items.some(x=>x.t==="capy"&&x.id===n))return l;return 999};
 const modeLv=id=>{for(let l=1;l<=LVT.length;l++)if(LVT[l-1].items.some(x=>x.id===id))return l;return 1};
 function hasProg(id){const ks=k=>Object.keys(S[k]||{}).length+Object.keys((S.alt||{})[k]||{}).length;return id==="groei"?ks("gdone")>0:id==="etage"?ks("edone")>0:id==="knuffel"?ks("kdone")>0:id==="vorm"?ks("vdone")>0:id==="daily"?ks("dailyDone")>0:id==="spurt"?(S.sbest||0)+((S.alt||{}).sbest||0)>0:id==="zen"?S.zenLast!==undefined:id==="extreme"?!!S.extreme:false}
-const isOpen=id=>!!S.dev||cafeLv()>=modeLv(id)||hasProg(id);
+const isOpen=id=>!!S.dev||!!S.beta||cafeLv()>=modeLv(id)||hasProg(id);
 const lockMsg=id=>`Opent op café-niveau ${modeLv(id)}. Nog ${Math.max(0,lvNeed(modeLv(id))-totalStars())} sterren.`;
 const STARI=`<svg viewBox="0 0 24 24" aria-hidden="true"><path d="M12 2l3 6.500 7 .9-5.100 4.900 1.300 7L12 18l-6.200 3.300 1.300-7L2 9.400l7-.9z" fill="currentColor"/></svg>`;
 function itemHTML(x){if(x.t==="capy"){const c=CAPYS.find(k=>k.name===x.id);return `<div class="lvi">${capyFull(c)}<span><b>${c.name}</b>komt bij je wonen</span></div>`}
@@ -994,8 +997,8 @@ function nextStep(){if(lvPending())return{ico:STARI,txt:`Café-niveau ${(S.lvSee
 const ADVENT=DATA.advent;
 const ADVG={2:{food:["thee",3],label:"3 yuzuthee"},5:{yuzu:40,food:["taart",1],label:"Pakjesavond: taart en 40 yuzu"},7:{decor:"slinger",label:"Kerstslinger voor het café"},10:{food:["thee",2],yuzu:30,label:"2 yuzuthee en 30 yuzu"},14:{decor:"sneeuwpop",label:"Sneeuwpop voor de tuin"},18:{food:["thee",3],label:"3 yuzuthee"},21:{yuzu:60,label:"60 yuzu"},24:{capy:"Vlokje",decor:"kerstboom",label:"Vlokje en een kerstboom"}};
 const SNOWI=`<svg viewBox="0 0 24 24" width="24" height="24" aria-hidden="true"><path d="M12 2v20M3.300 7l17.400 10M3.300 17L20.700 7M9 3.500l3 2.500 3-2.500M9 20.500l3-2.500 3 2.500M4 10.300l3.700-.300-1.500-3.300M20 13.700l-3.700.300 1.500 3.300M4 13.700l3.700.300-1.500 3.300M20 10.300l-3.700-.300 1.500-3.300" fill="none" stroke="currentColor" stroke-width="1.800" stroke-linecap="round" stroke-linejoin="round"/></svg>`;
-function winterOn(){if(S.winterTest)return true;const d=new Date(),m=d.getMonth();return m===11||(m===0&&d.getDate()<=6)}
-function doorOpen(i){if(S.winterTest)return true;const d=new Date(),m=d.getMonth();if(m===0)return true;return m===11&&d.getDate()>=i+1}
+function winterOn(){if(S.winterTest||S.beta)return true;const d=new Date(),m=d.getMonth();return m===11||(m===0&&d.getDate()<=6)}
+function doorOpen(i){if(S.winterTest||S.beta)return true;const d=new Date(),m=d.getMonth();if(m===0)return true;return m===11&&d.getDate()>=i+1}
 const nextDoor=()=>{for(let i=0;i<ADVENT.length;i++)if(!(i in S.adone)&&doorOpen(i))return i;return -1};
 const openDoors=()=>ADVENT.filter((_,i)=>doorOpen(i)).length;
 const ADVT={level:"Klassiek",knuffel:"Knuffels",etage:"Etages",vorm:"Vorm"};
@@ -1087,7 +1090,7 @@ function pBG(m,geo){const{H,pts}=geo,th=m.theme;let s=`<rect width="${PW}" heigh
  if(S.extreme){dec+=`<rect width="${PW}" height="${H}" fill="#5A0E22" opacity=".3"/>`;for(let k=0;k<Math.round(H/40);k++)dec+=`<circle class="twk" cx="${(prand(k,11)*PW).toFixed(0)}" cy="${(prand(k,12)*H).toFixed(0)}" r="${(1.500+prand(k,13)*2.500).toFixed(1)}" fill="#FF8A3D" opacity=".85"/>`}
  return s+dec}
 function pChest(m,i){if(m.id==="advent"){const g=ADVG[i+1];return g?{won:i in S.adone,label:"Cadeau: "+g.label}:null}if(m.id==="bad"){const l=m.list[i],nx=m.list[i+1];if(nx&&nx.n===l.n)return null;return{won:!!S.zones[l.n],label:"Zone af: +50 yuzu"}}return(i+1)%5===0?{won:!!(S.chests||{})[pKey(m)+":"+i],label:"Schatkist: +30 yuzu"}:null}
-function pNode(m,i,cur,x,y){const l=m.list[i],s=m.done[i],open=m.isOpen?m.isOpen(i):S.extreme||m.allOpen||i in m.done||i===cur,isCur=i===cur,st=s?"done":isCur?"cur":open?"open":"lock",r=isCur?31:26;
+function pNode(m,i,cur,x,y){const l=m.list[i],s=m.done[i],open=m.isOpen?m.isOpen(i):S.beta||S.extreme||m.allOpen||i in m.done||i===cur,isCur=i===cur,st=s?"done":isCur?"cur":open?"open":"lock",r=isCur?31:26;
  const label=m.id==="vorm"?`<g transform="translate(-15 -15) scale(${30/l.n})">${shapeSVG(l,!!s).replace(/^<svg[^>]*>|<\/svg>$/g,"")}</g>`:`<text y="8" text-anchor="middle" class="pnum">${i+1}</text>`;
  const stars=s?[0,1,2].map(k=>`<path transform="translate(${(k-1)*15} ${r+10+(k===1?3:0)}) scale(.62)" d="M0-10l3 6.500 7 .9-5.100 4.900 1.300 7L0 6l-6.200 3.300 1.300-7L-10-2.600l7-.9z" class="${k<s?"son":"soff"}"/>`).join(""):"";
  const ch=pChest(m,i),chest=ch?`<g transform="translate(${x>180?-56:56} -6)"><g class="pchest ${ch.won?"won":""}"><rect x="-15" y="-8" width="30" height="20" rx="4" fill="${ch.won?"#B9A27A":"#C97B3A"}" stroke="#6B3E1E" stroke-width="2.500"/><path d="M-15-2h30" stroke="#6B3E1E" stroke-width="2.500"/><path d="${ch.won?"M-15-8l4-12h22l4 12":"M-15-8q15-14 30 0"}" fill="${ch.won?"#D9C29A":"#E0954F"}" stroke="#6B3E1E" stroke-width="2.500"/><rect x="-3" y="-4" width="6" height="7" rx="1" fill="#FFD24D"/></g></g>`:"";
@@ -1135,7 +1138,7 @@ function renderLevels(){
  pager.addEventListener("scroll",()=>{clearTimeout(pagerT);pagerT=setTimeout(()=>{const i=Math.round(pager.scrollLeft/pager.clientWidth),m=ms[i];if(!m||m.id===ltab)return;ltab=m.id;$$(".ptabs button").forEach((b,k)=>b.setAttribute("aria-selected",k===i));const tb=$(`.ptabs [data-ptab="${i}"]`);tb&&tb.scrollIntoView({inline:"center",block:"nearest",behavior:"smooth"});
   const cur=m.next<0?m.list.length-1:m.next,seen=S.pseen[pKey(m)];if(seen!==undefined&&seen<cur){pWalk(panes[i],m,seen,cur)}S.pseen[pKey(m)]=cur;save()},120)},{passive:true});
 }
-function pSheet(mi,i){const m=pModes()[mi],l=m.list[i],s=m.done[i],open=m.isOpen?m.isOpen(i):S.extreme||m.allOpen||i in m.done||i===m.next;
+function pSheet(mi,i){const m=pModes()[mi],l=m.list[i],s=m.done[i],open=m.isOpen?m.isOpen(i):S.beta||S.extreme||m.allOpen||i in m.done||i===m.next;
  if(!open){sfx.bad();return toast(m.id==="advent"?`Deze deur gaat open op ${i+1} december.`:`Haal eerst ${m.title(m.next)}.`)}
  const resume=S.cur&&((m.id==="bad"&&S.cur.mode==="level"&&S.cur.idx===i)||(m.id==="groei"&&S.cur.mode==="groei"&&(S.cur.idx/10|0)===i)||(S.cur.mode===m.id&&S.cur.idx===i));
  const ch=pChest(m,i),best=m.id==="bad"&&S.best[i]!==undefined?`<span>Beste tijd ${fmt(S.best[i])}</span>`:"";
@@ -1458,7 +1461,7 @@ dlg.addEventListener("click",e=>{if(e.target===dlg&&dlg.className==="sheet")dlg.
 dlg.addEventListener("close",()=>{if(dlg.className==="sheet")setTimeout(()=>{if(!dlg.open)dlg.className=""},0)});
 function settings(){
  const sw=(k,l)=>`<div class="row"><span>${l}</span><button class="switch" role="switch" aria-checked="${S[k]}" data-act="toggle" data-k="${k}">${S[k]?"Aan":"Uit"}</button></div>`;
- dlg.innerHTML=`<h2>Instellingen</h2>${sw("sound","Geluid")}${sw("haptics","Trillen")}${sw("cb","Kleurenblindmodus: patronen op de kleuren")}${sw("auto","Stippen na het plaatsen van een capy")}${sw("dev","Testmodus: alle modi open")}${sw("fast","Testmodus: tijd 60× sneller")}<div class="row"><span>Testmodus: winterevenement nu tonen, alle deuren open</span><button class="switch" role="switch" aria-checked="${!!S.winterTest}" data-act="wtest">${S.winterTest?"Aan":"Uit"}</button></div><div class="row"><span>Extreem: borden vanaf 10 bij 10</span><button class="switch" role="switch" aria-checked="${!!S.extreme}" data-act="xtoggle2">${S.extreme?"Aan":"Uit"}</button></div><button class="btn quiet" data-act="replaytut" style="margin-top:12px">Bekijk de uitleg opnieuw</button><button class="btn quiet" data-act="reset">Begin opnieuw</button><button class="btn" data-act="close">Klaar</button>`;
+ dlg.innerHTML=`<h2>Instellingen</h2>${sw("sound","Geluid")}${sw("haptics","Trillen")}${sw("cb","Kleurenblindmodus: patronen op de kleuren")}${sw("auto","Stippen na het plaatsen van een capy")}<div class="beta"><div><b>Beta</b><span>Alle modi, levels en adventsdeuren open om te testen. Je voortgang blijft bewaard.</span></div><button class="switch" role="switch" aria-checked="${!!S.beta}" data-act="beta">${S.beta?"Aan":"Uit"}</button></div>${sw("fast","Testmodus: tijd 60× sneller")}<div class="row"><span>Extreem: borden vanaf 10 bij 10</span><button class="switch" role="switch" aria-checked="${!!S.extreme}" data-act="xtoggle2">${S.extreme?"Aan":"Uit"}</button></div><button class="btn quiet" data-act="replaytut" style="margin-top:12px">Bekijk de uitleg opnieuw</button><button class="btn quiet" data-act="reset">Begin opnieuw</button><button class="btn" data-act="close">Klaar</button>`;
  if(!dlg.open)dlg.showModal();
 }
 async function doShare(){const text=$("#sharetxt").textContent,b=$("[data-act=share]");try{if(navigator.share){await navigator.share({text});return}await navigator.clipboard.writeText(text);b.textContent="Gekopieerd"}catch(e){if(e&&e.name==="AbortError")return;b.textContent="Selecteer de tekst om te delen"}}
@@ -1507,9 +1510,10 @@ document.addEventListener("click",e=>{
   case"pgostop":{W.autoStart=null;const c=$("#pgo");if(c)c.remove();return}
   case"enext":return pathGo("etage");
   case"etages":{if(t.dataset.lvgo&&dlg.open)dlg.close();const c=S.cur&&S.cur.mode==="etage"?S.cur.idx:nextEtage();if(c<0){tab="levels";ltab="etage";return render()}G=null;return start(ETAGES[c],"etage",c)}
-  case"xtoggle2":{if(G)return toast("Stop eerst je puzzel om Extreem te wisselen.");setExtreme(!S.extreme);document.documentElement.classList.toggle("xtrm",!!S.extreme);settings();return render()}
+  case"xtoggle2":{if(!isOpen("extreme"))return toast(lockMsg("extreme"));if(G)return toast("Stop eerst je puzzel om Extreem te wisselen.");setExtreme(!S.extreme);document.documentElement.classList.toggle("xtrm",!!S.extreme);settings();return render()}
   case"xtoggle":{if(!isOpen("extreme"))return toast(lockMsg("extreme"));setExtreme(!S.extreme);sfx[S.extreme?"level":"erase"]();hap(20);document.documentElement.classList.toggle("xtrm",!!S.extreme);toast(S.extreme?"Extreem staat aan. Alle puzzels zijn open.":"Extreem staat uit.");return render()}
   case"zoom":return setZoom((G.z||1)>1.01?1:G.n>=10?2.2:1.7);
+  case"beta":S.beta=!S.beta;save();toast(S.beta?"Beta staat aan: alles is open.":"Beta staat uit.");settings();return G?undefined:render();
   case"lvup":return lvDlg();
   case"lvclose":dlg.close();if(G){G=null}tab="cafe";return render();
   case"roadmap":if(dlg.open)dlg.close();return roadmap();
