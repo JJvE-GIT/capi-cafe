@@ -4,6 +4,16 @@
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
 <title>Capi Café</title>
+<meta name="description" content="Los capybara-puzzels op en run je eigen gezellige café.">
+<link rel="manifest" href="manifest.webmanifest">
+<meta name="theme-color" content="#D7EDCB" media="(prefers-color-scheme: light)">
+<meta name="theme-color" content="#10302A" media="(prefers-color-scheme: dark)">
+<meta name="mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-status-bar-style" content="default">
+<meta name="apple-mobile-web-app-title" content="Capi Café">
+<link rel="apple-touch-icon" href="apple-touch-icon.png">
+<link rel="icon" type="image/png" sizes="192x192" href="icon-192.png">
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Bagel+Fat+One&family=Gabarito:wght@400;600;800&display=swap" rel="stylesheet">
@@ -587,6 +597,22 @@ h2.pz{text-align:center;font-size:30px;margin-bottom:4px}
 .pn.boss .pc{stroke:#B88A00;stroke-width:5}.pn.boss.done .pc{fill:#FFD24D}
 .pn .crown{transform-box:fill-box}
 .bossw .bossdec{width:150px;height:110px;display:block;margin:6px auto}.bossw b{color:#B88A00}.bossw .bigy svg{width:60px;height:60px}
+#splash{position:fixed;inset:0;z-index:200;background:var(--bg);display:grid;place-items:center;transition:opacity .4s ease}
+#splash.out{opacity:0;pointer-events:none}
+#splash .spl{display:flex;flex-direction:column;align-items:center;gap:10px}
+#splash svg{width:120px;height:120px;animation:splb 1.2s ease-in-out infinite}
+#splash .eye-h{display:none}
+#splash b{font-family:"Bagel Fat One","Arial Rounded MT Bold",sans-serif;font-weight:400;font-size:34px;color:var(--ink)}
+#splash i{width:60px;height:5px;border-radius:3px;background:var(--surface2);overflow:hidden;position:relative}
+#splash i::after{content:"";position:absolute;inset:0;width:40%;background:var(--yuzu);border-radius:3px;animation:splbar 1s ease-in-out infinite}
+@keyframes splb{50%{transform:translateY(-6px)}}
+@keyframes splbar{0%{transform:translateX(-100%)}100%{transform:translateX(250%)}}
+.inst{display:flex;align-items:center;gap:10px;margin-top:10px;padding:8px 10px;border-radius:16px;background:var(--surface);border:2px solid var(--yuzu)}
+.inst .ii{width:40px;height:40px;border-radius:11px;background:#9FD08A;display:grid;place-items:center;flex:none}.inst .ii svg{width:34px;height:34px}.inst .ii .eye-h{display:none}
+.inst .it{flex:1;min-width:0}.inst b{display:block;font-weight:800}.inst small{color:var(--muted);font-size:13px}
+.inst .ib{background:var(--yuzu);color:var(--on-yuzu);font-weight:800;border-radius:10px;padding:7px 10px}
+.inst .ix{width:30px;height:30px;font-size:20px;color:var(--muted)}
+.steps{text-align:left;margin:6px 0 14px;padding-left:22px;line-height:1.5}.steps li{margin-bottom:6px}
 @keyframes walk{50%{transform:translateY(-5px) rotate(-1.500deg)}}
 @keyframes chew{50%{transform:scaleY(.96)}}
 @keyframes hopr{40%{transform:translateY(-22px)}}
@@ -629,6 +655,7 @@ h2.pz{text-align:center;font-size:30px;margin-bottom:4px}
 </style>
 </head>
 <body>
+<div id="splash" aria-hidden="true"><div class="spl"><svg viewBox="-6 -20 112 116"><ellipse cx="25" cy="17" rx="7.5" ry="8.5" fill="#7B4725"/><ellipse cx="75" cy="17" rx="7.5" ry="8.5" fill="#7B4725"/><path d="M31 14c10-5 28-5 38 0 10 6 15 20 15 36v20c0 15-14 23-34 23S16 85 16 70V50c0-16 5-30 15-36z" fill="#A9683A"/><path d="M24 66c0-9 11-13 26-13s26 4 26 13v6c0 12-11 19-26 19S24 84 24 72z" fill="#C98E5E"/><rect x="31" y="56" width="38" height="14" rx="7" fill="#7B4725"/><path d="M41 61l-3 4M59 61l3 4" stroke="#22150D" stroke-width="3.500" stroke-linecap="round"/><path d="M50 70v8M39 80q5 4 11-2 6 6 11 2" fill="none" stroke="#3B2518" stroke-width="2.800" stroke-linecap="round" stroke-linejoin="round"/><g class="eye-o"><circle cx="29" cy="39" r="5" fill="#22150D"/><circle cx="71" cy="39" r="5" fill="#22150D"/><path d="M22 36h14M64 36h14" stroke="#A9683A" stroke-width="5"/><path d="M23 38h12M65 38h12" stroke="#22150D" stroke-width="2.200" stroke-linecap="round"/></g><circle cx="50" cy="8" r="13" fill="#FFA41B"/><circle cx="46" cy="4" r="3" fill="#FFD27A"/><path d="M50-5c2-6 8-7 12-5-1 5-7 8-12 5z" fill="#3E9B4F"/></svg><b>Capi Café</b><i></i></div></div>
 <div id="app"><div id="view"></div><nav id="nav" aria-label="Hoofdmenu"></nav><div id="toast" role="status"></div></div>
 <dialog id="dlg"></dialog>
 <script>
@@ -955,7 +982,7 @@ function renderCafe(){
  const main=cur?`<button class="btn" data-act="pathgo" data-v="bad" data-i="${cur.idx}">Ga verder met level ${cur.idx+1}</button>`:n<0?`<button class="btn" data-act="tab-levels">Kies een puzzel</button>`:`<button class="btn" data-act="pathgo" data-v="bad">Speel ${S.extreme?"extreem ":""}level ${n+1}</button>`;
  const tips=`<button class="tips" id="tips" data-act="tips" ${v?"":"disabled"}><span class="jar">${YUZU}</span><span class="tt"><b>Fooienpot <small>${tipRate()} per uur</small></b><span class="bar"><i style="width:${v/cap*100}%"></i></span></span><span class="get">${v?`Pak ${v}`:"Spaart nog"}</span></button>`;
  dailyPerks();const ns=nextStep();
- view.innerHTML=topbar("Capi Café")+lvBar()+`<div class="rooms">${rooms}<span class="cozy" role="img" aria-label="Gezelligheid ${cz} van 5">${[1,2,3,4,5].map(i=>`<svg viewBox="0 0 24 24" class="${i<=cz?"on":""}" aria-hidden="true">${ICON.star}</svg>`).join("")}</span></div><div class="scene ${night()?"night":""}" id="stage"></div><div class="panel" id="panel"></div>${ns?`<button class="nstep" ${ns.act}><span class="nsi">${ns.ico}</span><span class="nst">${ns.txt}</span><span class="nsa">›</span></button>`:""}${tips}${winterOn()?(()=>{const nd=nextDoor(),od=openDoors(),dn=Object.keys(S.adone).length;return `<button class="advban" data-act="advent"><span class="sf">${SNOWI}</span><span><b>Adventskalender</b><small>${nd>=0?`Deur ${nd+1} staat voor je open`:dn>=24?"Alle 24 deuren geopend!":"Morgen gaat er een nieuwe deur open"} · ${dn} van ${od} geopend</small></span><span class="go">${nd>=0?"Open":"Bekijk"}</span></button>`})():""}${main}<button class="daily ${isOpen("daily")?"":"plocked"}" data-act="daily"><span class="cal">${new Date().getDate()}</span><span><span class="big">${doneToday?"Dagpuzzel gehaald":dcur?"Ga verder met de dagpuzzel":"Dagpuzzel"}</span><br><span class="sub">${doneToday?`Morgen weer een nieuwe, serie: ${st} ${st===1?"dag":"dagen"}`:st?`Houd je serie van ${st} ${st===1?"dag":"dagen"} vast, +40 yuzu`:"Elke dag één puzzel, +40 yuzu"}</span></span></button>${goalsHTML()}`;
+ view.innerHTML=topbar("Capi Café")+lvBar()+`<div class="rooms">${rooms}<span class="cozy" role="img" aria-label="Gezelligheid ${cz} van 5">${[1,2,3,4,5].map(i=>`<svg viewBox="0 0 24 24" class="${i<=cz?"on":""}" aria-hidden="true">${ICON.star}</svg>`).join("")}</span></div><div class="scene ${night()?"night":""}" id="stage"></div><div class="panel" id="panel"></div>${ns?`<button class="nstep" ${ns.act}><span class="nsi">${ns.ico}</span><span class="nst">${ns.txt}</span><span class="nsa">›</span></button>`:""}${showInstall()?`<div class="inst"><span class="ii"><svg viewBox="-6 -20 112 116">${head(CAPYS[0]).replace(/<g class="eye-h"[^]*?<\/g>/,"")}</svg></span><span class="it"><b>Speel als app</b><small>Zet Capi Café op je beginscherm, ook offline.</small></span><button class="ib" data-act="install">Installeer</button><button class="ix" data-act="instx" aria-label="Sluiten">×</button></div>`:""}${tips}${winterOn()?(()=>{const nd=nextDoor(),od=openDoors(),dn=Object.keys(S.adone).length;return `<button class="advban" data-act="advent"><span class="sf">${SNOWI}</span><span><b>Adventskalender</b><small>${nd>=0?`Deur ${nd+1} staat voor je open`:dn>=24?"Alle 24 deuren geopend!":"Morgen gaat er een nieuwe deur open"} · ${dn} van ${od} geopend</small></span><span class="go">${nd>=0?"Open":"Bekijk"}</span></button>`})():""}${main}<button class="daily ${isOpen("daily")?"":"plocked"}" data-act="daily"><span class="cal">${new Date().getDate()}</span><span><span class="big">${doneToday?"Dagpuzzel gehaald":dcur?"Ga verder met de dagpuzzel":"Dagpuzzel"}</span><br><span class="sub">${doneToday?`Morgen weer een nieuwe, serie: ${st} ${st===1?"dag":"dagen"}`:st?`Houd je serie van ${st} ${st===1?"dag":"dagen"} vast, +40 yuzu`:"Elke dag één puzzel, +40 yuzu"}</span></span></button>${goalsHTML()}`;
  renderScene();renderPanel();
  if(lvPending()&&!dlg.open&&!G)setTimeout(()=>{if(!dlg.open&&tab==="cafe"&&!G)lvDlg()},500);
  if(S.newRoom&&!dlg.open){const r=S.newRoom;S.newRoom=null;if(r==="tuin"){S.seeds.gras=(S.seeds.gras||0)+3;S.seeds.wortel=(S.seeds.wortel||0)+1}save();
@@ -1067,6 +1094,17 @@ function advPrizeSheet(i,R){const sb=R.prevStars!==undefined&&totalStars()>R.pre
  dlg.className="sheet";dlg.innerHTML=`<div class="grab"></div><h2 class="pz">Deur ${i+1} is open!</h2><div class="stars" role="img" aria-label="${R.stars} van de 3 sterren">${[1,2,3].map(k=>`<svg viewBox="0 0 24 24" class="${k<=R.stars?"on":""}" style="--k:${k}" aria-hidden="true">${ICON.star}</svg>`).join("")}</div>${sb}<div class="prows">${rows.join("")}</div>${after}<button class="btn quiet" data-act="close">Bekijk de kalender</button>`;
  dlg.showModal();updPill();if(sb)starFly(R.prevStars,totalStars(),900)}
 
+/* ---- App ---- */
+let DIP=null;
+const isStandalone=()=>matchMedia("(display-mode: standalone)").matches||navigator.standalone===true;
+const isIOS=()=>/iphone|ipad|ipod/i.test(navigator.userAgent)||(navigator.platform==="MacIntel"&&navigator.maxTouchPoints>1);
+const onArtifactHost=()=>/claude\.ai|claudeusercontent|claude\.site/.test(location.host)||!/^https?:/.test(location.protocol);
+const showInstall=()=>!onArtifactHost()&&!isStandalone()&&!S.installDismissed&&(DIP||isIOS())&&cafeLv()>=2;
+addEventListener("beforeinstallprompt",e=>{e.preventDefault();DIP=e;if(tab==="cafe"&&!G&&!dlg.open)render()});
+addEventListener("appinstalled",()=>{S.installDismissed=true;save();toast("Capi Café staat op je beginscherm!")});
+function installApp(){if(DIP){DIP.prompt();DIP.userChoice.then(r=>{if(r.outcome==="accepted"){S.installDismissed=true;save()}DIP=null;if(!G)render()});return}
+ const ios=isIOS();dlg.className="sheet";dlg.innerHTML=`<div class="grab"></div><h2>Capi Café als app</h2><p class="intro">Dan staat het spel tussen je andere apps, start het zonder browserbalk en werkt het ook offline.</p><ol class="steps">${ios?`<li>Tik onderin op <b>Delen</b>, het vierkantje met een pijl omhoog.</li><li>Scrol naar beneden en kies <b>Zet op beginscherm</b>.</li><li>Tik rechtsboven op <b>Voeg toe</b>.</li>`:`<li>Open het menu van je browser, meestal de drie puntjes.</li><li>Kies <b>App installeren</b> of <b>Toevoegen aan startscherm</b>.</li><li>Bevestig, en Capi Café staat bij je apps.</li>`}</ol><button class="btn" data-act="close">Begrepen</button>`;dlg.showModal()}
+if("serviceWorker" in navigator&&!onArtifactHost())addEventListener("load",()=>navigator.serviceWorker.register("sw.js").catch(()=>{}));
 /* ---- Muziek ---- */
 const MUS={on:false,g:null,f:null,next:0,step:0,timer:0,theme:"cafe",seed:1};
 const MTH={
@@ -1545,7 +1583,7 @@ dlg.addEventListener("click",e=>{if(e.target===dlg&&dlg.className==="sheet")dlg.
 dlg.addEventListener("close",()=>{if(dlg.className==="sheet")setTimeout(()=>{if(!dlg.open)dlg.className=""},0)});
 function settings(){
  const sw=(k,l)=>`<div class="row"><span>${l}</span><button class="switch" role="switch" aria-checked="${S[k]}" data-act="toggle" data-k="${k}">${S[k]?"Aan":"Uit"}</button></div>`;
- dlg.innerHTML=`<h2>Instellingen</h2>${sw("sound","Geluid")}${sw("haptics","Trillen")}${sw("music","Muziek")}${sw("cb","Kleurenblindmodus: patronen op de kleuren")}${sw("auto","Stippen na het plaatsen van een capy")}<div class="beta"><div><b>Beta</b><span>Alle modi, levels en adventsdeuren open om te testen. Je voortgang blijft bewaard.</span></div><button class="switch" role="switch" aria-checked="${!!S.beta}" data-act="beta">${S.beta?"Aan":"Uit"}</button></div>${sw("fast","Testmodus: tijd 60× sneller")}<div class="row"><span>Extreem: borden vanaf 10 bij 10</span><button class="switch" role="switch" aria-checked="${!!S.extreme}" data-act="xtoggle2">${S.extreme?"Aan":"Uit"}</button></div><button class="btn quiet" data-act="replaytut" style="margin-top:12px">Bekijk de uitleg opnieuw</button><button class="btn quiet" data-act="reset">Begin opnieuw</button><button class="btn" data-act="close">Klaar</button>`;
+ dlg.innerHTML=`<h2>Instellingen</h2>${sw("sound","Geluid")}${sw("haptics","Trillen")}${sw("music","Muziek")}${isStandalone()?`<div class="row"><span>Je speelt Capi Café als app</span><span class="ok">✓</span></div>`:`<div class="row"><span>Speel als app op je beginscherm</span><button class="switch" data-act="install">Installeer</button></div>`}${sw("cb","Kleurenblindmodus: patronen op de kleuren")}${sw("auto","Stippen na het plaatsen van een capy")}<div class="beta"><div><b>Beta</b><span>Alle modi, levels en adventsdeuren open om te testen. Je voortgang blijft bewaard.</span></div><button class="switch" role="switch" aria-checked="${!!S.beta}" data-act="beta">${S.beta?"Aan":"Uit"}</button></div><div class="row"><span>Winterevenement en adventskalender nu tonen</span><button class="switch" role="switch" aria-checked="${!!S.winterTest||!!S.beta}" data-act="wtest" ${S.beta?"disabled":""}>${S.winterTest||S.beta?"Aan":"Uit"}</button></div>${sw("fast","Testmodus: tijd 60× sneller")}<div class="row"><span>Extreem: borden vanaf 10 bij 10</span><button class="switch" role="switch" aria-checked="${!!S.extreme}" data-act="xtoggle2">${S.extreme?"Aan":"Uit"}</button></div><button class="btn quiet" data-act="replaytut" style="margin-top:12px">Bekijk de uitleg opnieuw</button><button class="btn quiet" data-act="reset">Begin opnieuw</button><button class="btn" data-act="close">Klaar</button>`;
  if(!dlg.open)dlg.showModal();
 }
 async function doShare(){const text=$("#sharetxt").textContent,b=$("[data-act=share]");try{if(navigator.share){await navigator.share({text});return}await navigator.clipboard.writeText(text);b.textContent="Gekopieerd"}catch(e){if(e&&e.name==="AbortError")return;b.textContent="Selecteer de tekst om te delen"}}
@@ -1601,6 +1639,8 @@ document.addEventListener("click",e=>{
   case"beta":S.beta=!S.beta;save();toast(S.beta?"Beta staat aan: alles is open.":"Beta staat uit.");settings();return G?undefined:render();
   case"trial":{dlg.close();dlg.className="";const id=t.dataset.v,L={etage:ETAGES,vorm:VORMEN,knuffel:KNUFFELS,groei:GROEI}[id],m=pModes().find(x=>x.id===id),i=Math.max(0,m.next);G=null;S.cur=null;if(id==="groei")start(GROEI[i][0],"groei",i*10);else start(L[i],id,i);G.trial=true;return}
   case"nudge":return stuckTip();
+  case"install":if(dlg.open&&dlg.className!=="sheet")dlg.close();return installApp();
+  case"instx":S.installDismissed=true;save();return render();
   case"lvup":return lvDlg();
   case"lvclose":dlg.close();if(G){G=null}tab="cafe";return render();
   case"roadmap":if(dlg.open)dlg.close();return roadmap();
@@ -1644,6 +1684,7 @@ document.addEventListener("visibilitychange",()=>{if(document.hidden){if(G)persi
 setInterval(()=>{if(!document.hidden){S.seen=vnow();save()}},30000);
 if(!S.m3){S.xcapy=[...new Set([...(S.xcapy||[]),...CAPYS.filter(c=>c.at<9999&&doneCount()>=c.at).map(c=>c.name)])];S.m3=true;bindSets();S.lvSeen=cafeLv();save()}
 bindSets();document.documentElement.classList.toggle("xtrm",!!S.extreme);document.documentElement.classList.toggle("cb",!!S.cb);ensureRooms();render();welcome();
+{const sp=document.getElementById("splash");setTimeout(()=>{sp.classList.add("out");setTimeout(()=>sp.remove(),450)},isStandalone()?900:250)}
 </script>
 </body>
 </html>
