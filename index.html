@@ -5,6 +5,15 @@
 <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
 <title>Capi Café</title>
 <meta name="description" content="Solve capybara puzzles and run your own cozy café.">
+<meta property="og:title" content="Capi Café">
+<meta property="og:description" content="Cozy capybara puzzles. Solve boards, befriend capys and grow your own café.">
+<meta property="og:type" content="website">
+<meta property="og:url" content="https://jjve-git.github.io/capi-cafe/">
+<meta property="og:image" content="https://jjve-git.github.io/capi-cafe/og.png">
+<meta name="twitter:image" content="https://jjve-git.github.io/capi-cafe/og.png">
+<meta property="og:image:width" content="1200">
+<meta property="og:image:height" content="630">
+<meta name="twitter:card" content="summary_large_image">
 <link rel="manifest" href="manifest.webmanifest">
 <meta name="theme-color" content="#D7EDCB" media="(prefers-color-scheme: light)">
 <meta name="theme-color" content="#10302A" media="(prefers-color-scheme: dark)">
@@ -742,6 +751,14 @@ dialog[open]::backdrop{animation:bdin .22s ease-out}
 dialog .sect+.row{border-top:0}
 .beta .switch{background:var(--surface)}
 .lvt b{white-space:normal;display:-webkit-box;-webkit-line-clamp:2;-webkit-box-orient:vertical;overflow:hidden;line-height:1.2}
+input[type=range]{accent-color:var(--water);width:136px;height:30px;margin:0;touch-action:pan-y}
+.vrow{align-items:center}
+#rot{display:none;position:fixed;inset:0;z-index:300;background:var(--bg);color:var(--ink);place-items:center;place-content:center;gap:6px;text-align:center}
+#rot b{font-family:"Bagel Fat One","Arial Rounded MT Bold",sans-serif;font-weight:400;font-size:24px}#rot span{color:var(--muted);font-weight:600}
+@media (orientation:landscape) and (max-height:480px){#rot{display:grid}}
+@media (min-width:700px) and (min-height:800px){#app{max-width:620px}}
+@media (max-width:350px){.g-top{gap:5px}.g-top h2,.g-top h2.long{font-size:18px}.meter svg{width:16px;height:16px}.timer{font-size:15px}.top h1{font-size:26px}#view{padding:0 12px 16px}}
+@media (max-height:640px){.rules{display:none}.coach{font-size:14px;line-height:1.3}.coachrow{min-height:44px}.tools .rc{width:46px;height:46px}}
 @keyframes walk{50%{transform:translateY(-5px) rotate(-1.500deg)}}
 @keyframes chew{50%{transform:scaleY(.96)}}
 @keyframes hopr{40%{transform:translateY(-22px)}}
@@ -785,6 +802,7 @@ dialog .sect+.row{border-top:0}
 </head>
 <body>
 <div id="splash" aria-hidden="true"><div class="spl"><svg viewBox="-6 -20 112 116"><ellipse cx="25" cy="17" rx="7.5" ry="8.5" fill="#7B4725"/><ellipse cx="75" cy="17" rx="7.5" ry="8.5" fill="#7B4725"/><path d="M31 14c10-5 28-5 38 0 10 6 15 20 15 36v20c0 15-14 23-34 23S16 85 16 70V50c0-16 5-30 15-36z" fill="#A9683A"/><path d="M24 66c0-9 11-13 26-13s26 4 26 13v6c0 12-11 19-26 19S24 84 24 72z" fill="#C98E5E"/><rect x="31" y="56" width="38" height="14" rx="7" fill="#7B4725"/><path d="M41 61l-3 4M59 61l3 4" stroke="#22150D" stroke-width="3.500" stroke-linecap="round"/><path d="M50 70v8M39 80q5 4 11-2 6 6 11 2" fill="none" stroke="#3B2518" stroke-width="2.800" stroke-linecap="round" stroke-linejoin="round"/><g class="eye-o"><circle cx="29" cy="39" r="5" fill="#22150D"/><circle cx="71" cy="39" r="5" fill="#22150D"/><path d="M22 36h14M64 36h14" stroke="#A9683A" stroke-width="5"/><path d="M23 38h12M65 38h12" stroke="#22150D" stroke-width="2.200" stroke-linecap="round"/></g><circle cx="50" cy="8" r="13" fill="#FFA41B"/><circle cx="46" cy="4" r="3" fill="#FFD27A"/><path d="M50-5c2-6 8-7 12-5-1 5-7 8-12 5z" fill="#3E9B4F"/></svg><b>Capi Café</b><i></i></div></div>
+<div id="rot" aria-hidden="true"><svg viewBox="0 0 64 64" width="72" height="72"><rect x="20" y="6" width="24" height="44" rx="5" fill="none" stroke="currentColor" stroke-width="4"/><path d="M12 54a26 26 0 0 0 40 0M52 54l1-8M52 54l-8-1" fill="none" stroke="currentColor" stroke-width="4" stroke-linecap="round" stroke-linejoin="round"/></svg><b>Turn your phone upright</b><span>Capi Café plays best in portrait.</span></div>
 <div id="app"><div id="view"></div><nav id="nav" aria-label="Main menu"></nav><div id="toast" role="status"></div></div>
 <dialog id="dlg"></dialog>
 <script>
@@ -862,7 +880,7 @@ const curStreak=()=>S.lastDaily>=dayNo()-1?S.streak:0;
 const fmt=s=>Math.floor(s/60)+":"+String(s%60).padStart(2,"0");
 
 let ac=null;
-function tone(f,d=.1,t="sine",v=.12,at=0){if(!S.sound)return;try{ac=ac||new (window.AudioContext||window.webkitAudioContext)();const o=ac.createOscillator(),g=ac.createGain(),n=ac.currentTime+at;o.type=t;o.frequency.setValueAtTime(f,n);g.gain.setValueAtTime(v,n);g.gain.exponentialRampToValueAtTime(.001,n+d);o.connect(g).connect(ac.destination);o.start(n);o.stop(n+d)}catch(e){}}
+function tone(f,d=.1,t="sine",v=.12,at=0){if(!S.sound)return;v*=S.vol??1;try{ac=ac||new (window.AudioContext||window.webkitAudioContext)();const o=ac.createOscillator(),g=ac.createGain(),n=ac.currentTime+at;o.type=t;o.frequency.setValueAtTime(f,n);g.gain.setValueAtTime(v,n);g.gain.exponentialRampToValueAtTime(.001,n+d);o.connect(g).connect(ac.destination);o.start(n);o.stop(n+d)}catch(e){}}
 const SCALE=[523,587,659,784,880,1047,1175,1319,1568,1760];
 function hap(p){if(S.haptics&&navigator.vibrate){try{navigator.vibrate(p)}catch(e){}}}
 const sfx={pet(){tone(660,.08,"sine",.07);tone(880,.12,"sine",.06,.07)},munch(){[0,.2,.4,.6,.8].forEach(t=>tone(190+Math.random()*80,.05,"square",.03,t))},gift(){[784,988,1319].forEach((f,i)=>tone(f,.15,"triangle",.07,i*.07))},harvest(){tone(523,.1,"triangle",.08);tone(784,.16,"triangle",.08,.08)},level(){[523,659,784,1047,1319,1568].forEach((f,i)=>tone(f,.22,"triangle",.08,i*.09))},ui(){tone(820,.028,"sine",.035)},plop(){tone(300,.08);tone(480,.08,"sine",.08,.05)},tick(){tone(1100,.035,"triangle",.045)},erase(){tone(640,.04,"triangle",.04)},capy(k){const f=SCALE[Math.min(k-1,SCALE.length-1)];tone(f*.5,.09,"sine",.13);tone(f,.16,"triangle",.1,.05)},bad(){tone(196,.16,"triangle",.14);tone(147,.24,"triangle",.14,.13)},steam(){if(!S.sound)return;try{ac=ac||new (window.AudioContext||window.webkitAudioContext)();const t=ac.currentTime,len=ac.sampleRate*.42|0,b=ac.createBuffer(1,len,ac.sampleRate),d=b.getChannelData(0);for(let i=0;i<len;i++)d[i]=Math.random()*2-1;const s=ac.createBufferSource(),f=ac.createBiquadFilter(),g=ac.createGain();s.buffer=b;f.type="bandpass";f.Q.value=.8;f.frequency.setValueAtTime(700,t);f.frequency.exponentialRampToValueAtTime(3400,t+.36);g.gain.setValueAtTime(.001,t);g.gain.exponentialRampToValueAtTime(.09,t+.09);g.gain.exponentialRampToValueAtTime(.001,t+.42);s.connect(f).connect(g).connect(ac.destination);s.start(t)}catch(e){}},hug(){tone(740,.14,"sine",.09);tone(988,.22,"sine",.09,.1)},ding(){tone(880,.09,"sine",.08);tone(1175,.16,"sine",.08,.07)},win(){[523,659,784,1047,1319].forEach((f,i)=>tone(f,.3,"triangle",.1,i*.1))},buy(){tone(660,.12,"triangle");tone(990,.18,"triangle",.1,.1)}};
@@ -1113,7 +1131,7 @@ function render(){bindSets();document.documentElement.classList.toggle("xtrm",!!
  view.scrollTop=0;screenIn("t:"+tab,false);
 }
 function fitTitle(){const g=$("#gtitle");if(g)g.classList.toggle("long",g.textContent.trim().length>10||!!g.querySelector(".xb"))}
-function screenIn(key,game){if(W.scr===key)return;const first=W.scr===undefined;W.scr=key;if(first)return;view.classList.remove("vin","gin");void view.offsetWidth;view.classList.add(game?"gin":"vin")}
+function screenIn(key,game){setTimeout(syncHist,0);if(W.scr===key)return;const first=W.scr===undefined;W.scr=key;if(first)return;view.classList.remove("vin","gin");void view.offsetWidth;view.classList.add(game?"gin":"vin")}
 const HEARTI=`<svg viewBox="0 0 24 24" width="28" height="28" aria-hidden="true"><path d="M12 20C6.500 15.600 3 12.500 3 8.500 3 5.800 5.100 4 7.500 4c1.800 0 3.500 1 4.500 2.700C13 5 14.700 4 16.500 4 18.900 4 21 5.800 21 8.500c0 4-3.500 7.100-9 11.500z" fill="currentColor"/></svg>`;
 const TOWER=`<svg viewBox="0 0 24 24" width="30" height="30" aria-hidden="true"><path d="M12 3l9 4-9 4-9-4zM3 12l9 4 9-4M3 17l9 4 9-4" fill="none" stroke="currentColor" stroke-width="2.200" stroke-linecap="round" stroke-linejoin="round"/></svg>`;
 const BOLT=`<svg viewBox="0 0 24 24" width="26" height="26" aria-hidden="true"><path d="M13 2L5 14h6l-1 8 8-12h-6z" fill="currentColor"/></svg>`;
@@ -1259,6 +1277,21 @@ async function codeShare(){const text=W.codeUrl||W.code,b=$("[data-act=codeshare
 function codeLoad(pre){dlg.className="sheet";dlg.innerHTML=`<div class="grab"></div><h2>Restore progress</h2><p class="intro">Paste your recovery code below. Careful: this replaces the progress on this device.</p><textarea class="codebox" id="codein" placeholder="CAPI1.…" aria-label="Paste recovery code">${pre||""}</textarea><button class="btn" data-act="codeapply">Load progress</button><button class="btn quiet" data-act="close">Cancel</button>`;if(!dlg.open)dlg.showModal()}
 async function codeApply(){const v=$("#codein").value;try{const o=await readCode(v);const dev=S.devUI;S=Object.assign(fresh(),o);S.devUI=dev;save();dlg.close();dlg.className="";G=null;W.actors={};bindSets();tab="cafe";render();toast(`Welcome back! Your progress is loaded: café level ${cafeLv()}.`);if(/^#(herstel|restore)=/.test(location.hash))history.replaceState(null,"",location.pathname+location.search)}catch(e){toast("That code doesn’t work. Check that you copied all of it.")}}
 if(/^#(herstel|restore)=/.test(location.hash))setTimeout(()=>codeLoad(decodeURIComponent(location.hash.replace(/^#\w+=/,""))),900);
+/* ---- Volume ---- */
+document.addEventListener("input",e=>{const k=e.target.dataset&&e.target.dataset.vol;if(!k)return;const v=+e.target.value/100;
+ if(k==="sound"){S.sound=v>0;if(v>0)S.vol=v;clearTimeout(W.volT);W.volT=setTimeout(()=>sfx.capy(2),80)}
+ else{S.music=v>0;if(v>0){S.mvol=v;if(!MUS.on)musicStart();else try{MUS.g.gain.cancelScheduledValues(ac.currentTime);MUS.g.gain.setTargetAtTime(.9*v,ac.currentTime,.05)}catch(_){}}else musicStop()}
+ save()});
+/* ---- Back button ---- */
+let HB=0,HSKIP=false;
+const navDeep=()=>dlg.open||!!G||tab!=="cafe";
+function syncHist(){if(onArtifactHost())return;const d=navDeep();if(d&&!HB){history.pushState({capi:1},"");HB=1}else if(!d&&HB){HB=0;HSKIP=true;history.back()}}
+function backAction(){if(dlg.open){const tg=dlg.querySelector("[data-act=tutgo]");if(tg)return tg.click();if(G&&G.over){dlg.close();dlg.className="";return goHome()}dlg.close();if(!G&&tab==="cafe")render();return}
+ if(G){const q=$("[data-act=quit]");return q?q.click():goHome()}
+ if(tab!=="cafe"){tab="cafe";render()}}
+addEventListener("popstate",()=>{if(HSKIP){HSKIP=false;return}HB=0;backAction();setTimeout(syncHist,0)});
+document.addEventListener("click",()=>setTimeout(syncHist,60));
+new MutationObserver(()=>setTimeout(syncHist,0)).observe(document.getElementById("dlg"),{attributes:true,attributeFilter:["open"]});
 /* ---- App ---- */
 let DIP=null;
 const isStandalone=()=>matchMedia("(display-mode: standalone)").matches||navigator.standalone===true;
@@ -1291,7 +1324,7 @@ function mTick(){if(!MUS.on||!ac)return;const th=MTH[MUS.theme]||MTH.cafe,eighth
   if(th.amb==="drip"&&b8===6&&r>.7){const o=ac.createOscillator(),g=ac.createGain();o.type="sine";o.frequency.setValueAtTime(1500,t);o.frequency.exponentialRampToValueAtTime(600,t+.08);g.gain.setValueAtTime(.025,t);g.gain.exponentialRampToValueAtTime(.0001,t+.12);o.connect(g).connect(MUS.f);o.start(t);o.stop(t+.15)}
   MUS.next+=eighth;MUS.step++}}
 function musicStart(){if(!S.music||MUS.on)return;try{ac=ac||new (window.AudioContext||window.webkitAudioContext)();if(ac.state==="suspended")ac.resume();
- MUS.g=ac.createGain();MUS.g.gain.value=.0001;MUS.f=ac.createBiquadFilter();MUS.f.type="lowpass";MUS.f.frequency.value=2600;MUS.f.connect(MUS.g).connect(ac.destination);MUS.g.gain.exponentialRampToValueAtTime(.9,ac.currentTime+2.5);
+ MUS.g=ac.createGain();MUS.g.gain.value=.0001;MUS.f=ac.createBiquadFilter();MUS.f.type="lowpass";MUS.f.frequency.value=2600;MUS.f.connect(MUS.g).connect(ac.destination);MUS.g.gain.exponentialRampToValueAtTime(Math.max(.001,.9*(S.mvol??1)),ac.currentTime+2.5);
  MUS.on=true;MUS.theme=mTheme();MUS.next=ac.currentTime+.1;MUS.step=0;MUS.timer=setInterval(mTick,90)}catch(e){}}
 function musicStop(){if(!MUS.on)return;MUS.on=false;clearInterval(MUS.timer);const g=MUS.g;try{g.gain.exponentialRampToValueAtTime(.0001,ac.currentTime+.6);setTimeout(()=>g.disconnect(),800)}catch(e){}}
 document.addEventListener("pointerdown",()=>{if(S.music&&!MUS.on)musicStart();else if(ac&&ac.state==="suspended")ac.resume()},{passive:true});
@@ -1923,7 +1956,7 @@ dlg.addEventListener("click",e=>{if(e.target===dlg&&dlg.className==="sheet")dlg.
 dlg.addEventListener("close",()=>{if(dlg.className==="sheet")setTimeout(()=>{if(!dlg.open)dlg.className=""},0)});
 function settings(){
  const sw=(k,l)=>`<div class="row"><span>${l}</span><button class="switch" role="switch" aria-checked="${S[k]}" data-act="toggle" data-k="${k}">${S[k]?"On":"Off"}</button></div>`;
- dlg.innerHTML=`<h2 data-act="devtap">Settings</h2><p class="sect">Sound</p>${sw("sound","Sound effects")}${sw("music","Music")}${sw("haptics","Vibration")}<p class="sect">Puzzle</p>${sw("cb","Colorblind mode: patterns on the colors")}<div class="row"><span>Highlight a color area on touch</span><button class="switch" role="switch" aria-checked="${S.glow!==false}" data-act="glowtog">${S.glow!==false?"On":"Off"}</button></div>${sw("auto","Show dots after placing a capy")}<div class="row"><span>Ask before a hint costs yuzu</span><button class="switch" role="switch" aria-checked="${!S.hintNoAsk}" data-act="askttog">${S.hintNoAsk?"Off":"On"}</button></div><div class="row"><span>Extreme: bigger boards, classic from 14 by 14</span><button class="switch" role="switch" aria-checked="${!!S.extreme}" data-act="xtoggle2">${S.extreme?"On":"Off"}</button></div><p class="sect">App</p>${isStandalone()?`<div class="row"><span>You’re playing Capi Café as an app</span><span class="ok">${CHECKI}</span></div>`:`<div class="row"><span>Play as an app from your home screen</span><button class="switch" data-act="install">Install</button></div>`}${S.devUI?`<p class="sect">Testing</p>`+devRows(sw):""}<button class="btn quiet" data-act="savesheet" style="margin-top:12px">Save or transfer progress</button><button class="btn quiet" data-act="replaytut">Replay the tutorial</button><button class="btn quiet" data-act="reset">Start over</button><button class="btn" data-act="close">Done</button>`;
+ dlg.innerHTML=`<h2 data-act="devtap">Settings</h2><p class="sect">Sound</p><div class="row vrow"><span>Sound effects</span><input type="range" min="0" max="100" step="5" value="${S.sound?Math.round((S.vol??1)*100):0}" data-vol="sound" aria-label="Sound effects volume"></div><div class="row vrow"><span>Music</span><input type="range" min="0" max="100" step="5" value="${S.music?Math.round((S.mvol??1)*100):0}" data-vol="music" aria-label="Music volume"></div>${sw("haptics","Vibration")}<p class="sect">Puzzle</p>${sw("cb","Colorblind mode: patterns on the colors")}<div class="row"><span>Highlight a color area on touch</span><button class="switch" role="switch" aria-checked="${S.glow!==false}" data-act="glowtog">${S.glow!==false?"On":"Off"}</button></div>${sw("auto","Show dots after placing a capy")}<div class="row"><span>Ask before a hint costs yuzu</span><button class="switch" role="switch" aria-checked="${!S.hintNoAsk}" data-act="askttog">${S.hintNoAsk?"Off":"On"}</button></div><div class="row"><span>Extreme: bigger boards, classic from 14 by 14</span><button class="switch" role="switch" aria-checked="${!!S.extreme}" data-act="xtoggle2">${S.extreme?"On":"Off"}</button></div><p class="sect">App</p>${isStandalone()?`<div class="row"><span>You’re playing Capi Café as an app</span><span class="ok">${CHECKI}</span></div>`:`<div class="row"><span>Play as an app from your home screen</span><button class="switch" data-act="install">Install</button></div>`}${S.devUI?`<p class="sect">Testing</p>`+devRows(sw):""}<button class="btn quiet" data-act="savesheet" style="margin-top:12px">Save or transfer progress</button><button class="btn quiet" data-act="replaytut">Replay the tutorial</button><button class="btn quiet" data-act="reset">Start over</button><button class="btn" data-act="close">Done</button>`;
  if(!dlg.open)dlg.showModal();
 }
 function shareLink(){return /^https?:/.test(location.protocol)&&!onArtifactHost()?"\n"+location.origin+location.pathname:""}
